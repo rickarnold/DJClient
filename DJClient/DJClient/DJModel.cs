@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DJClient.KaraokeService;
+using DJ.KaraokeService;
 
-namespace DJClient
+namespace DJ
 {
     class DJModel
     {

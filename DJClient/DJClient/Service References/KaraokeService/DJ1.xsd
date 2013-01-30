@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://sunny.eng.utah.edu/Service1.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/KServer" />
+  <xs:import schemaLocation="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/KServer" />
   <xs:element name="DJSignUp">
     <xs:complexType>
       <xs:sequence>
@@ -184,6 +184,36 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/KServer" minOccurs="0" name="DJMoveUserResult" nillable="true" type="q21:Response" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DJGetQueue">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="DJKey" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DJGetQueueResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/KServer" minOccurs="0" name="DJGetQueueResult" nillable="true" type="q22:Response" />
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/KServer" minOccurs="0" name="queue" nillable="true" type="q23:ArrayOfqueueSinger" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DJPopQueue">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/KServer" minOccurs="0" name="sr" nillable="true" type="q24:SongRequest" />
+        <xs:element minOccurs="0" name="DJKey" type="xs:long" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DJPopQueueResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/KServer" minOccurs="0" name="DJPopQueueResult" nillable="true" type="q25:Response" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

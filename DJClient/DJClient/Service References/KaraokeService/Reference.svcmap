@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="6455f6f2-dee9-4f2e-b5ad-1bb05394b79a" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="5ee7c4e3-8575-4aaa-9e41-9e9d425c37e5" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
@@ -18,14 +18,14 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://sunny.eng.utah.edu/Service1.svc" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://sunny.eng.utah.edu/DJ.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="Service1.xsd" MetadataType="Schema" ID="f65c252b-121d-465b-bbd6-9792ea5bb731" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/Service1.svc?xsd=xsd1" />
-    <MetadataFile FileName="Service1.wsdl" MetadataType="Wsdl" ID="ba049abd-3f3b-4489-b6a3-b9a6f268cb5d" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/Service1.svc?wsdl" />
-    <MetadataFile FileName="Service11.xsd" MetadataType="Schema" ID="11bae955-e941-40de-a39e-0dd324c90f00" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/Service1.svc?xsd=xsd0" />
-    <MetadataFile FileName="Service12.xsd" MetadataType="Schema" ID="859835b9-93e3-41e9-8c63-a971da27b463" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/Service1.svc?xsd=xsd2" />
-    <MetadataFile FileName="Service1.disco" MetadataType="Disco" ID="cda00d85-41ba-4087-96dd-eb98cca72ca2" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/Service1.svc?disco" />
+    <MetadataFile FileName="DJ.xsd" MetadataType="Schema" ID="89f4cbf0-13b2-4ded-8b56-f2cfc2854c8d" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd1" />
+    <MetadataFile FileName="DJ1.xsd" MetadataType="Schema" ID="ba84e86c-93d7-400e-aa4c-87c624bfb0bc" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd0" />
+    <MetadataFile FileName="DJ2.xsd" MetadataType="Schema" ID="535cca38-49b1-4a22-913f-f9d5a0272f3d" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd2" />
+    <MetadataFile FileName="Service1.wsdl" MetadataType="Wsdl" ID="b5470e3d-4040-4d72-83d3-801b46c001cb" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?wsdl" />
+    <MetadataFile FileName="DJ.disco" MetadataType="Disco" ID="29a0fcb2-cea5-4ed2-846d-d24d9cfb47ae" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?disco" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

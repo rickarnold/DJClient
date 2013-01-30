@@ -2,9 +2,9 @@
 <wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Service1" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
-      <xsd:import schemaLocation="http://sunny.eng.utah.edu/Service1.svc?xsd=xsd0" namespace="http://tempuri.org/" />
-      <xsd:import schemaLocation="http://sunny.eng.utah.edu/Service1.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://sunny.eng.utah.edu/Service1.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/KServer" />
+      <xsd:import schemaLocation="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/KServer" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IDJ_DJSignUp_InputMessage">
@@ -79,6 +79,18 @@
   <wsdl:message name="IDJ_DJMoveUser_OutputMessage">
     <wsdl:part name="parameters" element="tns:DJMoveUserResponse" />
   </wsdl:message>
+  <wsdl:message name="IDJ_DJGetQueue_InputMessage">
+    <wsdl:part name="parameters" element="tns:DJGetQueue" />
+  </wsdl:message>
+  <wsdl:message name="IDJ_DJGetQueue_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DJGetQueueResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDJ_DJPopQueue_InputMessage">
+    <wsdl:part name="parameters" element="tns:DJPopQueue" />
+  </wsdl:message>
+  <wsdl:message name="IDJ_DJPopQueue_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DJPopQueueResponse" />
+  </wsdl:message>
   <wsdl:portType name="IDJ">
     <wsdl:operation name="DJSignUp">
       <wsdl:input wsaw:Action="http://tempuri.org/IDJ/DJSignUp" message="tns:IDJ_DJSignUp_InputMessage" />
@@ -127,6 +139,14 @@
     <wsdl:operation name="DJMoveUser">
       <wsdl:input wsaw:Action="http://tempuri.org/IDJ/DJMoveUser" message="tns:IDJ_DJMoveUser_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDJ/DJMoveUserResponse" message="tns:IDJ_DJMoveUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DJGetQueue">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDJ/DJGetQueue" message="tns:IDJ_DJGetQueue_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDJ/DJGetQueueResponse" message="tns:IDJ_DJGetQueue_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DJPopQueue">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDJ/DJPopQueue" message="tns:IDJ_DJPopQueue_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDJ/DJPopQueueResponse" message="tns:IDJ_DJPopQueue_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IDJ" type="tns:IDJ">
@@ -239,10 +259,28 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="DJGetQueue">
+      <soap:operation soapAction="http://tempuri.org/IDJ/DJGetQueue" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DJPopQueue">
+      <soap:operation soapAction="http://tempuri.org/IDJ/DJPopQueue" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="Service1">
     <wsdl:port name="BasicHttpBinding_IDJ" binding="tns:BasicHttpBinding_IDJ">
-      <soap:address location="http://sunny.eng.utah.edu/Service1.svc" />
+      <soap:address location="http://sunny.eng.utah.edu/DJ.svc" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DJClient.KaraokeService {
+namespace DJ.KaraokeService {
     using System.Runtime.Serialization;
     using System;
     
@@ -109,7 +109,7 @@ namespace DJClient.KaraokeService {
         private int resultField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private DJClient.KaraokeService.User userField;
+        private DJ.KaraokeService.User userField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private long userKeyField;
@@ -164,7 +164,7 @@ namespace DJClient.KaraokeService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public DJClient.KaraokeService.User user {
+        public DJ.KaraokeService.User user {
             get {
                 return this.userField;
             }
@@ -427,7 +427,7 @@ namespace DJClient.KaraokeService {
         private int songIDField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private DJClient.KaraokeService.User userField;
+        private DJ.KaraokeService.User userField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -453,7 +453,68 @@ namespace DJClient.KaraokeService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public DJClient.KaraokeService.User user {
+        public DJ.KaraokeService.User user {
+            get {
+                return this.userField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.userField, value) != true)) {
+                    this.userField = value;
+                    this.RaisePropertyChanged("user");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="queueSinger", Namespace="http://schemas.datacontract.org/2004/07/KServer")]
+    [System.SerializableAttribute()]
+    public partial class queueSinger : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private DJ.KaraokeService.Song[] songsField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private DJ.KaraokeService.User userField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public DJ.KaraokeService.Song[] songs {
+            get {
+                return this.songsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.songsField, value) != true)) {
+                    this.songsField = value;
+                    this.RaisePropertyChanged("songs");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public DJ.KaraokeService.User user {
             get {
                 return this.userField;
             }
@@ -480,49 +541,55 @@ namespace DJClient.KaraokeService {
     public interface IDJ {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJSignUp", ReplyAction="http://tempuri.org/IDJ/DJSignUpResponse")]
-        DJClient.KaraokeService.Response DJSignUp(string userName, string password);
+        DJ.KaraokeService.Response DJSignUp(string userName, string password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJSignIn", ReplyAction="http://tempuri.org/IDJ/DJSignInResponse")]
-        DJClient.KaraokeService.LogInResponse DJSignIn(string userName, string password);
+        DJ.KaraokeService.LogInResponse DJSignIn(string userName, string password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJSignOut", ReplyAction="http://tempuri.org/IDJ/DJSignOutResponse")]
-        DJClient.KaraokeService.Response DJSignOut(long DJKey);
+        DJ.KaraokeService.Response DJSignOut(long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJCreateSession", ReplyAction="http://tempuri.org/IDJ/DJCreateSessionResponse")]
-        DJClient.KaraokeService.Session DJCreateSession(long DJKey);
+        DJ.KaraokeService.Session DJCreateSession(long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJAddSongs", ReplyAction="http://tempuri.org/IDJ/DJAddSongsResponse")]
-        DJClient.KaraokeService.Response DJAddSongs(DJClient.KaraokeService.Song[] songs, long DJKey);
+        DJ.KaraokeService.Response DJAddSongs(DJ.KaraokeService.Song[] songs, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJRemoveSongs", ReplyAction="http://tempuri.org/IDJ/DJRemoveSongsResponse")]
-        DJClient.KaraokeService.Response DJRemoveSongs(DJClient.KaraokeService.Song[] songs, long DJKey);
+        DJ.KaraokeService.Response DJRemoveSongs(DJ.KaraokeService.Song[] songs, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJListSongs", ReplyAction="http://tempuri.org/IDJ/DJListSongsResponse")]
-        DJClient.KaraokeService.Response DJListSongs(out DJClient.KaraokeService.Song[] songs, long DJKey);
+        DJ.KaraokeService.Response DJListSongs(out DJ.KaraokeService.Song[] songs, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJAddQueue", ReplyAction="http://tempuri.org/IDJ/DJAddQueueResponse")]
-        DJClient.KaraokeService.Response DJAddQueue(DJClient.KaraokeService.SongRequest sr, int queueIndex, int sessionID, long DJKey);
+        DJ.KaraokeService.Response DJAddQueue(DJ.KaraokeService.SongRequest sr, int queueIndex, int sessionID, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJRemoveSongRequest", ReplyAction="http://tempuri.org/IDJ/DJRemoveSongRequestResponse")]
-        DJClient.KaraokeService.Response DJRemoveSongRequest(DJClient.KaraokeService.SongRequest sr, int sessionID, long DJKey);
+        DJ.KaraokeService.Response DJRemoveSongRequest(DJ.KaraokeService.SongRequest sr, int sessionID, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJChangeSongRequest", ReplyAction="http://tempuri.org/IDJ/DJChangeSongRequestResponse")]
-        DJClient.KaraokeService.Response DJChangeSongRequest(DJClient.KaraokeService.SongRequest newSR, DJClient.KaraokeService.SongRequest oldSR, int sessionID, long DJKey);
+        DJ.KaraokeService.Response DJChangeSongRequest(DJ.KaraokeService.SongRequest newSR, DJ.KaraokeService.SongRequest oldSR, int sessionID, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJRemoveUser", ReplyAction="http://tempuri.org/IDJ/DJRemoveUserResponse")]
-        DJClient.KaraokeService.Response DJRemoveUser(DJClient.KaraokeService.SongRequest newSR, DJClient.KaraokeService.SongRequest oldSR, int sessionID, long DJKey);
+        DJ.KaraokeService.Response DJRemoveUser(DJ.KaraokeService.SongRequest newSR, DJ.KaraokeService.SongRequest oldSR, int sessionID, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJMoveUser", ReplyAction="http://tempuri.org/IDJ/DJMoveUserResponse")]
-        DJClient.KaraokeService.Response DJMoveUser(int userID, int sessionID, long DJKey);
+        DJ.KaraokeService.Response DJMoveUser(int userID, int sessionID, long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGetQueue", ReplyAction="http://tempuri.org/IDJ/DJGetQueueResponse")]
+        DJ.KaraokeService.Response DJGetQueue(out DJ.KaraokeService.queueSinger[] queue, long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJPopQueue", ReplyAction="http://tempuri.org/IDJ/DJPopQueueResponse")]
+        DJ.KaraokeService.Response DJPopQueue(DJ.KaraokeService.SongRequest sr, long DJKey);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IDJChannel : DJClient.KaraokeService.IDJ, System.ServiceModel.IClientChannel {
+    public interface IDJChannel : DJ.KaraokeService.IDJ, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class DJClient : System.ServiceModel.ClientBase<DJClient.KaraokeService.IDJ>, DJClient.KaraokeService.IDJ {
+    public partial class DJClient : System.ServiceModel.ClientBase<DJ.KaraokeService.IDJ>, DJ.KaraokeService.IDJ {
         
         public DJClient() {
         }
@@ -543,52 +610,60 @@ namespace DJClient.KaraokeService {
                 base(binding, remoteAddress) {
         }
         
-        public DJClient.KaraokeService.Response DJSignUp(string userName, string password) {
+        public DJ.KaraokeService.Response DJSignUp(string userName, string password) {
             return base.Channel.DJSignUp(userName, password);
         }
         
-        public DJClient.KaraokeService.LogInResponse DJSignIn(string userName, string password) {
+        public DJ.KaraokeService.LogInResponse DJSignIn(string userName, string password) {
             return base.Channel.DJSignIn(userName, password);
         }
         
-        public DJClient.KaraokeService.Response DJSignOut(long DJKey) {
+        public DJ.KaraokeService.Response DJSignOut(long DJKey) {
             return base.Channel.DJSignOut(DJKey);
         }
         
-        public DJClient.KaraokeService.Session DJCreateSession(long DJKey) {
+        public DJ.KaraokeService.Session DJCreateSession(long DJKey) {
             return base.Channel.DJCreateSession(DJKey);
         }
         
-        public DJClient.KaraokeService.Response DJAddSongs(DJClient.KaraokeService.Song[] songs, long DJKey) {
+        public DJ.KaraokeService.Response DJAddSongs(DJ.KaraokeService.Song[] songs, long DJKey) {
             return base.Channel.DJAddSongs(songs, DJKey);
         }
         
-        public DJClient.KaraokeService.Response DJRemoveSongs(DJClient.KaraokeService.Song[] songs, long DJKey) {
+        public DJ.KaraokeService.Response DJRemoveSongs(DJ.KaraokeService.Song[] songs, long DJKey) {
             return base.Channel.DJRemoveSongs(songs, DJKey);
         }
         
-        public DJClient.KaraokeService.Response DJListSongs(out DJClient.KaraokeService.Song[] songs, long DJKey) {
+        public DJ.KaraokeService.Response DJListSongs(out DJ.KaraokeService.Song[] songs, long DJKey) {
             return base.Channel.DJListSongs(out songs, DJKey);
         }
         
-        public DJClient.KaraokeService.Response DJAddQueue(DJClient.KaraokeService.SongRequest sr, int queueIndex, int sessionID, long DJKey) {
+        public DJ.KaraokeService.Response DJAddQueue(DJ.KaraokeService.SongRequest sr, int queueIndex, int sessionID, long DJKey) {
             return base.Channel.DJAddQueue(sr, queueIndex, sessionID, DJKey);
         }
         
-        public DJClient.KaraokeService.Response DJRemoveSongRequest(DJClient.KaraokeService.SongRequest sr, int sessionID, long DJKey) {
+        public DJ.KaraokeService.Response DJRemoveSongRequest(DJ.KaraokeService.SongRequest sr, int sessionID, long DJKey) {
             return base.Channel.DJRemoveSongRequest(sr, sessionID, DJKey);
         }
         
-        public DJClient.KaraokeService.Response DJChangeSongRequest(DJClient.KaraokeService.SongRequest newSR, DJClient.KaraokeService.SongRequest oldSR, int sessionID, long DJKey) {
+        public DJ.KaraokeService.Response DJChangeSongRequest(DJ.KaraokeService.SongRequest newSR, DJ.KaraokeService.SongRequest oldSR, int sessionID, long DJKey) {
             return base.Channel.DJChangeSongRequest(newSR, oldSR, sessionID, DJKey);
         }
         
-        public DJClient.KaraokeService.Response DJRemoveUser(DJClient.KaraokeService.SongRequest newSR, DJClient.KaraokeService.SongRequest oldSR, int sessionID, long DJKey) {
+        public DJ.KaraokeService.Response DJRemoveUser(DJ.KaraokeService.SongRequest newSR, DJ.KaraokeService.SongRequest oldSR, int sessionID, long DJKey) {
             return base.Channel.DJRemoveUser(newSR, oldSR, sessionID, DJKey);
         }
         
-        public DJClient.KaraokeService.Response DJMoveUser(int userID, int sessionID, long DJKey) {
+        public DJ.KaraokeService.Response DJMoveUser(int userID, int sessionID, long DJKey) {
             return base.Channel.DJMoveUser(userID, sessionID, DJKey);
+        }
+        
+        public DJ.KaraokeService.Response DJGetQueue(out DJ.KaraokeService.queueSinger[] queue, long DJKey) {
+            return base.Channel.DJGetQueue(out queue, DJKey);
+        }
+        
+        public DJ.KaraokeService.Response DJPopQueue(DJ.KaraokeService.SongRequest sr, long DJKey) {
+            return base.Channel.DJPopQueue(sr, DJKey);
         }
     }
 }

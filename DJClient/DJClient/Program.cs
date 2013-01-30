@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace DJClient
+namespace DJ
 {
     static class Program
     {
@@ -15,7 +15,7 @@ namespace DJClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new MainWindow());
         }
     }
 }
