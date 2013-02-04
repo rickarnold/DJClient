@@ -42,6 +42,20 @@ namespace DJ
         }
     }
 
+    public class SongListArgs : EventArgs
+    {
+        public Response Response { get; private set; }
+        public List<Song> SongList { get; private set; }
+        public Object UserState { get; private set; }
+
+        public SongListArgs(Response response, List<Song> songList, Object userState)
+        {
+            this.Response = response;
+            this.SongList = songList;
+            this.UserState = userState;
+        }
+    }
+
     public class DJModelArgs : EventArgs
     {
         public bool Error { get; private set; }

@@ -16,16 +16,28 @@ namespace DJ
         private DJClient _client;
 
         //Delegates for use in the event handlers
-        public delegate void LoginEventHandler(object source, LogInResponseArgs args);
-        public delegate void SignUpEventHandler(object source, ResponseArgs args);
-        public delegate void LogoutEventHandler(object source, ResponseArgs args);
-        public delegate void CreateSessionHandler(object source, SessionArgs args);
+        public delegate void LoginResponseHandler(object source, LogInResponseArgs args);
+        public delegate void ResponseHandler(object source, ResponseArgs args);
+        public delegate void SessionHandler(object source, SessionArgs args);
+        public delegate void SongListHandler(object source, SongListArgs args);
 
         //Events raised when the calls to the service have completed
-        public event SignUpEventHandler SignUpServiceComplete;
-        public event LoginEventHandler LoginServiceComplete;
-        public event LogoutEventHandler LogoutServiceComplete;
-        public event CreateSessionHandler CreateSessionServiceComplete;
+        public event ResponseHandler SignUpServiceComplete;
+        public event LoginResponseHandler LoginServiceComplete;
+        public event ResponseHandler LogoutServiceComplete;
+        public event SessionHandler CreateSessionServiceComplete;
+
+        public event ResponseHandler AddSongsToDatabaseComplete;
+        public event ResponseHandler RemoveSongsFromDatabaseComplete;
+        public event SongListHandler ListSongsInDatabaseComplete;
+
+        public event ResponseHandler AddToQueueComplete;
+        public event ResponseHandler RemoveSongRequestComplete;
+        public event ResponseHandler ChangeSongRequestComplete;
+        public event ResponseHandler RemoveUserComplete;
+        public event ResponseHandler MoveUserComplete;
+        public event ResponseHandler GetQueueComplete;
+        public event ResponseHandler PopQueueComplete;
 
         private ServiceClient()
         {
@@ -119,6 +131,70 @@ namespace DJ
             if (CreateSessionServiceComplete != null)
             {
                 CreateSessionServiceComplete(this, new SessionArgs(session, userState));
+            }
+        }
+
+        #endregion
+
+        #region Song Management Public Methods
+
+        public void AddSongsToSongbookAsync(List<Song> songList, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                AddSongsToSongbook(songList, djKey, userState);
+            });
+        }
+
+        public void RemoveSongsFromSongbookAsync(List<Song> songList, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                RemoveSongsFromSongbook(songList, djKey, userState);
+            });
+        }
+
+        public void GetAllSongsInSongbookAsync(long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                GetAllSongsInSongbook(djKey, userState);
+            });
+        }
+
+        #endregion
+
+        #region Song Management Workers
+
+        private void AddSongsToSongbook(List<Song> songList, long djKey, object userState)
+        {
+            Response response = _client.DJAddSongs(songList.ToArray(), djKey);
+
+            if (AddSongsToDatabaseComplete != null)
+            {
+                AddSongsToDatabaseComplete(this, new ResponseArgs(response, userState));
+            }
+        }
+
+        private void RemoveSongsFromSongbook(List<Song> songList, long djKey, object userState)
+        {
+            Response response = _client.DJRemoveSongs(songList.ToArray(), djKey);
+
+            if (RemoveSongsFromDatabaseComplete != null)
+            {
+                RemoveSongsFromDatabaseComplete(this, new ResponseArgs(response, userState));
+            }
+        }
+
+        private void GetAllSongsInSongbook(long djKey, object userState)
+        {
+            Song[] songList = new Song[0];
+
+            Response response = _client.DJListSongs(out songList, djKey);
+
+            if (ListSongsInDatabaseComplete != null)
+            {
+                ListSongsInDatabaseComplete(this, new SongListArgs(response, songList.ToList<Song>(), userState));
             }
         }
 

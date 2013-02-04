@@ -21,6 +21,10 @@ namespace DJ
         public event DJModelEventHandler LogoutComplete;
         public event DJModelEventHandler CreateSessionComplete;
 
+        public event DJModelEventHandler AddSongToDatabaseComplete;
+        public event DJModelEventHandler RemoveSongFromDatabaseComplete;
+        public event DJModelEventHandler ListSongsInDatabaseComplete;
+
         //Session state varialbes
         public bool IsLoggedIn { get; private set; }
 
@@ -34,10 +38,16 @@ namespace DJ
         //Initialize all the event handlers for callbacks from the service client
         private void InitializeEventHandlers()
         {
+            //Login Handlers
             serviceClient.SignUpServiceComplete += SignUpCompleteHandler;
             serviceClient.LoginServiceComplete += LoginCompleteHandler;
             serviceClient.LogoutServiceComplete += LogoutCompleteHandler;
             serviceClient.CreateSessionServiceComplete += CreateSessionCompleteHandler;
+
+            //Song Management Handlers
+            serviceClient.AddSongsToDatabaseComplete += AddSongsToDatabaseCompleteHandler;
+            serviceClient.RemoveSongsFromDatabaseComplete += RemoveSongsFromDatabaseCompleteHandler;
+            serviceClient.ListSongsInDatabaseComplete += ListSongsInDatabaseCompleteHandler;
         }
 
         //Singleton instance of the model
@@ -54,6 +64,7 @@ namespace DJ
         public int VenueID { get; set; }
         public long SessionKey { get; set; }
         public long DJKey { get; set; }
+        public List<Song> SongbookList { get; private set; }
         public List<SongRequest> SongRequestQueue { get; set; }
         public SongRequest CurrentSong { get; set; }
 
@@ -103,19 +114,19 @@ namespace DJ
         //Add songs to the songbook on the server
         public void AddSongsToSongbook(List<Song> songList)
         {
-
+            serviceClient.AddSongsToSongbookAsync(songList, this.DJKey, null);
         }
 
         //Remove a given song from othe online songbook
         public void RemoveSongsInSongbook(List<Song> songList)
         {
-
+            serviceClient.RemoveSongsFromSongbookAsync(songList, this.DJKey, null);
         }
 
         //Get a list of all the songs in the songbook that are associated with this DJ
         public void GetAllSongsInSongbook()
         {
-
+            serviceClient.GetAllSongsInSongbookAsync(this.DJKey, null);
         }
 
         #endregion Song Management
@@ -219,6 +230,64 @@ namespace DJ
             if (CreateSessionComplete != null)
             {
                 CreateSessionComplete(this, new DJModelArgs(false, "", args.UserState));
+            }
+        }
+
+        #endregion
+
+        #region Song Management Event Handlers
+
+        private void AddSongsToDatabaseCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+
+            }
+            //Error occurred
+            else
+            {
+
+            }
+
+            if (AddSongToDatabaseComplete != null)
+            {
+                AddSongToDatabaseComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void RemoveSongsFromDatabaseCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+
+            }
+            //Error occurred
+            else
+            {
+
+            }
+
+            if (RemoveSongFromDatabaseComplete != null)
+            {
+                RemoveSongFromDatabaseComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void ListSongsInDatabaseCompleteHandler(object source, SongListArgs args)
+        {
+            if (!args.Response.error)
+            {
+                this.SongbookList = args.SongList;
+            }
+            //Error occurred
+            else
+            {
+
+            }
+
+            if (ListSongsInDatabaseComplete != null)
+            {
+                ListSongsInDatabaseComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
             }
         }
 
