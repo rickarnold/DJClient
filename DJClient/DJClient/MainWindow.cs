@@ -15,11 +15,21 @@ namespace DJ
         {
             InitializeComponent();
 
-            List<KaraokeService.Song> songList = KaraokeDiskBrowser.GetSongList();
-            string songs = "Songs found:\n";
-            foreach (KaraokeService.Song song in songList)
-                songs += "\n" + song.artist + " - " + song.title + "\nPath = " + song.pathOnDisk;
-            MessageBox.Show(songs);
+            //List<KaraokeService.Song> songList = KaraokeDiskBrowser.GetSongList();
+            //string songs = "Songs found:\n";
+            //foreach (KaraokeService.Song song in songList)
+            //    songs += "\n" + song.artist + " - " + song.title + "\nPath = " + song.pathOnDisk;
+            //MessageBox.Show(songs);
+
+            DJModel model = DJModel.Instance;
+
+            model.LoginComplete += new DJModel.DJModelEventHandler(LoginCompleteHandler);
+            model.Login("a", "b");
+        }
+
+        private void LoginCompleteHandler(object source, DJModelArgs args)
+        {
+            MessageBox.Show("Returned from login.\nError = " + args.Error + "\nMessage = " + args.ErrorMessage + "\nDJ Key = " + DJModel.Instance.DJKey);
         }
     }
 }

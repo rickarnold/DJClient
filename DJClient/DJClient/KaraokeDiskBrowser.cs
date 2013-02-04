@@ -66,6 +66,7 @@ namespace DJ
             {
                 return dialog.SelectedPath;
             }
+            //User cancelled so return empty string
             return "";
         }
 
