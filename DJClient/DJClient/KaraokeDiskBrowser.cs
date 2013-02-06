@@ -10,11 +10,6 @@ namespace DJ
 {
     class KaraokeDiskBrowser
     {
-        public KaraokeDiskBrowser()
-        {
-            
-        }
-
         /// <summary>
         /// Opens a folder browser dialog, finds all the karaoke songs in the selected folder and any subfolders and returns a list of songs found.
         /// </summary>
@@ -131,7 +126,7 @@ namespace DJ
                     }
                 }
                 //Check if a karaoke text file
-                else if (extension.Equals(".bin"))
+                else if (extension.Equals(".cdg"))
                 {
                     if (fileVerified.ContainsKey(name))
                         fileVerified[name] = true;

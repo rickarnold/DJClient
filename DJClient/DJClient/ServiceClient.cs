@@ -18,25 +18,25 @@ namespace DJ
         //Delegates for use in the event handlers
         public delegate void LoginResponseHandler(object source, LogInResponseArgs args);
         public delegate void ResponseHandler(object source, ResponseArgs args);
-        public delegate void SessionHandler(object source, SessionArgs args);
         public delegate void SongListHandler(object source, SongListArgs args);
+        public delegate void QueueHandler(object source, QueueArgs args);
 
         //Events raised when the calls to the service have completed
         public event ResponseHandler SignUpServiceComplete;
         public event LoginResponseHandler LoginServiceComplete;
         public event ResponseHandler LogoutServiceComplete;
-        public event SessionHandler CreateSessionServiceComplete;
+        public event ResponseHandler CreateSessionServiceComplete;
 
         public event ResponseHandler AddSongsToDatabaseComplete;
         public event ResponseHandler RemoveSongsFromDatabaseComplete;
         public event SongListHandler ListSongsInDatabaseComplete;
 
-        public event ResponseHandler AddToQueueComplete;
+        public event ResponseHandler AddSongRequestComplete;
         public event ResponseHandler RemoveSongRequestComplete;
         public event ResponseHandler ChangeSongRequestComplete;
         public event ResponseHandler RemoveUserComplete;
         public event ResponseHandler MoveUserComplete;
-        public event ResponseHandler GetQueueComplete;
+        public event QueueHandler GetQueueComplete;
         public event ResponseHandler PopQueueComplete;
 
         private ServiceClient()
@@ -126,11 +126,11 @@ namespace DJ
 
         private void CreateSession(long djKey, object userState)
         {
-            Session session = _client.DJCreateSession(djKey);
+            Response response = _client.DJCreateSession(djKey);
 
             if (CreateSessionServiceComplete != null)
             {
-                CreateSessionServiceComplete(this, new SessionArgs(session, userState));
+                CreateSessionServiceComplete(this, new ResponseArgs(response, userState));
             }
         }
 
@@ -195,6 +195,142 @@ namespace DJ
             if (ListSongsInDatabaseComplete != null)
             {
                 ListSongsInDatabaseComplete(this, new SongListArgs(response, songList.ToList<Song>(), userState));
+            }
+        }
+
+        #endregion
+
+        #region Singer Queue Public Methods
+
+        public void AddSongRequestAsync(SongRequest request, int queueIndex, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                AddSongRequest(request, queueIndex, djKey, userState);
+            });
+        }
+
+        public void RemoveSongRequestAsync(SongRequest request, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                RemoveSongRequest(request, djKey, userState);
+            });
+        }
+
+        public void ChangeSongRequestAsync(SongRequest newRequest, SongRequest oldRequest, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                ChangeSongRequest(newRequest, oldRequest, djKey, userState);
+            });
+        }
+
+        public void RemoveUserAsync(int userID, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                RemoveUser(userID, djKey, userState);
+            });
+        }
+
+        public void MoveUserAsync(SongRequest newRequest, SongRequest oldRequest, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                MoveUser(newRequest, oldRequest, djKey, userState);
+            });
+        }
+
+        public void GetSingerQueueAsync(long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                GetSingerQueue(djKey, userState);
+            });
+        }
+
+        public void PopSingerQueueAsync(SongRequest request, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                PopSingerQueue(request, djKey, userState);
+            });
+        }
+
+        #endregion
+
+        #region Singer Queue Workers
+
+        private void AddSongRequest(SongRequest request, int queueIndex, long djKey, object userState)
+        {
+            Response response = _client.DJAddQueue(request, queueIndex, djKey);
+
+            if (AddSongRequestComplete != null)
+            {
+                AddSongRequestComplete(this, new ResponseArgs(response, userState));
+            }
+        }
+
+        private void RemoveSongRequest(SongRequest request, long djKey, object userState)
+        {
+            Response response = _client.DJRemoveSongRequest(request, djKey);
+
+            if (RemoveSongRequestComplete != null)
+            {
+                RemoveSongRequestComplete(this, new ResponseArgs(response, userState));
+            }
+        }
+
+        private void ChangeSongRequest(SongRequest newRequest, SongRequest oldRequest, long djKey, object userState)
+        {
+            Response response = _client.DJChangeSongRequest(newRequest, oldRequest, djKey);
+
+            if (ChangeSongRequestComplete != null)
+            {
+                ChangeSongRequestComplete(this, new ResponseArgs(response, userState));
+            }
+        }
+
+        private void RemoveUser(int userID, long djKey, object userState)
+        {
+            Response response = _client.DJRemoveUser(userID, djKey);
+
+            if (RemoveUserComplete != null)
+            {
+                RemoveUserComplete(this, new ResponseArgs(response, userState));
+            }
+        }
+
+        private void MoveUser(SongRequest newRequest, SongRequest oldRequest, long djKey, object userState)
+        {
+            Response response = _client.DJMoveUser(newRequest, oldRequest, djKey);
+
+            if (MoveUserComplete != null)
+            {
+                MoveUserComplete(this, new ResponseArgs(response, userState));
+            }
+        }
+
+        private void GetSingerQueue(long djKey, object userState)
+        {
+            queueSinger[] singerQueue = new queueSinger[0];
+
+            Response response = _client.DJGetQueue(out singerQueue, djKey);
+
+            if (GetQueueComplete != null)
+            {
+                GetQueueComplete(this, new QueueArgs(response, singerQueue.ToList<queueSinger>(), userState));
+            }
+        }
+
+        private void PopSingerQueue(SongRequest request, long djKey, object userState)
+        {
+            Response response = _client.DJPopQueue(request, djKey);
+
+            if (PopQueueComplete != null)
+            {
+                PopQueueComplete(this, new ResponseArgs(response, userState));
             }
         }
 

@@ -51,6 +51,7 @@
     <Compile Include="DJModel.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KaraokeDiskBrowser.cs" />
+    <Compile Include="KaraokeFilePlayer.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,9 +101,6 @@
     <None Include="Service References\KaraokeService\DJ.KaraokeService.Response.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\KaraokeService\DJ.KaraokeService.Session.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\KaraokeService\DJ.KaraokeService.Song.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -137,6 +135,17 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

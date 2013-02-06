@@ -11,25 +11,33 @@ namespace DJ
 {
     public partial class MainWindow : Form
     {
+        private DJModel model;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            //List<KaraokeService.Song> songList = KaraokeDiskBrowser.GetSongList();
-            //string songs = "Songs found:\n";
-            //foreach (KaraokeService.Song song in songList)
-            //    songs += "\n" + song.artist + " - " + song.title + "\nPath = " + song.pathOnDisk;
-            //MessageBox.Show(songs);
+            //model = DJModel.Instance;
 
-            DJModel model = DJModel.Instance;
+            //model.QueueUpdated += QueueUpdatedHandler;
 
-            model.LoginComplete += new DJModel.DJModelEventHandler(LoginCompleteHandler);
-            model.Login("a", "b");
+            //model.LoginComplete += LoginCompleteHandler;
+            //model.Login("rick", "changeme!");
+
+            string mp3Path = @"C:\Karaoke\Beatles - Hey Jude.mp3";
+            KaraokeFilePlayer player = new KaraokeFilePlayer();
+            player.Open(mp3Path);
+            player.Play();
         }
 
         private void LoginCompleteHandler(object source, DJModelArgs args)
         {
             MessageBox.Show("Returned from login.\nError = " + args.Error + "\nMessage = " + args.ErrorMessage + "\nDJ Key = " + DJModel.Instance.DJKey);
+        }
+
+        private void QueueUpdatedHandler(object source, EventArgs args)
+        {
+            MessageBox.Show("Queue has been updated. Singer count = " + model.SongRequestQueue.Count);
         }
     }
 }

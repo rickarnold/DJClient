@@ -30,8 +30,8 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.tableLayoutMain = new System.Windows.Forms.TableLayoutPanel();
             this.panelQueue = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
@@ -66,6 +66,12 @@
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
             // toolStripContainer1
             // 
             this.toolStripContainer1.BottomToolStripPanelVisible = false;
@@ -87,12 +93,6 @@
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
             // 
-            // fileToolStripMenuItem
-            // 
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
-            // 
             // tableLayoutMain
             // 
             this.tableLayoutMain.AutoSize = true;
@@ -108,7 +108,7 @@
             this.tableLayoutMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutMain.Controls.Add(this.panelQueue, 5, 2);
+            this.tableLayoutMain.Controls.Add(this.panelQueue, 5, 0);
             this.tableLayoutMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutMain.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutMain.Name = "tableLayoutMain";
@@ -128,10 +128,10 @@
             this.panelQueue.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.tableLayoutMain.SetColumnSpan(this.panelQueue, 5);
             this.panelQueue.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelQueue.Location = new System.Drawing.Point(593, 191);
+            this.panelQueue.Location = new System.Drawing.Point(593, 3);
             this.panelQueue.Name = "panelQueue";
-            this.tableLayoutMain.SetRowSpan(this.panelQueue, 3);
-            this.panelQueue.Size = new System.Drawing.Size(584, 280);
+            this.tableLayoutMain.SetRowSpan(this.panelQueue, 5);
+            this.panelQueue.Size = new System.Drawing.Size(584, 468);
             this.panelQueue.TabIndex = 0;
             // 
             // MainWindow

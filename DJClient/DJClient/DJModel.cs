@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DJ.KaraokeService;
+using System.Timers;
 
 namespace DJ
 {
@@ -14,6 +15,7 @@ namespace DJ
 
         //Delegates for use in the event handlers
         public delegate void DJModelEventHandler(object source, DJModelArgs args);
+        public delegate void EventHandler(object source, EventArgs args);
 
         //Events raised when the calls to the service have completed
         public event DJModelEventHandler SignUpComplete;
@@ -25,6 +27,17 @@ namespace DJ
         public event DJModelEventHandler RemoveSongFromDatabaseComplete;
         public event DJModelEventHandler ListSongsInDatabaseComplete;
 
+        public event DJModelEventHandler AddSongRequestComplete;
+        public event DJModelEventHandler RemoveSongRequestComplete;
+        public event DJModelEventHandler ChangeSongRequestComplete;
+        public event DJModelEventHandler RemoveUserComplete;
+        public event DJModelEventHandler MoveUserComplete;
+        public event DJModelEventHandler GetQueueComplete;
+        public event DJModelEventHandler PopQueueComplete;
+
+        //Event raised when the queue has been updated
+        public event EventHandler QueueUpdated;
+
         //Session state varialbes
         public bool IsLoggedIn { get; private set; }
 
@@ -33,6 +46,10 @@ namespace DJ
             serviceClient = ServiceClient.Instance;
 
             InitializeEventHandlers();
+
+            this.SongRequestQueue = new List<queueSinger>();
+
+            SetUpQueueTimer();
         }
 
         //Initialize all the event handlers for callbacks from the service client
@@ -48,6 +65,15 @@ namespace DJ
             serviceClient.AddSongsToDatabaseComplete += AddSongsToDatabaseCompleteHandler;
             serviceClient.RemoveSongsFromDatabaseComplete += RemoveSongsFromDatabaseCompleteHandler;
             serviceClient.ListSongsInDatabaseComplete += ListSongsInDatabaseCompleteHandler;
+
+            //Queue Management Handlers
+            serviceClient.AddSongRequestComplete += AddSongRequestCompleteHandler;
+            serviceClient.RemoveSongRequestComplete += RemoveSongRequestCompleteHandler;
+            serviceClient.ChangeSongRequestComplete += ChangeSongRequestCompleteHandler;
+            serviceClient.RemoveUserComplete += RemoveUserCompleteHandler;
+            serviceClient.MoveUserComplete += MoveUserCompleteHandler;
+            serviceClient.GetQueueComplete += GetQueueCompleteHandler;
+            serviceClient.PopQueueComplete += PopQueueCompleteHandler;
         }
 
         //Singleton instance of the model
@@ -61,12 +87,32 @@ namespace DJ
             }
         }
 
-        public int VenueID { get; set; }
-        public long SessionKey { get; set; }
-        public long DJKey { get; set; }
+        public int VenueID { get; private set; }
+        public long SessionKey { get; private set; }
+        public long DJKey { get; private set; }
         public List<Song> SongbookList { get; private set; }
-        public List<SongRequest> SongRequestQueue { get; set; }
+        public List<queueSinger> SongRequestQueue { get; set; }
         public SongRequest CurrentSong { get; set; }
+
+        #region Queue Timer Methods
+
+        private void SetUpQueueTimer()
+        {
+            Timer timer = new Timer(5000);
+            timer.Elapsed += TimerTickHandler;
+            timer.Enabled = true;
+            timer.AutoReset = true;
+            timer.Start();
+        }
+
+        //Timer has ticked so check the queue
+        private void TimerTickHandler(object source, ElapsedEventArgs args)
+        {
+            if (this.DJKey != 0)
+                serviceClient.GetSingerQueueAsync(this.DJKey, null);
+        }
+
+        #endregion
 
         #region Login Methods
 
@@ -222,14 +268,11 @@ namespace DJ
             }
         }
 
-        private void CreateSessionCompleteHandler(object source, SessionArgs args)
+        private void CreateSessionCompleteHandler(object source, ResponseArgs args)
         {
-            this.SessionKey = args.Session.sessionID;
-            this.VenueID = args.Session.venueID;
-
             if (CreateSessionComplete != null)
             {
-                CreateSessionComplete(this, new DJModelArgs(false, "", args.UserState));
+                CreateSessionComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
             }
         }
 
@@ -292,5 +335,165 @@ namespace DJ
         }
 
         #endregion
+
+        #region Queue Management Event Handlers
+
+        private void AddSongRequestCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+
+            }
+            //Error occurred
+            {
+
+            }
+
+            if (AddSongRequestComplete != null)
+            {
+                AddSongRequestComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void RemoveSongRequestCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+
+            }
+            //Error occurred
+            {
+
+            }
+
+            if (RemoveSongRequestComplete != null)
+            {
+                RemoveSongRequestComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void ChangeSongRequestCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+
+            }
+            //Error occurred
+            {
+
+            }
+
+            if (ChangeSongRequestComplete != null)
+            {
+                ChangeSongRequestComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void RemoveUserCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+
+            }
+            //Error occurred
+            {
+
+            }
+
+            if (RemoveUserComplete != null)
+            {
+                RemoveUserComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void MoveUserCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+
+            }
+            //Error occurred
+            {
+
+            }
+
+            if (MoveUserComplete != null)
+            {
+                MoveUserComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void GetQueueCompleteHandler(object source, QueueArgs args)
+        {
+            if (!args.Response.error)
+            {
+                if (QueueHasChanged(args.SingerQueue))
+                {
+                    this.SongRequestQueue = args.SingerQueue;
+
+                    if (QueueUpdated != null)
+                        QueueUpdated(this, new EventArgs());
+                }
+            }
+            //Error occurred
+            {
+
+            }
+
+            if (GetQueueComplete != null)
+            {
+                GetQueueComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void PopQueueCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                
+            }
+            //Error occurred
+            {
+
+            }
+
+            if (PopQueueComplete != null)
+            {
+                PopQueueComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        #endregion
+
+        //Returns true if the provided singer queue is different than the one currently in memory
+        private bool QueueHasChanged(List<queueSinger> newQueue)
+        {
+            int currentLength = this.SongRequestQueue.Count;
+
+            //If the counts are different then they are different
+            if (currentLength != newQueue.Count)
+                return false;
+
+            for (int i = 0; i < currentLength; i++)
+            {
+                queueSinger currentSinger = this.SongRequestQueue[i];
+                queueSinger newSinger = this.SongRequestQueue[i];
+                Song[] currentSongs = currentSinger.songs;
+                Song[] newSongs = newSinger.songs;
+
+                if (currentSinger.user.userID != newSinger.user.userID)
+                    return false;
+                if (currentSongs.Length != newSongs.Length)
+                    return false;
+                //Iterate over the songs and check that they're all the same
+                for (int x = 0; x < currentSongs.Length; x++)
+                {
+                    if (currentSongs[x].ID != newSongs[x].ID)
+                        return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

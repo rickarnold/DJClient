@@ -30,18 +30,6 @@ namespace DJ
         }
     }
 
-    public class SessionArgs : EventArgs
-    {
-        public Session Session { get; private set; }
-        public Object UserState { get; private set; }
-
-        public SessionArgs(Session session, Object userState)
-        {
-            this.Session = session;
-            this.UserState = userState;
-        }
-    }
-
     public class SongListArgs : EventArgs
     {
         public Response Response { get; private set; }
@@ -52,6 +40,20 @@ namespace DJ
         {
             this.Response = response;
             this.SongList = songList;
+            this.UserState = userState;
+        }
+    }
+
+    public class QueueArgs : EventArgs
+    {
+        public Response Response { get; private set; }
+        public List<queueSinger> SingerQueue { get; private set; }
+        public Object UserState { get; private set; }
+
+        public QueueArgs(Response response, List<queueSinger> singerQueue, Object userState)
+        {
+            this.Response = response;
+            this.SingerQueue = singerQueue;
             this.UserState = userState;
         }
     }
