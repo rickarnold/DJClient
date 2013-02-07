@@ -162,21 +162,21 @@
             this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
             this.loginToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.loginToolStripMenuItem.Text = "Login";
-            this.loginToolStripMenuItem.Click += new System.EventHandler(this.loginToolStripMenuItem_Click);
+            this.loginToolStripMenuItem.Click += new System.EventHandler(this.LoginMenuItem_Click);
             // 
             // createSessionToolStripMenuItem
             // 
             this.createSessionToolStripMenuItem.Name = "createSessionToolStripMenuItem";
             this.createSessionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.createSessionToolStripMenuItem.Text = "Create Session";
-            this.createSessionToolStripMenuItem.Click += new System.EventHandler(this.createSessionToolStripMenuItem_Click);
+            this.createSessionToolStripMenuItem.Click += new System.EventHandler(this.CreateSessionMenuItem_Click);
             // 
             // logoutToolStripMenuItem
             // 
             this.logoutToolStripMenuItem.Name = "logoutToolStripMenuItem";
             this.logoutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.logoutToolStripMenuItem.Text = "Logout";
-            this.logoutToolStripMenuItem.Click += new System.EventHandler(this.logoutToolStripMenuItem_Click);
+            this.logoutToolStripMenuItem.Click += new System.EventHandler(this.LogoutMenuItem_Click);
             // 
             // songManagementToolStripMenuItem
             // 
@@ -191,7 +191,7 @@
             this.addSongsToDatabaseToolStripMenuItem.Name = "addSongsToDatabaseToolStripMenuItem";
             this.addSongsToDatabaseToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
             this.addSongsToDatabaseToolStripMenuItem.Text = "Add Songs To Database";
-            this.addSongsToDatabaseToolStripMenuItem.Click += new System.EventHandler(this.addSongsToDatabaseToolStripMenuItem_Click);
+            this.addSongsToDatabaseToolStripMenuItem.Click += new System.EventHandler(this.AddSongsToDatabaseMenuItem_Click);
             // 
             // ListBoxQueue
             // 
@@ -204,6 +204,7 @@
             // 
             // buttonPlay
             // 
+            this.buttonPlay.Enabled = false;
             this.buttonPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonPlay.Location = new System.Drawing.Point(3, 285);
             this.buttonPlay.Name = "buttonPlay";
@@ -215,6 +216,7 @@
             // 
             // buttonPause
             // 
+            this.buttonPause.Enabled = false;
             this.buttonPause.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonPause.Location = new System.Drawing.Point(239, 285);
             this.buttonPause.Name = "buttonPause";
@@ -226,6 +228,7 @@
             // 
             // buttonNextSinger
             // 
+            this.buttonNextSinger.Enabled = false;
             this.buttonNextSinger.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonNextSinger.Location = new System.Drawing.Point(475, 285);
             this.buttonNextSinger.Name = "buttonNextSinger";

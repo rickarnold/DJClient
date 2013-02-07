@@ -34,7 +34,7 @@ namespace DJ
 
         private void LoginCompleteHandler(object source, DJModelArgs args)
         {
-            MessageBox.Show("Login complete");
+            BeginInvoke(new InvokeDelegate(InvokeEnableAfterLogin));
         }
 
         private void QueueUpdatedHandler(object source, EventArgs args)
@@ -68,28 +68,40 @@ namespace DJ
             ListBoxQueue.Font = new Font(FontFamily.GenericSerif, 16);
         }
 
+        private void InvokeEnableAfterLogin()
+        {
+            buttonPlay.Enabled = true;
+            buttonPause.Enabled = true;
+            buttonNextSinger.Enabled = true;
+        }
+
         #endregion
 
         #region Menu Item Click Handlers
 
-        private void loginToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoginMenuItem_Click(object sender, EventArgs e)
         {
-            model.Login("jakub", "topsecret");
+            LoginForm form = new LoginForm();
+            form.ShowDialog();
+
+            if (form.WasLoginClicked)
+                model.Login(form.Username, form.Password);
         }
 
-        private void createSessionToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CreateSessionMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void logoutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LogoutMenuItem_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void addSongsToDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AddSongsToDatabaseMenuItem_Click(object sender, EventArgs e)
         {
-            BeginInvoke(new InvokeDelegate(InvokeSongbook));
+            if (model.IsLoggedIn)
+                BeginInvoke(new InvokeDelegate(InvokeSongbook));
         }
 
         #endregion
@@ -140,5 +152,7 @@ namespace DJ
             player.Open(songToPlay.Song.pathOnDisk);
             player.Stop();
         }
+
+        
     }
 }

@@ -38,9 +38,6 @@ namespace DJ
         //Event raised when the queue has been updated
         public event EventHandler QueueUpdated;
 
-        //Session state varialbes
-        public bool IsLoggedIn { get; private set; }
-
         private DJModel()
         {
             serviceClient = ServiceClient.Instance;
@@ -93,6 +90,7 @@ namespace DJ
         public List<Song> SongbookList { get; private set; }
         public List<queueSinger> SongRequestQueue { get; set; }
         public SongRequest CurrentSong { get; set; }
+        public bool IsLoggedIn { get; private set; }
 
         #region Queue Timer Methods
 
@@ -160,7 +158,8 @@ namespace DJ
         //Add songs to the songbook on the server
         public void AddSongsToSongbook(List<Song> songList)
         {
-            serviceClient.AddSongsToSongbookAsync(songList, this.DJKey, null);
+            if (this.IsLoggedIn)
+                serviceClient.AddSongsToSongbookAsync(songList, this.DJKey, null);
         }
 
         //Remove a given song from othe online songbook
