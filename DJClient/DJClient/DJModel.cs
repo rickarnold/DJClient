@@ -101,7 +101,7 @@ namespace DJ
             Timer timer = new Timer(5000);
             timer.Elapsed += TimerTickHandler;
             timer.Enabled = true;
-            timer.AutoReset = true;
+            timer.AutoReset = false;   //Should be true but leaving it as false for now
             timer.Start();
         }
 
@@ -179,10 +179,34 @@ namespace DJ
 
         #region Queue Management
 
-        //Returns the next song request to be sung from the singer queue
-        public SongRequest GetNextSongRequest()
+        //Returns the next song request to be sung from the singer queue and updates the queue
+        public SongToPlay GetNextSongRequest()
         {
-            return null;
+            if (this.SongRequestQueue.Count == 0)
+                return null;
+            else
+            {
+                queueSinger nextSinger = this.SongRequestQueue[0];
+                int nextID = nextSinger.user.userID;
+                
+                //If this next singer doesn't have a song request keep popping until we find a valid request or we come back around
+                int currentID = -1;
+                while (nextSinger.songs.Length == 0 && currentID != nextID)
+                {
+                    PopSongQueue();
+                    nextSinger = this.SongRequestQueue[0];
+                    currentID = nextSinger.user.userID;
+                }
+
+                //No song requests were found in the entire queue so there is nothing to return
+                if (nextSinger.songs.Length == 0)
+                    return null;
+
+                SongToPlay songToPlay = new SongToPlay(nextSinger.songs[0], nextSinger.user);
+                PopSongQueue();
+
+                return songToPlay;
+            }
         }
 
         //Adds a new song request to the singer queue
@@ -197,10 +221,29 @@ namespace DJ
             
         }
 
-
         public void UpdateSongQueue(List<SongRequest> requestUpdates)
         {
 
+        }
+
+        //Updates the singer queue by popping off the top user, removing their first song and adding them back to the bottom
+        private void PopSongQueue()
+        {
+            queueSinger topSinger = this.SongRequestQueue[0];
+            this.SongRequestQueue.Remove(topSinger);
+
+            Song[] oldSongs = topSinger.songs;
+            int newLength = Math.Max(0, oldSongs.Length - 1);
+            Song[] newSongs = new Song[newLength];
+            for (int i = 0; i < newLength; i++)
+            {
+                newSongs[i] = oldSongs[i + 1];
+            }
+            topSinger.songs = newSongs;
+            this.SongRequestQueue.Add(topSinger);
+
+            if (QueueUpdated != null)
+                QueueUpdated(this, new EventArgs());
         }
 
         #endregion Queue Management
@@ -472,28 +515,33 @@ namespace DJ
 
             //If the counts are different then they are different
             if (currentLength != newQueue.Count)
-                return false;
+                return true;
 
             for (int i = 0; i < currentLength; i++)
             {
                 queueSinger currentSinger = this.SongRequestQueue[i];
-                queueSinger newSinger = this.SongRequestQueue[i];
+                queueSinger newSinger = newQueue[i];
+
                 Song[] currentSongs = currentSinger.songs;
                 Song[] newSongs = newSinger.songs;
 
-                if (currentSinger.user.userID != newSinger.user.userID)
-                    return false;
+                //User has added a new song request
                 if (currentSongs.Length != newSongs.Length)
-                    return false;
+                    return true;
+
+                if (currentSinger.user.userID != newSinger.user.userID)
+                    return true;
+                if (currentSongs.Length != newSongs.Length)
+                    return true;
                 //Iterate over the songs and check that they're all the same
                 for (int x = 0; x < currentSongs.Length; x++)
                 {
                     if (currentSongs[x].ID != newSongs[x].ID)
-                        return false;
+                        return true;
                 }
             }
 
-            return true;
+            return false;
         }
     }
 }
