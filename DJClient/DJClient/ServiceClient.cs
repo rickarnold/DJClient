@@ -39,6 +39,8 @@ namespace DJ
         public event QueueHandler GetQueueComplete;
         public event ResponseHandler PopQueueComplete;
 
+        public event ResponseHandler QRCodeComplete;
+
         private ServiceClient()
         {
             _client = new DJClient("BasicHttpBinding_IDJ");
@@ -58,11 +60,11 @@ namespace DJ
 
         #region Log In/Out Public Methods
 
-        public void SignUpAsync(string username, string password, object userState)
+        public void SignUpAsync(string username, string password, Venue venue, string email, object userState)
         {
             ThreadPool.QueueUserWorkItem(lambda =>
             {
-                SignUp(username, password, userState);
+                SignUp(username, password, venue, email, userState);
             });
         }
 
@@ -94,9 +96,9 @@ namespace DJ
 
         #region Log In/Out Workers
 
-        private void SignUp(string userName, string password, object userState)
+        private void SignUp(string userName, string password, Venue venue, string email, object userState)
         {
-            Response response = _client.DJSignUp(userName, password);
+            Response response = _client.DJSignUp(userName, password, venue, email);
 
             if (SignUpServiceComplete != null)
             {
@@ -326,13 +328,60 @@ namespace DJ
 
         private void PopSingerQueue(SongRequest request, long djKey, object userState)
         {
-            Response response = _client.DJPopQueue(request, djKey);
+            Response response;
+
+            if (request != null)
+            {
+                try
+                {
+                    response = _client.DJPopQueue(request, djKey);
+                }
+                catch
+                {
+                    response = new Response();
+                    response.error = true;
+                    response.message = "There are no more song requests in the queue.";
+                }
+            }
+            else
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "There are no more song requests in the queue.";
+            }
 
             if (PopQueueComplete != null)
             {
                 PopQueueComplete(this, new ResponseArgs(response, userState));
             }
         }
+
+        #endregion
+
+        #region QR Public Methods
+
+        public void GetQRCodeAsync(long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                GetQRCode(djKey, userState);
+            });
+        }
+
+        #endregion
+
+        #region QR Workers
+
+        private void GetQRCode(long djKey, object userState)
+        {
+            Response response = _client.DJGetQRNumber(djKey);
+
+            if (QRCodeComplete != null)
+            {
+                QRCodeComplete(this, new ResponseArgs(response, userState));
+            }
+        }
+
 
         #endregion
     }

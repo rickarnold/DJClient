@@ -31,20 +31,22 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.tableLayoutMain = new System.Windows.Forms.TableLayoutPanel();
-            this.panelQueue = new System.Windows.Forms.Panel();
             this.loginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.songManagementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addSongsToDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.tableLayoutMain = new System.Windows.Forms.TableLayoutPanel();
+            this.panelQueue = new System.Windows.Forms.Panel();
             this.ListBoxQueue = new System.Windows.Forms.ListBox();
             this.buttonPlay = new System.Windows.Forms.Button();
-            this.buttonPause = new System.Windows.Forms.Button();
-            this.buttonNextSinger = new System.Windows.Forms.Button();
             this.labelCurrentSong = new System.Windows.Forms.Label();
             this.labelCurrentSinger = new System.Windows.Forms.Label();
+            this.buttonNextSinger = new System.Windows.Forms.Button();
+            this.buttonPause = new System.Windows.Forms.Button();
+            this.qRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateQRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -72,7 +74,8 @@
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.songManagementToolStripMenuItem});
+            this.songManagementToolStripMenuItem,
+            this.qRCodeToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1180, 24);
@@ -88,6 +91,42 @@
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
             this.fileToolStripMenuItem.Text = "DJ";
+            // 
+            // loginToolStripMenuItem
+            // 
+            this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
+            this.loginToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.loginToolStripMenuItem.Text = "Login";
+            this.loginToolStripMenuItem.Click += new System.EventHandler(this.LoginMenuItem_Click);
+            // 
+            // createSessionToolStripMenuItem
+            // 
+            this.createSessionToolStripMenuItem.Name = "createSessionToolStripMenuItem";
+            this.createSessionToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.createSessionToolStripMenuItem.Text = "Create Session";
+            this.createSessionToolStripMenuItem.Click += new System.EventHandler(this.CreateSessionMenuItem_Click);
+            // 
+            // logoutToolStripMenuItem
+            // 
+            this.logoutToolStripMenuItem.Name = "logoutToolStripMenuItem";
+            this.logoutToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.logoutToolStripMenuItem.Text = "Logout";
+            this.logoutToolStripMenuItem.Click += new System.EventHandler(this.LogoutMenuItem_Click);
+            // 
+            // songManagementToolStripMenuItem
+            // 
+            this.songManagementToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addSongsToDatabaseToolStripMenuItem});
+            this.songManagementToolStripMenuItem.Name = "songManagementToolStripMenuItem";
+            this.songManagementToolStripMenuItem.Size = new System.Drawing.Size(120, 20);
+            this.songManagementToolStripMenuItem.Text = "Song Management";
+            // 
+            // addSongsToDatabaseToolStripMenuItem
+            // 
+            this.addSongsToDatabaseToolStripMenuItem.Name = "addSongsToDatabaseToolStripMenuItem";
+            this.addSongsToDatabaseToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.addSongsToDatabaseToolStripMenuItem.Text = "Add Songs To Database";
+            this.addSongsToDatabaseToolStripMenuItem.Click += new System.EventHandler(this.AddSongsToDatabaseMenuItem_Click);
             // 
             // toolStripContainer1
             // 
@@ -157,42 +196,6 @@
             this.panelQueue.Size = new System.Drawing.Size(584, 468);
             this.panelQueue.TabIndex = 0;
             // 
-            // loginToolStripMenuItem
-            // 
-            this.loginToolStripMenuItem.Name = "loginToolStripMenuItem";
-            this.loginToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.loginToolStripMenuItem.Text = "Login";
-            this.loginToolStripMenuItem.Click += new System.EventHandler(this.LoginMenuItem_Click);
-            // 
-            // createSessionToolStripMenuItem
-            // 
-            this.createSessionToolStripMenuItem.Name = "createSessionToolStripMenuItem";
-            this.createSessionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.createSessionToolStripMenuItem.Text = "Create Session";
-            this.createSessionToolStripMenuItem.Click += new System.EventHandler(this.CreateSessionMenuItem_Click);
-            // 
-            // logoutToolStripMenuItem
-            // 
-            this.logoutToolStripMenuItem.Name = "logoutToolStripMenuItem";
-            this.logoutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.logoutToolStripMenuItem.Text = "Logout";
-            this.logoutToolStripMenuItem.Click += new System.EventHandler(this.LogoutMenuItem_Click);
-            // 
-            // songManagementToolStripMenuItem
-            // 
-            this.songManagementToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addSongsToDatabaseToolStripMenuItem});
-            this.songManagementToolStripMenuItem.Name = "songManagementToolStripMenuItem";
-            this.songManagementToolStripMenuItem.Size = new System.Drawing.Size(120, 20);
-            this.songManagementToolStripMenuItem.Text = "Song Management";
-            // 
-            // addSongsToDatabaseToolStripMenuItem
-            // 
-            this.addSongsToDatabaseToolStripMenuItem.Name = "addSongsToDatabaseToolStripMenuItem";
-            this.addSongsToDatabaseToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.addSongsToDatabaseToolStripMenuItem.Text = "Add Songs To Database";
-            this.addSongsToDatabaseToolStripMenuItem.Click += new System.EventHandler(this.AddSongsToDatabaseMenuItem_Click);
-            // 
             // ListBoxQueue
             // 
             this.ListBoxQueue.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -213,30 +216,6 @@
             this.buttonPlay.Text = "Play";
             this.buttonPlay.UseVisualStyleBackColor = true;
             this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
-            // 
-            // buttonPause
-            // 
-            this.buttonPause.Enabled = false;
-            this.buttonPause.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonPause.Location = new System.Drawing.Point(239, 285);
-            this.buttonPause.Name = "buttonPause";
-            this.buttonPause.Size = new System.Drawing.Size(112, 88);
-            this.buttonPause.TabIndex = 2;
-            this.buttonPause.Text = "Pause";
-            this.buttonPause.UseVisualStyleBackColor = true;
-            this.buttonPause.Click += new System.EventHandler(this.buttonPause_Click);
-            // 
-            // buttonNextSinger
-            // 
-            this.buttonNextSinger.Enabled = false;
-            this.buttonNextSinger.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonNextSinger.Location = new System.Drawing.Point(475, 285);
-            this.buttonNextSinger.Name = "buttonNextSinger";
-            this.buttonNextSinger.Size = new System.Drawing.Size(112, 88);
-            this.buttonNextSinger.TabIndex = 3;
-            this.buttonNextSinger.Text = "Next Singer";
-            this.buttonNextSinger.UseVisualStyleBackColor = true;
-            this.buttonNextSinger.Click += new System.EventHandler(this.buttonNextSinger_Click);
             // 
             // labelCurrentSong
             // 
@@ -259,6 +238,45 @@
             this.labelCurrentSinger.Size = new System.Drawing.Size(123, 24);
             this.labelCurrentSinger.TabIndex = 5;
             this.labelCurrentSinger.Text = "Now Singing:";
+            // 
+            // buttonNextSinger
+            // 
+            this.buttonNextSinger.Enabled = false;
+            this.buttonNextSinger.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonNextSinger.Location = new System.Drawing.Point(475, 285);
+            this.buttonNextSinger.Name = "buttonNextSinger";
+            this.buttonNextSinger.Size = new System.Drawing.Size(112, 88);
+            this.buttonNextSinger.TabIndex = 3;
+            this.buttonNextSinger.Text = "Next Singer";
+            this.buttonNextSinger.UseVisualStyleBackColor = true;
+            this.buttonNextSinger.Click += new System.EventHandler(this.buttonNextSinger_Click);
+            // 
+            // buttonPause
+            // 
+            this.buttonPause.Enabled = false;
+            this.buttonPause.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonPause.Location = new System.Drawing.Point(239, 285);
+            this.buttonPause.Name = "buttonPause";
+            this.buttonPause.Size = new System.Drawing.Size(112, 88);
+            this.buttonPause.TabIndex = 2;
+            this.buttonPause.Text = "Pause";
+            this.buttonPause.UseVisualStyleBackColor = true;
+            this.buttonPause.Click += new System.EventHandler(this.buttonPause_Click);
+            // 
+            // qRCodeToolStripMenuItem
+            // 
+            this.qRCodeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.generateQRCodeToolStripMenuItem});
+            this.qRCodeToolStripMenuItem.Name = "qRCodeToolStripMenuItem";
+            this.qRCodeToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.qRCodeToolStripMenuItem.Text = "QR Code";
+            // 
+            // generateQRCodeToolStripMenuItem
+            // 
+            this.generateQRCodeToolStripMenuItem.Name = "generateQRCodeToolStripMenuItem";
+            this.generateQRCodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.generateQRCodeToolStripMenuItem.Text = "Generate QR Code";
+            this.generateQRCodeToolStripMenuItem.Click += new System.EventHandler(this.GenerateQRCodeMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -304,5 +322,7 @@
         private System.Windows.Forms.Button buttonNextSinger;
         private System.Windows.Forms.Label labelCurrentSong;
         private System.Windows.Forms.Label labelCurrentSinger;
+        private System.Windows.Forms.ToolStripMenuItem qRCodeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem generateQRCodeToolStripMenuItem;
     }
 }

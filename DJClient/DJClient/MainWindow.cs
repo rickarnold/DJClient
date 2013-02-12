@@ -24,12 +24,17 @@ namespace DJ
             InitializeComponent();
 
             model = DJModel.Instance;
-
-            model.QueueUpdated += QueueUpdatedHandler;
-            model.LoginComplete += LoginCompleteHandler;
+            InitializeModelEventHandlers();
 
             player = new KaraokeFilePlayer();
             queueList = new List<string>();
+        }
+
+        private void InitializeModelEventHandlers()
+        {
+            model.QueueUpdated += QueueUpdatedHandler;
+            model.LoginComplete += LoginCompleteHandler;
+            model.QRCodeComplete += QRCodeCompleteHandler;
         }
 
         private void LoginCompleteHandler(object source, DJModelArgs args)
@@ -40,6 +45,14 @@ namespace DJ
         private void QueueUpdatedHandler(object source, EventArgs args)
         {
             BeginInvoke(new InvokeDelegate(InvokeUpdateQueue));
+        }
+
+        private void QRCodeCompleteHandler(object source, DJModelArgs args)
+        {
+            if (!args.Error)
+            {
+                QRGenerator.GenerateQR("Test code", "Venue X", "");
+            }
         }
 
         #region UI Thread Invokers
@@ -151,6 +164,11 @@ namespace DJ
 
             player.Open(songToPlay.Song.pathOnDisk);
             player.Stop();
+        }
+
+        private void GenerateQRCodeMenuItem_Click(object sender, EventArgs e)
+        {
+            model.GetQRCode();
         }
 
         

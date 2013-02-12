@@ -35,12 +35,18 @@ namespace DJ
         public event DJModelEventHandler GetQueueComplete;
         public event DJModelEventHandler PopQueueComplete;
 
+        public event DJModelEventHandler QRCodeComplete;
+
         //Event raised when the queue has been updated
         public event EventHandler QueueUpdated;
 
         private DJModel()
         {
             serviceClient = ServiceClient.Instance;
+
+            this.QRCode = "";
+            this.SongbookList = new List<Song>();
+            this.SongRequestQueue = new List<queueSinger>();
 
             InitializeEventHandlers();
 
@@ -71,6 +77,9 @@ namespace DJ
             serviceClient.MoveUserComplete += MoveUserCompleteHandler;
             serviceClient.GetQueueComplete += GetQueueCompleteHandler;
             serviceClient.PopQueueComplete += PopQueueCompleteHandler;
+
+            //QR Management Handlers
+            serviceClient.QRCodeComplete += QRCodeCompleteHandler; 
         }
 
         //Singleton instance of the model
@@ -91,6 +100,7 @@ namespace DJ
         public List<queueSinger> SongRequestQueue { get; set; }
         public SongRequest CurrentSong { get; set; }
         public bool IsLoggedIn { get; private set; }
+        public string QRCode { get; private set; }
 
         #region Queue Timer Methods
 
@@ -99,7 +109,7 @@ namespace DJ
             Timer timer = new Timer(5000);
             timer.Elapsed += TimerTickHandler;
             timer.Enabled = true;
-            timer.AutoReset = false;   //Should be true but leaving it as false for now
+            timer.AutoReset = true;//false;   //Should be true but leaving it as false for now
             timer.Start();
         }
 
@@ -115,9 +125,9 @@ namespace DJ
         #region Login Methods
 
         //Sign up for a new DJ account
-        public void SignUp(string username, string password)
+        public void SignUp(string username, string password, Venue venue, string email)
         {
-            serviceClient.SignUpAsync(username, password, null);
+            serviceClient.SignUpAsync(username, password, venue, email, null);
         }
 
         //Login to the DJ account
@@ -229,20 +239,30 @@ namespace DJ
         private void PopSongQueue()
         {
             queueSinger topSinger = this.SongRequestQueue[0];
-            this.SongRequestQueue.Remove(topSinger);
-
-            Song[] oldSongs = topSinger.songs;
-            int newLength = Math.Max(0, oldSongs.Length - 1);
-            Song[] newSongs = new Song[newLength];
-            for (int i = 0; i < newLength; i++)
+            SongRequest requestToPop = new SongRequest();
+            if (topSinger.songs.Length > 0)
             {
-                newSongs[i] = oldSongs[i + 1];
-            }
-            topSinger.songs = newSongs;
-            this.SongRequestQueue.Add(topSinger);
+                requestToPop.songID = topSinger.songs[0].ID;
+                requestToPop.user = topSinger.user;
 
-            if (QueueUpdated != null)
-                QueueUpdated(this, new EventArgs());
+                serviceClient.PopSingerQueueAsync(requestToPop, this.DJKey, null);
+            }
+
+            //queueSinger topSinger = this.SongRequestQueue[0];
+            //this.SongRequestQueue.Remove(topSinger);
+
+            //Song[] oldSongs = topSinger.songs;
+            //int newLength = Math.Max(0, oldSongs.Length - 1);
+            //Song[] newSongs = new Song[newLength];
+            //for (int i = 0; i < newLength; i++)
+            //{
+            //    newSongs[i] = oldSongs[i + 1];
+            //}
+            //topSinger.songs = newSongs;
+            //this.SongRequestQueue.Add(topSinger);
+
+            //if (QueueUpdated != null)
+            //    QueueUpdated(this, new EventArgs());
         }
 
         #endregion Queue Management
@@ -541,6 +561,30 @@ namespace DJ
             }
 
             return false;
+        }
+
+        public void GetQRCode()
+        {
+            if (this.QRCode.Equals(""))
+            {
+                serviceClient.GetQRCodeAsync(this.DJKey, null);
+            }
+            else
+            {
+                if (QRCodeComplete != null)
+                    QRCodeComplete(this, new DJModelArgs(false, "", null));
+            }
+        }
+
+        private void QRCodeCompleteHandler(object sender, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                this.QRCode = args.Response.message;
+            }
+
+            if (QRCodeComplete != null)
+                QRCodeComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
         }
     }
 }
