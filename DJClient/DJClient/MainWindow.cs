@@ -28,6 +28,11 @@ namespace DJ
 
             player = new KaraokeFilePlayer();
             queueList = new List<string>();
+
+            ////////////////////////////////////////////////////////
+            CDG cdg = new CDG();
+            cdg.OpenCDGFile("");
+            ////////////////////////////////////////////////////////
         }
 
         private void InitializeModelEventHandlers()
