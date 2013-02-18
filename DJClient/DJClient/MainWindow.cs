@@ -23,23 +23,27 @@ namespace DJ
         {
             InitializeComponent();
 
-            model = DJModel.Instance;
-            InitializeModelEventHandlers();
+            //model = DJModel.Instance;
 
             player = new KaraokeFilePlayer();
             queueList = new List<string>();
 
-            ////////////////////////////////////////////////////////
-            CDG cdg = new CDG();
-            cdg.OpenCDGFile("");
-            ////////////////////////////////////////////////////////
+            InitializeEventHandlers();
+
+            //////////////
+            player.Open(@"C:\Karaoke\Beatles - Hey Jude.mp3");//@"C:\Karaoke\Beatles - Twist And Shout.mp3");
+            buttonPlay.Enabled = true;
+            buttonPause.Enabled = true;
         }
 
-        private void InitializeModelEventHandlers()
+        private void InitializeEventHandlers()
         {
-            model.QueueUpdated += QueueUpdatedHandler;
-            model.LoginComplete += LoginCompleteHandler;
-            model.QRCodeComplete += QRCodeCompleteHandler;
+            //model.QueueUpdated += QueueUpdatedHandler;
+            //model.LoginComplete += LoginCompleteHandler;
+            //model.QRCodeComplete += QRCodeCompleteHandler;
+            model.QRNewCodeComplete += QRNewCodeCompleteHandler;
+
+            player.ImageInvalidated += CDGImageInvalidatedHandler;
         }
 
         private void LoginCompleteHandler(object source, DJModelArgs args)
@@ -58,6 +62,19 @@ namespace DJ
             {
                 QRGenerator.GenerateQR("Test code", "Venue X", "");
             }
+        }
+
+        private void QRNewCodeCompleteHandler(object source, DJModelArgs args)
+        {
+            if (!args.Error)
+            {
+
+            }
+        }
+
+        private void CDGImageInvalidatedHandler(object source, EventArgs args)
+        {
+            BeginInvoke(new InvokeDelegate(InvokeUpdateCDGImage));
         }
 
         #region UI Thread Invokers
@@ -91,6 +108,11 @@ namespace DJ
             buttonPlay.Enabled = true;
             buttonPause.Enabled = true;
             buttonNextSinger.Enabled = true;
+        }
+
+        private void InvokeUpdateCDGImage()
+        {
+            pictureBoxCDG.Image = player.GetCDGImage();
         }
 
         #endregion
@@ -174,6 +196,11 @@ namespace DJ
         private void GenerateQRCodeMenuItem_Click(object sender, EventArgs e)
         {
             model.GetQRCode();
+        }
+
+        private void GenerateNewQRCodeMenuItem_Click(object sender, EventArgs e)
+        {
+            model.GetNewQRCode();
         }
 
         

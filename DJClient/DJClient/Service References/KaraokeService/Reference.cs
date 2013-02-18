@@ -587,6 +587,9 @@ namespace DJ.KaraokeService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGetQRNumber", ReplyAction="http://tempuri.org/IDJ/DJGetQRNumberResponse")]
         DJ.KaraokeService.Response DJGetQRNumber(long DJKey);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGenerateNewQRNumber", ReplyAction="http://tempuri.org/IDJ/DJGenerateNewQRNumberResponse")]
+        DJ.KaraokeService.Response DJGenerateNewQRNumber(long DJKey);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJAddSongs", ReplyAction="http://tempuri.org/IDJ/DJAddSongsResponse")]
         DJ.KaraokeService.Response DJAddSongs(DJ.KaraokeService.Song[] songs, long DJKey);
         
@@ -609,7 +612,7 @@ namespace DJ.KaraokeService {
         DJ.KaraokeService.Response DJRemoveUser(int userID, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJMoveUser", ReplyAction="http://tempuri.org/IDJ/DJMoveUserResponse")]
-        DJ.KaraokeService.Response DJMoveUser(DJ.KaraokeService.SongRequest newSR, DJ.KaraokeService.SongRequest oldSR, long DJKey);
+        DJ.KaraokeService.Response DJMoveUser(int userID, int index, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGetQueue", ReplyAction="http://tempuri.org/IDJ/DJGetQueueResponse")]
         DJ.KaraokeService.Response DJGetQueue(out DJ.KaraokeService.queueSinger[] queue, long DJKey);
@@ -668,6 +671,10 @@ namespace DJ.KaraokeService {
             return base.Channel.DJGetQRNumber(DJKey);
         }
         
+        public DJ.KaraokeService.Response DJGenerateNewQRNumber(long DJKey) {
+            return base.Channel.DJGenerateNewQRNumber(DJKey);
+        }
+        
         public DJ.KaraokeService.Response DJAddSongs(DJ.KaraokeService.Song[] songs, long DJKey) {
             return base.Channel.DJAddSongs(songs, DJKey);
         }
@@ -696,8 +703,8 @@ namespace DJ.KaraokeService {
             return base.Channel.DJRemoveUser(userID, DJKey);
         }
         
-        public DJ.KaraokeService.Response DJMoveUser(DJ.KaraokeService.SongRequest newSR, DJ.KaraokeService.SongRequest oldSR, long DJKey) {
-            return base.Channel.DJMoveUser(newSR, oldSR, DJKey);
+        public DJ.KaraokeService.Response DJMoveUser(int userID, int index, long DJKey) {
+            return base.Channel.DJMoveUser(userID, index, DJKey);
         }
         
         public DJ.KaraokeService.Response DJGetQueue(out DJ.KaraokeService.queueSinger[] queue, long DJKey) {

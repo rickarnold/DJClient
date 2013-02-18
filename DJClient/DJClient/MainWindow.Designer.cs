@@ -36,23 +36,26 @@
             this.logoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.songManagementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addSongsToDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.qRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateQRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.tableLayoutMain = new System.Windows.Forms.TableLayoutPanel();
             this.panelQueue = new System.Windows.Forms.Panel();
             this.ListBoxQueue = new System.Windows.Forms.ListBox();
-            this.buttonPlay = new System.Windows.Forms.Button();
             this.labelCurrentSong = new System.Windows.Forms.Label();
-            this.labelCurrentSinger = new System.Windows.Forms.Label();
             this.buttonNextSinger = new System.Windows.Forms.Button();
             this.buttonPause = new System.Windows.Forms.Button();
-            this.qRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateQRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pictureBoxCDG = new System.Windows.Forms.PictureBox();
+            this.labelCurrentSinger = new System.Windows.Forms.Label();
+            this.buttonPlay = new System.Windows.Forms.Button();
+            this.getNewQRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.tableLayoutMain.SuspendLayout();
             this.panelQueue.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCDG)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -128,6 +131,22 @@
             this.addSongsToDatabaseToolStripMenuItem.Text = "Add Songs To Database";
             this.addSongsToDatabaseToolStripMenuItem.Click += new System.EventHandler(this.AddSongsToDatabaseMenuItem_Click);
             // 
+            // qRCodeToolStripMenuItem
+            // 
+            this.qRCodeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.generateQRCodeToolStripMenuItem,
+            this.getNewQRCodeToolStripMenuItem});
+            this.qRCodeToolStripMenuItem.Name = "qRCodeToolStripMenuItem";
+            this.qRCodeToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.qRCodeToolStripMenuItem.Text = "QR Code";
+            // 
+            // generateQRCodeToolStripMenuItem
+            // 
+            this.generateQRCodeToolStripMenuItem.Name = "generateQRCodeToolStripMenuItem";
+            this.generateQRCodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.generateQRCodeToolStripMenuItem.Text = "Generate QR Code";
+            this.generateQRCodeToolStripMenuItem.Click += new System.EventHandler(this.GenerateQRCodeMenuItem_Click);
+            // 
             // toolStripContainer1
             // 
             this.toolStripContainer1.BottomToolStripPanelVisible = false;
@@ -165,11 +184,12 @@
             this.tableLayoutMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutMain.Controls.Add(this.panelQueue, 5, 0);
-            this.tableLayoutMain.Controls.Add(this.buttonPlay, 0, 3);
             this.tableLayoutMain.Controls.Add(this.labelCurrentSong, 0, 1);
-            this.tableLayoutMain.Controls.Add(this.labelCurrentSinger, 0, 2);
             this.tableLayoutMain.Controls.Add(this.buttonNextSinger, 4, 3);
             this.tableLayoutMain.Controls.Add(this.buttonPause, 2, 3);
+            this.tableLayoutMain.Controls.Add(this.pictureBoxCDG, 2, 0);
+            this.tableLayoutMain.Controls.Add(this.labelCurrentSinger, 0, 5);
+            this.tableLayoutMain.Controls.Add(this.buttonPlay, 2, 4);
             this.tableLayoutMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutMain.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutMain.Name = "tableLayoutMain";
@@ -179,6 +199,7 @@
             this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutMain.Size = new System.Drawing.Size(1180, 474);
             this.tableLayoutMain.TabIndex = 0;
             // 
@@ -193,7 +214,7 @@
             this.panelQueue.Location = new System.Drawing.Point(593, 3);
             this.panelQueue.Name = "panelQueue";
             this.tableLayoutMain.SetRowSpan(this.panelQueue, 5);
-            this.panelQueue.Size = new System.Drawing.Size(584, 468);
+            this.panelQueue.Size = new System.Drawing.Size(584, 444);
             this.panelQueue.TabIndex = 0;
             // 
             // ListBoxQueue
@@ -202,50 +223,27 @@
             this.ListBoxQueue.FormattingEnabled = true;
             this.ListBoxQueue.Location = new System.Drawing.Point(0, 0);
             this.ListBoxQueue.Name = "ListBoxQueue";
-            this.ListBoxQueue.Size = new System.Drawing.Size(584, 468);
+            this.ListBoxQueue.Size = new System.Drawing.Size(584, 444);
             this.ListBoxQueue.TabIndex = 0;
-            // 
-            // buttonPlay
-            // 
-            this.buttonPlay.Enabled = false;
-            this.buttonPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonPlay.Location = new System.Drawing.Point(3, 285);
-            this.buttonPlay.Name = "buttonPlay";
-            this.buttonPlay.Size = new System.Drawing.Size(112, 88);
-            this.buttonPlay.TabIndex = 1;
-            this.buttonPlay.Text = "Play";
-            this.buttonPlay.UseVisualStyleBackColor = true;
-            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
             // labelCurrentSong
             // 
             this.labelCurrentSong.AutoSize = true;
             this.tableLayoutMain.SetColumnSpan(this.labelCurrentSong, 5);
             this.labelCurrentSong.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelCurrentSong.Location = new System.Drawing.Point(3, 94);
+            this.labelCurrentSong.Location = new System.Drawing.Point(3, 270);
             this.labelCurrentSong.Name = "labelCurrentSong";
             this.labelCurrentSong.Size = new System.Drawing.Size(120, 24);
             this.labelCurrentSong.TabIndex = 4;
             this.labelCurrentSong.Text = "Now Playing:";
             // 
-            // labelCurrentSinger
-            // 
-            this.labelCurrentSinger.AutoSize = true;
-            this.tableLayoutMain.SetColumnSpan(this.labelCurrentSinger, 5);
-            this.labelCurrentSinger.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelCurrentSinger.Location = new System.Drawing.Point(3, 188);
-            this.labelCurrentSinger.Name = "labelCurrentSinger";
-            this.labelCurrentSinger.Size = new System.Drawing.Size(123, 24);
-            this.labelCurrentSinger.TabIndex = 5;
-            this.labelCurrentSinger.Text = "Now Singing:";
-            // 
             // buttonNextSinger
             // 
             this.buttonNextSinger.Enabled = false;
             this.buttonNextSinger.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonNextSinger.Location = new System.Drawing.Point(475, 285);
+            this.buttonNextSinger.Location = new System.Drawing.Point(121, 363);
             this.buttonNextSinger.Name = "buttonNextSinger";
-            this.buttonNextSinger.Size = new System.Drawing.Size(112, 88);
+            this.buttonNextSinger.Size = new System.Drawing.Size(112, 84);
             this.buttonNextSinger.TabIndex = 3;
             this.buttonNextSinger.Text = "Next Singer";
             this.buttonNextSinger.UseVisualStyleBackColor = true;
@@ -255,28 +253,53 @@
             // 
             this.buttonPause.Enabled = false;
             this.buttonPause.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonPause.Location = new System.Drawing.Point(239, 285);
+            this.buttonPause.Location = new System.Drawing.Point(3, 363);
             this.buttonPause.Name = "buttonPause";
-            this.buttonPause.Size = new System.Drawing.Size(112, 88);
+            this.buttonPause.Size = new System.Drawing.Size(112, 84);
             this.buttonPause.TabIndex = 2;
             this.buttonPause.Text = "Pause";
             this.buttonPause.UseVisualStyleBackColor = true;
             this.buttonPause.Click += new System.EventHandler(this.buttonPause_Click);
             // 
-            // qRCodeToolStripMenuItem
+            // pictureBoxCDG
             // 
-            this.qRCodeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.generateQRCodeToolStripMenuItem});
-            this.qRCodeToolStripMenuItem.Name = "qRCodeToolStripMenuItem";
-            this.qRCodeToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
-            this.qRCodeToolStripMenuItem.Text = "QR Code";
+            this.tableLayoutMain.SetColumnSpan(this.pictureBoxCDG, 3);
+            this.pictureBoxCDG.Location = new System.Drawing.Point(239, 3);
+            this.pictureBoxCDG.Name = "pictureBoxCDG";
+            this.tableLayoutMain.SetRowSpan(this.pictureBoxCDG, 3);
+            this.pictureBoxCDG.Size = new System.Drawing.Size(300, 216);
+            this.pictureBoxCDG.TabIndex = 6;
+            this.pictureBoxCDG.TabStop = false;
             // 
-            // generateQRCodeToolStripMenuItem
+            // labelCurrentSinger
             // 
-            this.generateQRCodeToolStripMenuItem.Name = "generateQRCodeToolStripMenuItem";
-            this.generateQRCodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.generateQRCodeToolStripMenuItem.Text = "Generate QR Code";
-            this.generateQRCodeToolStripMenuItem.Click += new System.EventHandler(this.GenerateQRCodeMenuItem_Click);
+            this.labelCurrentSinger.AutoSize = true;
+            this.tableLayoutMain.SetColumnSpan(this.labelCurrentSinger, 5);
+            this.labelCurrentSinger.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCurrentSinger.Location = new System.Drawing.Point(3, 450);
+            this.labelCurrentSinger.Name = "labelCurrentSinger";
+            this.labelCurrentSinger.Size = new System.Drawing.Size(123, 24);
+            this.labelCurrentSinger.TabIndex = 5;
+            this.labelCurrentSinger.Text = "Now Singing:";
+            // 
+            // buttonPlay
+            // 
+            this.buttonPlay.Enabled = false;
+            this.buttonPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonPlay.Location = new System.Drawing.Point(239, 363);
+            this.buttonPlay.Name = "buttonPlay";
+            this.buttonPlay.Size = new System.Drawing.Size(112, 84);
+            this.buttonPlay.TabIndex = 1;
+            this.buttonPlay.Text = "Play";
+            this.buttonPlay.UseVisualStyleBackColor = true;
+            this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
+            // 
+            // getNewQRCodeToolStripMenuItem
+            // 
+            this.getNewQRCodeToolStripMenuItem.Name = "getNewQRCodeToolStripMenuItem";
+            this.getNewQRCodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.getNewQRCodeToolStripMenuItem.Text = "Get New QR Code";
+            this.getNewQRCodeToolStripMenuItem.Click += new System.EventHandler(this.GenerateNewQRCodeMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -299,6 +322,7 @@
             this.tableLayoutMain.ResumeLayout(false);
             this.tableLayoutMain.PerformLayout();
             this.panelQueue.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCDG)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -324,5 +348,7 @@
         private System.Windows.Forms.Label labelCurrentSinger;
         private System.Windows.Forms.ToolStripMenuItem qRCodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateQRCodeToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pictureBoxCDG;
+        private System.Windows.Forms.ToolStripMenuItem getNewQRCodeToolStripMenuItem;
     }
 }

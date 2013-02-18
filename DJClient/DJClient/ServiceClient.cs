@@ -40,6 +40,7 @@ namespace DJ
         public event ResponseHandler PopQueueComplete;
 
         public event ResponseHandler QRCodeComplete;
+        public event ResponseHandler QRNewCodeComplete;
 
         private ServiceClient()
         {
@@ -236,11 +237,11 @@ namespace DJ
             });
         }
 
-        public void MoveUserAsync(SongRequest newRequest, SongRequest oldRequest, long djKey, object userState)
+        public void MoveUserAsync(int userID, int index, long djKey, object userState)
         {
             ThreadPool.QueueUserWorkItem(lambda =>
             {
-                MoveUser(newRequest, oldRequest, djKey, userState);
+                MoveUser(userID, index, djKey, userState);
             });
         }
 
@@ -304,9 +305,9 @@ namespace DJ
             }
         }
 
-        private void MoveUser(SongRequest newRequest, SongRequest oldRequest, long djKey, object userState)
+        private void MoveUser(int userID, int index, long djKey, object userState)
         {
-            Response response = _client.DJMoveUser(newRequest, oldRequest, djKey);
+            Response response = _client.DJMoveUser(userID, index, djKey);
 
             if (MoveUserComplete != null)
             {
@@ -368,6 +369,14 @@ namespace DJ
             });
         }
 
+        public void GetNewQRCodeAsync(long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+                {
+                    GetNewQRCode(djKey, userState);
+                });
+        }
+
         #endregion
 
         #region QR Workers
@@ -382,6 +391,15 @@ namespace DJ
             }
         }
 
+        private void GetNewQRCode(long djKey, object userState)
+        {
+            Response response = _client.DJGenerateNewQRNumber(djKey);
+
+            if (QRNewCodeComplete != null)
+            {
+                QRNewCodeComplete(this, new ResponseArgs(response, userState));
+            }
+        }
 
         #endregion
     }

@@ -36,6 +36,7 @@ namespace DJ
         public event DJModelEventHandler PopQueueComplete;
 
         public event DJModelEventHandler QRCodeComplete;
+        public event DJModelEventHandler QRNewCodeComplete;
 
         //Event raised when the queue has been updated
         public event EventHandler QueueUpdated;
@@ -79,7 +80,8 @@ namespace DJ
             serviceClient.PopQueueComplete += PopQueueCompleteHandler;
 
             //QR Management Handlers
-            serviceClient.QRCodeComplete += QRCodeCompleteHandler; 
+            serviceClient.QRCodeComplete += QRCodeCompleteHandler;
+            serviceClient.QRNewCodeComplete += QRNewCodeCompleteHandler;
         }
 
         //Singleton instance of the model
@@ -157,7 +159,7 @@ namespace DJ
             else
             {
                 if (CreateSessionComplete != null)
-                    CreateSessionComplete(this, new DJModelArgs(true, "User not logged in to the server.", null));
+                    CreateSessionComplete(this, new DJModelArgs(true, "You must be logged in to create a karaoke session.", null));
             }
         }
 
@@ -219,15 +221,15 @@ namespace DJ
         }
 
         //Adds a new song request to the singer queue
-        public void AddSongRequest(SongRequest request)
+        public void AddSongRequest(SongRequest request, int indexInQueue)
         {
-
+            serviceClient.AddSongRequestAsync(request, indexInQueue, this.DJKey, null);
         }
 
         //Remove a song request from the singer queue
         public void RemoveSongRequest(SongRequest request)
         {
-            
+            serviceClient.RemoveSongRequestAsync(request, this.DJKey, null);
         }
 
         public void UpdateSongQueue(List<SongRequest> requestUpdates)
@@ -247,22 +249,6 @@ namespace DJ
 
                 serviceClient.PopSingerQueueAsync(requestToPop, this.DJKey, null);
             }
-
-            //queueSinger topSinger = this.SongRequestQueue[0];
-            //this.SongRequestQueue.Remove(topSinger);
-
-            //Song[] oldSongs = topSinger.songs;
-            //int newLength = Math.Max(0, oldSongs.Length - 1);
-            //Song[] newSongs = new Song[newLength];
-            //for (int i = 0; i < newLength; i++)
-            //{
-            //    newSongs[i] = oldSongs[i + 1];
-            //}
-            //topSinger.songs = newSongs;
-            //this.SongRequestQueue.Add(topSinger);
-
-            //if (QueueUpdated != null)
-            //    QueueUpdated(this, new EventArgs());
         }
 
         #endregion Queue Management
@@ -563,6 +549,8 @@ namespace DJ
             return false;
         }
 
+        #region QR Methods
+
         public void GetQRCode()
         {
             if (this.QRCode.Equals(""))
@@ -576,6 +564,14 @@ namespace DJ
             }
         }
 
+        public void GetNewQRCode()
+        {
+            //Clear out the old QR code
+            this.QRCode = "";
+
+            serviceClient.GetNewQRCodeAsync(this.DJKey, null);
+        }
+
         private void QRCodeCompleteHandler(object sender, ResponseArgs args)
         {
             if (!args.Response.error)
@@ -586,5 +582,18 @@ namespace DJ
             if (QRCodeComplete != null)
                 QRCodeComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
         }
+
+        private void QRNewCodeCompleteHandler(object sender, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                this.QRCode = args.Response.message;
+            }
+
+            if (QRNewCodeComplete != null)
+                QRNewCodeComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+        }
+
+        #endregion
     }
 }
