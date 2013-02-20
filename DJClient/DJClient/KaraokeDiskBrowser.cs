@@ -5,6 +5,7 @@ using System.Text;
 using DJ.KaraokeService;
 using System.IO;
 using System.Windows.Forms;
+using WMPLib;
 
 namespace DJ
 {
@@ -44,6 +45,14 @@ namespace DJ
                 //Now add the valid karaoke files to the song list
                 foreach (FileInfo songInfo in karaokeFiles)
                     songList.Add(GetSongFromFileName(songInfo.FullName, songInfo.Name));
+            }
+
+            //Add the song duration to each of the songs
+            WindowsMediaPlayer player = new WindowsMediaPlayer();
+            foreach (Song song in songList)
+            {
+                IWMPMedia media = player.newMedia(song.pathOnDisk);
+                song.duration = (int)media.duration;
             }
 
             return songList;

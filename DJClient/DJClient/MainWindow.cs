@@ -23,7 +23,7 @@ namespace DJ
         {
             InitializeComponent();
 
-            //model = DJModel.Instance;
+            model = DJModel.Instance;
 
             player = new KaraokeFilePlayer();
             queueList = new List<string>();
@@ -31,24 +31,41 @@ namespace DJ
             InitializeEventHandlers();
 
             //////////////
-            player.Open(@"C:\Karaoke\Beatles - Hey Jude.mp3");//@"C:\Karaoke\Beatles - Twist And Shout.mp3");
+            player.Open(@"C:\Karaoke\Beatles - Hey Jude.mp3");
             buttonPlay.Enabled = true;
             buttonPause.Enabled = true;
         }
 
         private void InitializeEventHandlers()
         {
-            //model.QueueUpdated += QueueUpdatedHandler;
-            //model.LoginComplete += LoginCompleteHandler;
-            //model.QRCodeComplete += QRCodeCompleteHandler;
+            model.QueueUpdated += QueueUpdatedHandler;
+            model.LoginComplete += LoginCompleteHandler;
+            model.QRCodeComplete += QRCodeCompleteHandler;
             model.QRNewCodeComplete += QRNewCodeCompleteHandler;
+            model.CreateSessionComplete += CreateSessionCompleteHandler;
+            model.LogoutComplete += LogoutCompleteHandler;
 
             player.ImageInvalidated += CDGImageInvalidatedHandler;
+
+            //User is closing the program.  Make sure they log out
+            this.FormClosing += FormClosingHandler;
         }
+
+        #region Event Handlers
 
         private void LoginCompleteHandler(object source, DJModelArgs args)
         {
             BeginInvoke(new InvokeDelegate(InvokeEnableAfterLogin));
+        }
+
+        private void CreateSessionCompleteHandler(object source, DJModelArgs args)
+        {
+
+        }
+
+        private void LogoutCompleteHandler(object source, DJModelArgs args)
+        {
+
         }
 
         private void QueueUpdatedHandler(object source, EventArgs args)
@@ -60,7 +77,8 @@ namespace DJ
         {
             if (!args.Error)
             {
-                QRGenerator.GenerateQR("Test code", "Venue X", "");
+                //QRGenerator.GenerateQR("Test code", "Venue X", "");
+                QRGenerator.GenerateQR(model.QRCode, "Venue X", "");
             }
         }
 
@@ -76,6 +94,27 @@ namespace DJ
         {
             BeginInvoke(new InvokeDelegate(InvokeUpdateCDGImage));
         }
+
+        //User has clicked to close the application.  Make sure that the user wants to close everything out.
+        private void FormClosingHandler(object sender, CancelEventArgs e)
+        {
+            if (model.SessionActive)
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to end this karaoke session and remove all song requests from the queue?", "Are You Sure?",
+                                                        MessageBoxButtons.OKCancel);
+                if (result == DialogResult.OK)
+                {
+                    model.Logout();
+                }
+                //Cancel the closing of the application
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        #endregion
 
         #region UI Thread Invokers
 
@@ -130,18 +169,28 @@ namespace DJ
 
         private void CreateSessionMenuItem_Click(object sender, EventArgs e)
         {
-
+            model.CreateSession();
         }
 
         private void LogoutMenuItem_Click(object sender, EventArgs e)
         {
-
+            model.Logout();
         }
 
         private void AddSongsToDatabaseMenuItem_Click(object sender, EventArgs e)
         {
             if (model.IsLoggedIn)
                 BeginInvoke(new InvokeDelegate(InvokeSongbook));
+        }
+
+        private void GenerateQRCodeMenuItem_Click(object sender, EventArgs e)
+        {
+            model.GetQRCode();
+        }
+
+        private void GenerateNewQRCodeMenuItem_Click(object sender, EventArgs e)
+        {
+            model.GetNewQRCode();
         }
 
         #endregion
@@ -192,17 +241,5 @@ namespace DJ
             player.Open(songToPlay.Song.pathOnDisk);
             player.Stop();
         }
-
-        private void GenerateQRCodeMenuItem_Click(object sender, EventArgs e)
-        {
-            model.GetQRCode();
-        }
-
-        private void GenerateNewQRCodeMenuItem_Click(object sender, EventArgs e)
-        {
-            model.GetNewQRCode();
-        }
-
-        
     }
 }

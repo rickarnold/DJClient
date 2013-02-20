@@ -96,7 +96,7 @@ namespace DJ
         }
 
         public int VenueID { get; private set; }
-        public long SessionKey { get; private set; }
+        public bool SessionActive { get; private set; }
         public long DJKey { get; private set; }
         public List<Song> SongbookList { get; private set; }
         public List<queueSinger> SongRequestQueue { get; set; }
@@ -153,13 +153,19 @@ namespace DJ
         //Create a new karaoke session and store the session key
         public void CreateSession()
         {
-            if (this.SessionKey == -1 && this.IsLoggedIn)
+            if (!this.SessionActive && this.IsLoggedIn)
                 serviceClient.CreateSessionAsync(this.DJKey, null);
             //Not logged in so can't create a session.  Return an error event
-            else
+            else if (!this.SessionActive)
             {
                 if (CreateSessionComplete != null)
                     CreateSessionComplete(this, new DJModelArgs(true, "You must be logged in to create a karaoke session.", null));
+            }
+            //Already have a session going
+            else
+            {
+                if (CreateSessionComplete != null)
+                    CreateSessionComplete(this, new DJModelArgs(true, "There is already an active session.", null));
             }
         }
 
@@ -299,8 +305,8 @@ namespace DJ
         {
             if (!args.Response.error)
             {
+                this.SessionActive = false;
                 this.IsLoggedIn = false;
-                this.SessionKey = -1;
                 this.DJKey = -1;
             }
             //Error occurred
@@ -318,6 +324,11 @@ namespace DJ
 
         private void CreateSessionCompleteHandler(object source, ResponseArgs args)
         {
+            if (!args.Response.error)
+            {
+                this.SessionActive = true;
+            }
+
             if (CreateSessionComplete != null)
             {
                 CreateSessionComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));

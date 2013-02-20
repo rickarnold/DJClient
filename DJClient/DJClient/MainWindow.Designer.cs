@@ -38,6 +38,7 @@
             this.addSongsToDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.qRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateQRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getNewQRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.tableLayoutMain = new System.Windows.Forms.TableLayoutPanel();
             this.panelQueue = new System.Windows.Forms.Panel();
@@ -48,7 +49,6 @@
             this.pictureBoxCDG = new System.Windows.Forms.PictureBox();
             this.labelCurrentSinger = new System.Windows.Forms.Label();
             this.buttonPlay = new System.Windows.Forms.Button();
-            this.getNewQRCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -143,9 +143,16 @@
             // generateQRCodeToolStripMenuItem
             // 
             this.generateQRCodeToolStripMenuItem.Name = "generateQRCodeToolStripMenuItem";
-            this.generateQRCodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.generateQRCodeToolStripMenuItem.Text = "Generate QR Code";
+            this.generateQRCodeToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.generateQRCodeToolStripMenuItem.Text = "Create QR PDF";
             this.generateQRCodeToolStripMenuItem.Click += new System.EventHandler(this.GenerateQRCodeMenuItem_Click);
+            // 
+            // getNewQRCodeToolStripMenuItem
+            // 
+            this.getNewQRCodeToolStripMenuItem.Name = "getNewQRCodeToolStripMenuItem";
+            this.getNewQRCodeToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.getNewQRCodeToolStripMenuItem.Text = "Generate New QR Code";
+            this.getNewQRCodeToolStripMenuItem.Click += new System.EventHandler(this.GenerateNewQRCodeMenuItem_Click);
             // 
             // toolStripContainer1
             // 
@@ -293,13 +300,6 @@
             this.buttonPlay.Text = "Play";
             this.buttonPlay.UseVisualStyleBackColor = true;
             this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
-            // 
-            // getNewQRCodeToolStripMenuItem
-            // 
-            this.getNewQRCodeToolStripMenuItem.Name = "getNewQRCodeToolStripMenuItem";
-            this.getNewQRCodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.getNewQRCodeToolStripMenuItem.Text = "Get New QR Code";
-            this.getNewQRCodeToolStripMenuItem.Click += new System.EventHandler(this.GenerateNewQRCodeMenuItem_Click);
             // 
             // MainWindow
             // 

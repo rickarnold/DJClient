@@ -28,20 +28,16 @@ namespace DJ
         const int DEFINE_TRANSPARENT_COLOR = 28;
         const int LOAD_COLOR_TABLE_LO = 30;
         const int LOAD_COLOR_TABLE_HI = 31;
-        const int TILE_BLOCK_XOR = 36;
+        const int TILE_BLOCK_XOR = 38;
 
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler ImageInvalidated;
-
 
         public Bitmap Image { get; set; }
         private BitmapData ImageData { get; set; }
 
         private List<Frame> FrameList { get; set; }
-        private Color[] ColorTable { get; set; }
-        private Color Color0 { get; set; }
-        private Color Color1 { get; set; }
-        private Dictionary<int, int> ColorDictionary { get; set; }
+        private ColorPalette Palette { get; set; }
 
         private Timer _frameTimer;
         private int _totalFrames = 0;
@@ -50,9 +46,8 @@ namespace DJ
         public CDGPlayer()
         {
             this.FrameList = new List<Frame>();
-            this.ColorTable = new Color[16];
-            this.ColorDictionary = new Dictionary<int, int>();
-            this.Image = new Bitmap(WIDTH, HEIGHT, PixelFormat.Format32bppArgb);
+            this.Image = new Bitmap(WIDTH, HEIGHT, PixelFormat.Format4bppIndexed);
+            this.Palette = this.Image.Palette;
             this.ImageData = null;
 
             //Set up the frame timer to handle drawing each frame
@@ -80,18 +75,6 @@ namespace DJ
             //Record the total number of frames
             _totalFrames = count;
             _currentFrame = 0;
-
-            ////////////////////////////////////////////////////////////////////
-            Dictionary<int, int> instructionCount = new Dictionary<int, int>();
-            foreach (Frame frame in this.FrameList)
-            {
-                int instruction = frame.Instruction;
-                if (!instructionCount.ContainsKey(instruction))
-                    instructionCount.Add(instruction, 0);
-                instructionCount[instruction] += 1;
-            }
-
-            int x = 0;
         }
 
         public void PlayCDGFile()
@@ -129,41 +112,41 @@ namespace DJ
                     //Perform the appropriate command based on the frame's command code
                     switch (frame.Instruction)
                     {
-                        case(MEMORY_PRESET):
+                        case (MEMORY_PRESET):
                             BeginBitmapUpdate();
                             MemoryPreset(frame.Data);
                             EndBitmpaUpdate();
                             break;
-                        case(BORDER_PRESET):
+                        case (BORDER_PRESET):
                             BeginBitmapUpdate();
                             BorderPreset(frame.Data);
                             EndBitmpaUpdate();
                             break;
-                        case(TILE_BLOCK):
+                        case (TILE_BLOCK):
                             BeginBitmapUpdate();
                             TileBlockNormal(frame.Data);
                             EndBitmpaUpdate();
                             break;
-                        case(SCROLL_PRESET):
+                        case (SCROLL_PRESET):
                             BeginBitmapUpdate();
                             ScrollPreset(frame.Data);
                             EndBitmpaUpdate();
                             break;
-                        case(SCROLL_COPY):
+                        case (SCROLL_COPY):
                             BeginBitmapUpdate();
                             ScrollCopy(frame.Data);
                             EndBitmpaUpdate();
                             break;
-                        case(DEFINE_TRANSPARENT_COLOR):
+                        case (DEFINE_TRANSPARENT_COLOR):
                             DefineTransparentColor(frame.Data);
                             break;
-                        case(LOAD_COLOR_TABLE_LO):
+                        case (LOAD_COLOR_TABLE_LO):
                             LoadColorTableLo(frame.Data);
                             break;
-                        case(LOAD_COLOR_TABLE_HI):
+                        case (LOAD_COLOR_TABLE_HI):
                             LoadColorTableHi(frame.Data);
                             break;
-                        case(TILE_BLOCK_XOR):
+                        case (TILE_BLOCK_XOR):
                             BeginBitmapUpdate();
                             TileBlockXOR(frame.Data);
                             EndBitmpaUpdate();
@@ -204,16 +187,13 @@ namespace DJ
 
             int colorIndex = data[0] & 0x0F;
 
-            this.Color0 = this.ColorTable[colorIndex];
-
             int imageDataScan = ImageData.Scan0.ToInt32();
 
             //Paint the entire screen this color
-            for (int x = 0; x < HEIGHT; x++)
-                for (int y = 0; y < WIDTH; y++)
+            for (int y = 0; y < HEIGHT; y++)
+                for (int x = 0; x < WIDTH; x++)
                 {
-                    IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                    Marshal.WriteInt32(intPtr, this.Color0.ToArgb());
+                    SetPixel(x, y, colorIndex);
                 }
 
         }
@@ -235,35 +215,23 @@ namespace DJ
         {
             int colorIndex = data[0] & 0x0F;
 
-            this.Color0 = this.ColorTable[colorIndex];
-            int color = this.Color0.ToArgb();
-            int imageDataScan = ImageData.Scan0.ToInt32();
-
             //Paint the entire border this color
-            for (int x = 0; x < 6; x++)
-                for (int y = 0; y < WIDTH; y++)
+            for (int x = 0; x < WIDTH; x++)
+                for (int y = 0; y < 6; y++)
                 {
-                    IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                    Marshal.WriteInt32(intPtr, color);
-                    //this.Image.SetPixel(y, x, this.Color0);
+                    SetPixel(x, y, colorIndex);
                 }
 
-            for (int x = 6; x < 204; x++)
-                for (int y = 0; y < 12; y++)
+            for (int y = 6; y < 204; y++)
+                for (int x = 0; x < 12; x++)
                 {
-                    IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                    Marshal.WriteInt32(intPtr, color);
-                    intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + ((y + 294) * sizeof(int)));
-                    Marshal.WriteInt32(intPtr, color);
-                    //this.Image.SetPixel(y, x, this.Color0);
+                    SetPixel(x, y, colorIndex);
                 }
 
-            for (int x = 204; x < HEIGHT; x++)
-                for (int y = 0; y < WIDTH; y++)
+            for (int y = 204; y < HEIGHT; y++)
+                for (int x = 0; x < WIDTH; x++)
                 {
-                    IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                    Marshal.WriteInt32(intPtr, color);
-                    //this.Image.SetPixel(y, x, this.Color0);
+                    SetPixel(x, y, colorIndex);
                 }
         }
 
@@ -285,89 +253,72 @@ namespace DJ
             int row = (data[2] & 0x1F) * 12;
             int column = (data[3] & 0x3F) * 6;
 
-            this.Color0 = this.ColorTable[colorIndex0];
-            this.Color1 = this.ColorTable[colorIndex1];
-
-            int color0Int = this.Color0.ToArgb();
-            int color1Int = this.Color1.ToArgb();
+            int[,] tile = new int[12, 6];
 
             //Iterate over each of the 12 rows of the tile and paint the color for each of the pixels
-            for (int i = 0; i < 12; i++)
+            for (int r = 0; r < 12; r++)
             {
-                IntPtr intPtr = new IntPtr(ImageData.Scan0.ToInt32() + (ImageData.Stride * (row + i)) + (column * sizeof(int)));
-
                 //pixel 0
-                if ((data[i + 4] & 0x20) == 1)
+                if ((data[r + 4] & 0x20) == 0x20)
                 {
-                    Marshal.WriteInt32(intPtr, color1Int);
-                    //this.Image.SetPixel((row + i), column, this.Color1);
+                    tile[r, 0] = colorIndex1;
                 }
                 else
                 {
-                    Marshal.WriteInt32(intPtr, color0Int);
-                    //this.Image.SetPixel((row + i), column, this.Color0);
+                    tile[r, 0] = colorIndex0;
                 }
 
                 //pixel 1
-                if ((data[i + 4] & 0x10) == 1)
+                if ((data[r + 4] & 0x10) == 0x10)
                 {
-                    Marshal.WriteInt32(intPtr + sizeof(int), color1Int);
-                    //this.Image.SetPixel((row + i), column + 1, color1Int);
+                    tile[r, 1] = colorIndex1;
                 }
                 else
                 {
-                    Marshal.WriteInt32(intPtr + sizeof(int), color0Int);
-                    //this.Image.SetPixel((row + i), column + 1, color0Int);
+                    tile[r, 1] = colorIndex0;
                 }
 
                 //pixel 2
-                if ((data[i + 4] & 0x08) == 1)
+                if ((data[r + 4] & 0x08) == 0x08)
                 {
-                    Marshal.WriteInt32(intPtr + (2 * sizeof(int)), color1Int);
-                    //this.Image.SetPixel((row + i), column + 2, color1Int);
+                    tile[r, 2] = colorIndex1;
                 }
                 else
                 {
-                    Marshal.WriteInt32(intPtr + (2 * sizeof(int)), color0Int);
-                    //this.Image.SetPixel((row + i), column + 2, color0Int);
+                    tile[r, 2] = colorIndex0;
                 }
 
                 //pixel 3
-                if ((data[i + 4] & 0x04) == 1)
+                if ((data[r + 4] & 0x04) == 0x04)
                 {
-                    Marshal.WriteInt32(intPtr + (3 * sizeof(int)), color1Int);
-                    //this.Image.SetPixel((row + i), column + 3, color1Int);
+                    tile[r, 3] = colorIndex1;
                 }
                 else
                 {
-                    Marshal.WriteInt32(intPtr + (3 * sizeof(int)), color0Int);
-                    //this.Image.SetPixel((row + i), column + 3, color0Int);
+                    tile[r, 3] = colorIndex0;
                 }
 
                 //pixel 4
-                if ((data[i + 4] & 0x02) == 1)
+                if ((data[r + 4] & 0x02) == 0x02)
                 {
-                    Marshal.WriteInt32(intPtr + (4 * sizeof(int)), color1Int);
-                    //this.Image.SetPixel((row + i), column + 4, color1Int);
+                    tile[r, 4] = colorIndex1;
                 }
                 else
                 {
-                    Marshal.WriteInt32(intPtr + (4 * sizeof(int)), color0Int);
-                    //this.Image.SetPixel((row + i), column + 4, color0Int);
+                    tile[r, 4] = colorIndex0;
                 }
 
                 //pixel 5
-                if ((data[i + 4] & 0x01) == 1)
+                if ((data[r + 4] & 0x01) == 0x01)
                 {
-                    Marshal.WriteInt32(intPtr + (5 * sizeof(int)), color1Int);
-                    //this.Image.SetPixel((row + i), column + 5, color1Int);
+                    tile[r, 5] = colorIndex1;
                 }
                 else
                 {
-                    Marshal.WriteInt32(intPtr + (5 * sizeof(int)), color0Int);
-                    //this.Image.SetPixel((row + i), column + 5, color0Int);
+                    tile[r, 5] = colorIndex0;
                 }
             }
+            SetTilePixels(column, row, tile);
         }
 
         /// <summary>
@@ -388,98 +339,82 @@ namespace DJ
             int row = (data[2] & 0x1F) * 12;
             int column = (data[3] & 0x3F) * 6;
 
+            int[,] tile = new int[12, 6];
+
             int originalColorIndex = 0;
-            int imageDataScan = ImageData.Scan0.ToInt32();
 
             //Iterate over each of the 12 rows of the tile and paint the color for each of the pixels
-            for (int i = 0; i < 12; i++)
+            for (int r = 0; r < 12; r++)
             {
-                IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * (row + i)) + (column * sizeof(int)));
+                int pixelIndex = r + 4;  //Index into the data array to get the pixel byte for this row
 
                 //pixel 0
-                originalColorIndex = IndexAtPixel(row, column);
-                if ((data[i + 4] & 0x20) == 1)
+                originalColorIndex = GetPixel(column, row + r);
+                if ((data[pixelIndex] & 0x20) == 0x20)
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex0];
+                    tile[r, 0] = (originalColorIndex ^ colorIndex1);
                 }
                 else
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex1];
+                    tile[r, 0] = (originalColorIndex ^ colorIndex0);
                 }
-                //Paint Color0 to the bitamp at row, column
-                Marshal.WriteInt32(intPtr, this.Color0.ToArgb());
-                //this.Image.SetPixel(row, column, this.Color0);
 
                 //pixel 1
-                originalColorIndex = IndexAtPixel(row, column + 1);
-                if ((data[i + 4] & 0x10) == 1)
+                originalColorIndex = GetPixel(column + 1, row + r);
+                if ((data[pixelIndex] & 0x10) == 0x10)
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex0];
+                    tile[r, 1] = (originalColorIndex ^ colorIndex1);
                 }
                 else
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex1];
+                    tile[r, 1] = (originalColorIndex ^ colorIndex0);
                 }
-                //Paint Color0 to the bitamp at row, column + 1
-                Marshal.WriteInt32(intPtr + sizeof(int), this.Color0.ToArgb());
-                //this.Image.SetPixel(row, column + 1, this.Color0);
 
                 //pixel 2
-                originalColorIndex = IndexAtPixel(row, column + 2);
-                if ((data[i + 4] & 0x08) == 1)
+                originalColorIndex = GetPixel(column + 2, row + r);
+                if ((data[pixelIndex] & 0x08) == 0x08)
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex0];
+                    tile[r, 2] = (originalColorIndex ^ colorIndex1);
                 }
                 else
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex1];
+                    tile[r, 2] = (originalColorIndex ^ colorIndex0);
                 }
-                //Paint Color0 to the bitamp at row, column + 2
-                Marshal.WriteInt32(intPtr + (2 * sizeof(int)), this.Color0.ToArgb());
-                //this.Image.SetPixel(row, column + 2, this.Color0);
 
                 //pixel 3
-                originalColorIndex = IndexAtPixel(row, column + 3);
-                if ((data[i + 4] & 0x04) == 1)
+                originalColorIndex = GetPixel(column + 3, row + r);
+                if ((data[pixelIndex] & 0x04) == 0x04)
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex0];
+                    tile[r, 3] = (originalColorIndex ^ colorIndex1);
                 }
                 else
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex1];
+                    tile[r, 3] = (originalColorIndex ^ colorIndex0);
                 }
-                //Paint Color0 to the bitamp at row, column + 3
-                Marshal.WriteInt32(intPtr + (3 * sizeof(int)), this.Color0.ToArgb());
-                //this.Image.SetPixel(row, column + 3, this.Color0);
 
                 //pixel 4
-                originalColorIndex = IndexAtPixel(row, column + 4);
-                if ((data[i + 4] & 0x02) == 1)
+                originalColorIndex = GetPixel(column + 4, row + r);
+                if ((data[pixelIndex] & 0x02) == 0x02)
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex0];
+                    tile[r, 4] = (originalColorIndex ^ colorIndex1);
                 }
                 else
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex1];
+                    tile[r, 4] = (originalColorIndex ^ colorIndex0);
                 }
-                //Paint Color0 to the bitamp at row, column + 4
-                Marshal.WriteInt32(intPtr + (4 * sizeof(int)), this.Color0.ToArgb());
-                //this.Image.SetPixel(row, column + 4, this.Color0);
 
                 //pixel 5
-                originalColorIndex = IndexAtPixel(row, column + 5);
-                if ((data[i + 4] & 0x01) == 1)
+                originalColorIndex = GetPixel(column + 5, row + r);
+                if ((data[pixelIndex] & 0x01) == 0x01)
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex0];
+                    tile[r, 5] = (originalColorIndex ^ colorIndex1);
                 }
                 else
                 {
-                    this.Color0 = this.ColorTable[originalColorIndex ^ colorIndex1];
+                    tile[r, 5] = (originalColorIndex ^ colorIndex0);
                 }
-                //Paint Color0 to the bitamp at row, column + 5
-                Marshal.WriteInt32(intPtr + (5 * sizeof(int)), this.Color0.ToArgb());
-                //this.Image.SetPixel(row, column + 5, this.Color0);
             }
+            SetTilePixels(column, row, tile);
         }
 
         /// <summary>
@@ -499,108 +434,69 @@ namespace DJ
             byte vScroll = data[2];
 
             int hCmd = (hScroll & 0x30) >> 4;
-            if (hCmd == 2)
-                hCmd = -1;
             int hOffset = (hScroll & 0x07) * hCmd;
 
             int vCmd = (vScroll & 0x30) >> 4;
-            if (vCmd == 2)
-                vCmd = -1;
             int vOffset = (vScroll & 0x0F) * vCmd;
 
-            this.Color0 = this.ColorTable[colorIndex];
-            int color0Int = this.Color0.ToArgb();
+            //If no scrolling horizontal or vertical, do nothing
+            if (hCmd == 0 && vCmd == 0)
+                return;
 
-            int imageDataScan = ImageData.Scan0.ToInt32();
+            Bitmap tempBitmap = new Bitmap(WIDTH, HEIGHT, PixelFormat.Format4bppIndexed);
+            BitmapData tempData = tempBitmap.LockBits(new Rectangle(0, 0, WIDTH, HEIGHT), ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
+
+            int sizeBytes = ImageData.Stride * HEIGHT;
+
+            // 4 bits per pixel = 2 pixels per byte
+            int tileWidthBytes = 6;
+            int remainingWidth = WIDTH / 2 - tileWidthBytes;
+
+            // Copy all of the image to the temp buffer
+            memcpy(tempData.Scan0, ImageData.Scan0, sizeBytes);
+
+            byte colorByte = (byte)(colorIndex << 4 | colorIndex);
 
             //Do the horizontal scrolling
             if (hCmd != 0 && hCmd == 1) //Scroll right
             {
-                //Move each pixel to the right
-                for (int x = 0; x < HEIGHT; x++)
+                for (int y = 0; y < HEIGHT; y++)
                 {
-                    for (int y = (WIDTH - 1); y >= hOffset; y--)
-                    {
-                        IntPtr prevPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + ((y - hOffset) * sizeof(int)));
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, Marshal.ReadInt32(prevPtr));
-                        //this.Color1 = this.Image.GetPixel(x, (y - hOffset));
-                        //this.Image.SetPixel(x, y, this.Color1);
-                    }
+                    int yOffset = y * ImageData.Stride;
+                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset + tileWidthBytes),
+                        new IntPtr(tempData.Scan0.ToInt32() + yOffset), remainingWidth);
+
+                    memset(new IntPtr(ImageData.Scan0.ToInt32() + yOffset), colorByte, tileWidthBytes);
                 }
-                //Fill in the empty space left after shifting with the color provided
-                for (int x = 0; x < HEIGHT; x++)
-                    for (int y = 0; y < hOffset; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, color0Int);
-                        //this.Image.SetPixel(x, y, this.Color0);
-                    }
             }
-            else if (hCmd != 0 && hCmd == -1) //Scroll left
+            else if (hCmd != 0 && hCmd == 2) //Scroll left
             {
-                //Move each pixel to the left
-                for (int x = 0; x < HEIGHT; x++)
-                    for (int y = 0; y <= (WIDTH - hOffset); y++)
-                    {
-                        IntPtr prevPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + ((y + hOffset) * sizeof(int)));
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, Marshal.ReadInt32(prevPtr));
-                        //this.Color1 = this.Image.GetPixel(x, (y + hOffset));
-                        //this.Image.SetPixel(x, y, this.Color1);
-                    }
-                //Fill in the empty space left after shifting with the color provided
-                for (int x = 0; x < HEIGHT; x++)
-                    for (int y = (WIDTH - 1); y > (WIDTH - hOffset); y--)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, color0Int);
-                        //this.Image.SetPixel(x, y, this.Color0);
-                    }
+                for (int y = 0; y < HEIGHT; y++)
+                {
+                    int yOffset = y * ImageData.Stride;
+                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset + tileWidthBytes),
+                        new IntPtr(tempData.Scan0.ToInt32() + yOffset), remainingWidth);
+
+                    memset(new IntPtr(ImageData.Scan0.ToInt32() + yOffset), colorByte, tileWidthBytes);
+                }
+
             }
+
+            int heightBytes = ImageData.Stride * 12;
 
             //Do the vertical scrolling
             if (vCmd != 0 && vCmd == 1) //Scroll down
             {
-                //Move each pixel down
-                for (int x = HEIGHT - 1; x > vOffset; x--)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr prevPtr = new IntPtr(imageDataScan + (ImageData.Stride * (x - vOffset)) + (y * sizeof(int)));
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, Marshal.ReadInt32(prevPtr));
-                        //this.Color1 = this.Image.GetPixel(x - vOffset, y);
-                        //this.Image.SetPixel(x, y, this.Color1);
-                    }
-                //Fill in the empty space left after shifting with the color provided
-                for (int x = 0; x < vOffset; x++)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, color0Int);
-                        //this.Image.SetPixel(x, y, this.Color0);
-                    }
+                memcpy(new IntPtr(ImageData.Scan0.ToInt32() + heightBytes), tempData.Scan0,
+                        sizeBytes - heightBytes);
+
+                memset(ImageData.Scan0, colorByte, heightBytes);
             }
-            else if (vCmd != 0 && vCmd == -1) //Scroll up
+            else if (vCmd != 0 && vCmd == 2) //Scroll up
             {
-                //Move each pixel up
-                for (int x = vOffset; x < HEIGHT; x++)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr prevPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + ((y + vOffset) * sizeof(int)));
-                        IntPtr intPtr = new IntPtr(ImageData.Scan0.ToInt32() + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, Marshal.ReadInt32(prevPtr));
-                        //this.Color1 = this.Image.GetPixel(x, (y + vOffset));
-                        //this.Image.SetPixel(x, y, this.Color1);
-                    }
-                //Fill in the empty space left after shifting with the color provided
-                for (int x = 0; x < vOffset; x++)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, color0Int);
-                        //this.Image.SetPixel(x, y, this.Color0);
-                    }
+                memcpy(ImageData.Scan0, new IntPtr(tempData.Scan0.ToInt32() + heightBytes), sizeBytes - heightBytes);
+
+                memset(new IntPtr(ImageData.Scan0.ToInt32() + sizeBytes - heightBytes), colorByte, heightBytes);
             }
 
         }
@@ -631,140 +527,74 @@ namespace DJ
                 vCmd = -1;
             int vOffset = (vScroll & 0x0F) * vCmd;
 
-            this.Color0 = this.ColorTable[colorIndex];
+            Bitmap tempBitmap = new Bitmap(WIDTH, HEIGHT, PixelFormat.Format4bppIndexed);
+            BitmapData tempData = tempBitmap.LockBits(new Rectangle(0, 0, WIDTH, HEIGHT), ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
 
-            int imageDataScan = this.ImageData.Scan0.ToInt32();
+            int sizeBytes = ImageData.Stride * HEIGHT;
 
-            int[,] hShifted = new int[HEIGHT, hOffset];
-            int[,] vShifted = new int[vOffset, WIDTH];
+            // 4 bits per pixel = 2 pixels per byte
+            int tileWidthBytes = 6;
+            int remainingWidth = WIDTH / 2 - tileWidthBytes;
+
+            // Copy all of the image to the temp buffer
+            memcpy(tempData.Scan0, ImageData.Scan0, sizeBytes);
+
+            byte colorByte = (byte)(colorIndex << 4 | colorIndex);
 
             //Do the horizontal scrolling
             if (hCmd != 0 && hCmd == 1) //Scroll right
             {
-                //Fill up the shifted off array
-                for (int x = 0; x < HEIGHT; x++)
-                    for (int y = WIDTH - hOffset - 1; y < WIDTH; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        hShifted[x, (y - (WIDTH - hOffset - 1))] = Marshal.ReadInt32(intPtr);
-                    }
+                for (int y = 0; y < HEIGHT; y++)
+                {
+                    int yOffset = y * ImageData.Stride;
+                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset + tileWidthBytes),
+                        new IntPtr(tempData.Scan0.ToInt32() + yOffset), remainingWidth);
 
-                //Move each pixel to the right
-                for (int x = 0; x < HEIGHT; x++)
-                    for (int y = (WIDTH - 1); y >= hOffset; y--)
-                    {
-                        IntPtr prevPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + ((y - hOffset) * sizeof(int)));
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, Marshal.ReadInt32(prevPtr));
-                        //this.Color1 = this.Image.GetPixel(x, (y - hOffset));
-                        //this.Image.SetPixel(x, y, this.Color1);
-                    }
-                //Fill in the empty space left after shifting with the color shifted off
-                for (int x = 0; x < HEIGHT; x++)
-                    for (int y = 0; y < hOffset; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, hShifted[x, y]);
-                        //this.Image.SetPixel(x, y, hShifted[x,y]);
-                    }
+                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset),
+                            new IntPtr(tempData.Scan0.ToInt32() + yOffset + remainingWidth), tileWidthBytes);
+                }
             }
-            else if (hCmd != 0 && hCmd == -1) //Scroll left
+            else if (hCmd != 0 && hCmd == 2) //Scroll left
             {
-                //Fill up the shifted off array
-                for (int x = 0; x < HEIGHT; x++)
-                    for (int y = 0; y < hOffset; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        hShifted[x, y] = Marshal.ReadInt32(intPtr);
-                    }
+                for (int y = 0; y < HEIGHT; y++)
+                {
+                    int yOffset = y * ImageData.Stride;
+                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset + tileWidthBytes),
+                        new IntPtr(tempData.Scan0.ToInt32() + yOffset), remainingWidth);
 
-                //Move each pixel to the left
-                for (int x = 0; x < HEIGHT; x++)
-                    for (int y = 0; y <= (WIDTH - hOffset); y++)
-                    {
-                        IntPtr prevPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + ((y + hOffset) * sizeof(int)));
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, Marshal.ReadInt32(prevPtr));
-                        //this.Color1 = this.Image.GetPixel(x, (y + hOffset));
-                        //this.Image.SetPixel(x, y, this.Color1);
-                    }
-                //Fill in the empty space left after shifting with the color provided
-                int leftOffset = (WIDTH - hOffset - 1);
-                for (int x = 0; x < HEIGHT; x++)
-                    for (int y = leftOffset; y < WIDTH; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, hShifted[x, (y - leftOffset)]);
-                        //this.Image.SetPixel(x, (y - leftOffset), hShifted[x,(y - leftOffset)]);
-                    }
+                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset),
+                        new IntPtr(tempData.Scan0.ToInt32() + yOffset + remainingWidth), tileWidthBytes);
+                }
+
             }
+
+            int heightBytes = ImageData.Stride * 12;
 
             //Do the vertical scrolling
             if (vCmd != 0 && vCmd == 1) //Scroll down
             {
-                //Fill up the shifted off array
-                int downOffset = HEIGHT - 1 - vOffset;
-                for (int x = downOffset; x < HEIGHT; x++)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        hShifted[(x - downOffset), y] = Marshal.ReadInt32(intPtr);
-                    }
+                memcpy(new IntPtr(ImageData.Scan0.ToInt32() + heightBytes), tempData.Scan0,
+                        sizeBytes - heightBytes);
 
-                //Move each pixel down
-                for (int x = HEIGHT - 1; x > vOffset; x--)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr prevPtr = new IntPtr(imageDataScan + (ImageData.Stride * (x - vOffset)) + (y * sizeof(int)));
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, Marshal.ReadInt32(prevPtr));
-                        //this.Color1 = this.Image.GetPixel(x - vOffset, y);
-                        //this.Image.SetPixel(x, y, this.Color1);
-                    }
-                //Fill in the empty space left after shifting with the shifted off colors
-                for (int x = 0; x < vOffset; x++)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, hShifted[x, y]);
-                        //this.Image.SetPixel(x, y, hShifted[x,y]);
-                    }
+                // Copy pixel data from the bottom row to the top
+                memcpy(ImageData.Scan0,
+                    new IntPtr(tempData.Scan0.ToInt32() + sizeBytes - heightBytes),
+                    heightBytes);
             }
-            else if (vCmd != 0 && vCmd == -1) //Scroll up
+            else if (vCmd != 0 && vCmd == 2) //Scroll up
             {
-                //Fill up the shifted off array
-                for (int x = 0; x < vOffset; x++)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        hShifted[x, y] = Marshal.ReadInt32(intPtr);
-                    }
+                memcpy(ImageData.Scan0, new IntPtr(tempData.Scan0.ToInt32() + heightBytes), sizeBytes - heightBytes);
 
-                //Move each pixel up
-                for (int x = vOffset; x < HEIGHT; x++)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr prevPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + ((y + vOffset) * sizeof(int)));
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, Marshal.ReadInt32(prevPtr));
-                        //this.Color1 = this.Image.GetPixel(x, (y + vOffset));
-                        //this.Image.SetPixel(x, y, this.Color1);
-                    }
-                //Fill in the empty space left after shifting with the color provided
-                int upOffset = HEIGHT - vOffset - 1;
-                for (int x = upOffset; x < HEIGHT; x++)
-                    for (int y = 0; y < WIDTH; y++)
-                    {
-                        IntPtr intPtr = new IntPtr(imageDataScan + (ImageData.Stride * x) + (y * sizeof(int)));
-                        Marshal.WriteInt32(intPtr, vShifted[x - upOffset, y]);
-                        //this.Image.SetPixel(x, y, vShifted[x - upOffset, y]);
-                    }
+                // Copy pixel data from the top row into the bottom
+                memcpy(new IntPtr(ImageData.Scan0.ToInt32() + sizeBytes - heightBytes), tempData.Scan0, heightBytes);
             }
         }
 
         private void DefineTransparentColor(byte[] data)
         {
-
+            //int color = data[0] & 0x0F;
+            //this.Palette.Entries[color] = Color.Transparent;
+            //this.Image.Palette = this.Palette;
         }
 
         /// <summary>
@@ -784,19 +614,18 @@ namespace DJ
         /// <param name="data"></param>
         private void LoadColorTableLo(byte[] data)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 16; i += 2)
             {
                 int high = data[i] & 0x3F;
                 int low = data[i + 1] & 0x3F;
 
                 int red = high >> 2;
-                int green = ((high & 0x03) << 2) + ((low & 0x0F) >> 4);
+                int green = ((high & 0x03) << 2) + ((low & 0x30) >> 4);
                 int blue = low & 0x0F;
 
-                this.ColorTable[i] = Color.FromArgb(red * 17, green * 17, blue * 17);
-                this.ColorDictionary[(Color.FromArgb(red * 17, green * 17, blue * 17)).ToArgb()] = i;
+                this.Palette.Entries[i / 2] = Color.FromArgb(red * 17, green * 17, blue * 17);
             }
-            int x = 0;
+            Image.Palette = this.Palette;
         }
 
         /// <summary>
@@ -816,19 +645,18 @@ namespace DJ
         /// <param name="data"></param>
         private void LoadColorTableHi(byte[] data)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 16; i += 2)
             {
                 int high = data[i] & 0x3F;
                 int low = data[i + 1] & 0x3F;
 
                 int red = high >> 2;
-                int green = ((high & 0x03) << 2) + ((low & 0x0F) >> 4);
+                int green = ((high & 0x03) << 2) + ((low & 0x30) >> 4);
                 int blue = low & 0x0F;
 
-                this.ColorTable[i + 8] = Color.FromArgb(red * 17, green * 17, blue * 17);
-                this.ColorDictionary[(Color.FromArgb(red * 17, green * 17, blue * 17)).ToArgb()] = i + 8;
+                this.Palette.Entries[i / 2 + 8] = Color.FromArgb(red * 17, green * 17, blue * 17);
             }
-            int x = 0;
+            Image.Palette = this.Palette;
         }
 
         #endregion
@@ -840,7 +668,7 @@ namespace DJ
             if (ImageData != null)
                 throw new InvalidOperationException();
 
-            ImageData = Image.LockBits(new Rectangle(0, 0, WIDTH, HEIGHT), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+            ImageData = Image.LockBits(new Rectangle(0, 0, WIDTH, HEIGHT), ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
         }
 
         private void EndBitmpaUpdate()
@@ -854,11 +682,82 @@ namespace DJ
                 ImageInvalidated(this, new EventArgs());
         }
 
-        private int IndexAtPixel(int row, int column)
+        private void SetPixel(int col, int row, int colorIndex)
         {
-            IntPtr intPtr = new IntPtr(ImageData.Scan0.ToInt32() + (ImageData.Stride * row) + (column * sizeof(int)));
-            return this.ColorDictionary[Marshal.ReadInt32(intPtr)];
+            // Find the relevant byte
+            IntPtr bytePtr = new IntPtr(this.ImageData.Scan0.ToInt32() + (ImageData.Stride * row) + (col / 2));
+            byte byteVal = Marshal.ReadByte(bytePtr);
+
+            // replace relevant nibble
+            if ((col & 1) == 1)
+            {
+                // Lower 4 bits
+                byteVal &= 0xF0;
+                byteVal = (byte)(byteVal | colorIndex);
+            }
+            else
+            {
+                // Upper 4 bits
+                byteVal &= 0x0F;
+                byteVal = (byte)(byteVal | colorIndex << 4);
+            }
+
+            Marshal.WriteByte(bytePtr, byteVal);
         }
+
+        private void SetTilePixels(int col, int row, int[,] tile)
+        {
+            byte byteValue;
+            for (int r = 0; r < 12; r++)
+            {
+                IntPtr bytePtr = new IntPtr(this.ImageData.Scan0.ToInt32() + (ImageData.Stride * (row + r)) + (col / 2));
+                for (int c = 0; c < 6; c++)
+                {
+                    byteValue = Marshal.ReadByte(bytePtr + (c / 2) * sizeof(byte));
+
+                    if ((c & 1) == 1)
+                    {
+                        byteValue &= 0xF0;
+                        byteValue = (byte)(byteValue | tile[r, c]);
+                    }
+                    else
+                    {
+                        byteValue &= 0x0F;
+                        byteValue = (byte)(byteValue | (tile[r, c] << 4));
+                    }
+                    Marshal.WriteByte(bytePtr + (c / 2) * sizeof(byte), byteValue);
+                }
+            }
+        }
+
+        private int GetPixel(int col, int row)
+        {
+            // Find the relevant byte
+            IntPtr bytePtr = new IntPtr(this.ImageData.Scan0.ToInt32() + (ImageData.Stride * row) + (col / 2));
+            byte byteVal = Marshal.ReadByte(bytePtr);
+
+            // return relevant nibble
+            if ((col & 1) == 1)
+            {
+                // Lower 4 bits
+                return byteVal & 0xF;
+            }
+            else
+            {
+                // Upper 4 bits
+                return byteVal >> 4;
+            }
+        }
+
+        #endregion
+
+        #region Win32
+
+        [DllImport("msvcrt.dll")]
+        private static extern void memset(IntPtr dest, byte val, int count);
+
+        [DllImport("msvcrt.dll")]
+        public static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
 
         #endregion
     }
@@ -939,7 +838,7 @@ namespace DJ
             _data = new byte[16];
             Array.Copy(this.Bytes, 4, _data, 0, 16);
 
-            _isCDGCommand = ((this.Command & 0x3F) == 9);
+            _isCDGCommand = ((_command & 0x3F) == 9);
         }
 
         public bool IsFrameCDGCommand()
