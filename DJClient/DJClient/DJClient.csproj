@@ -56,6 +56,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CDGForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CDGForm.Designer.cs">
+      <DependentUpon>CDGForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CDGPlayer.cs" />
     <Compile Include="DJModel.cs" />
     <Compile Include="Helper.cs" />
@@ -84,6 +90,10 @@
     </Compile>
     <Compile Include="ServiceClient.cs" />
     <Compile Include="SongToPlay.cs" />
+    <Compile Include="Timer.cs" />
+    <EmbeddedResource Include="CDGForm.resx">
+      <DependentUpon>CDGForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>

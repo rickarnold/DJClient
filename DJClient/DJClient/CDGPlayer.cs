@@ -5,9 +5,9 @@ using System.Text;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Timers;
 using System.Runtime.InteropServices;
-
+using System.Diagnostics;
+using Multimedia;
 
 namespace DJ
 {
@@ -15,7 +15,8 @@ namespace DJ
     {
         const int PACKETS_PER_SECTOR = 4;
         const int SECTORS_PER_SECOND = 75;
-        const int FRAMES_PER_SECOND = PACKETS_PER_SECTOR * SECTORS_PER_SECOND;
+        const int FRAMES_PER_SECOND = 300;
+        const int FRAMES_PER_TICK = 4;
         const int WIDTH = 300;
         const int HEIGHT = 216;
 
@@ -50,11 +51,15 @@ namespace DJ
             this.Palette = this.Image.Palette;
             this.ImageData = null;
 
-            //Set up the frame timer to handle drawing each frame
-            _frameTimer = new Timer(1000 / FRAMES_PER_SECOND);
-            _frameTimer.AutoReset = true;
-            _frameTimer.Elapsed += FrameElapsedHandler;
+            //Set up the timer.  Have it tick every 13 milliseconds to handle a whole sector
+            _frameTimer = new Timer();
+            _frameTimer.Mode = TimerMode.Periodic;
+            _frameTimer.Period = 13;
+            _frameTimer.Resolution = 0;
+            _frameTimer.Tick += FrameElapsedHandler;
         }
+
+        #region CDG Playback Methods
 
         public void OpenCDGFile(string path)
         {
@@ -98,66 +103,63 @@ namespace DJ
             _currentFrame = 0;
         }
 
+        #endregion
+
         #region Timer Methods
 
-        private void FrameElapsedHandler(Object sender, ElapsedEventArgs args)
+        private void FrameElapsedHandler(Object state, EventArgs args)//, ElapsedEventArgs args)
         {
-            if (_currentFrame < _totalFrames)
+            BeginBitmapUpdate();
+
+            for (int i = 0; i < FRAMES_PER_TICK; i++)
             {
-                Frame frame = this.FrameList[_currentFrame];
-
-                //Check that this frame is a CDG command
-                if (frame.IsFrameCDGCommand())
+                if (_currentFrame < _totalFrames)
                 {
-                    //Perform the appropriate command based on the frame's command code
-                    switch (frame.Instruction)
-                    {
-                        case (MEMORY_PRESET):
-                            BeginBitmapUpdate();
-                            MemoryPreset(frame.Data);
-                            EndBitmpaUpdate();
-                            break;
-                        case (BORDER_PRESET):
-                            BeginBitmapUpdate();
-                            BorderPreset(frame.Data);
-                            EndBitmpaUpdate();
-                            break;
-                        case (TILE_BLOCK):
-                            BeginBitmapUpdate();
-                            TileBlockNormal(frame.Data);
-                            EndBitmpaUpdate();
-                            break;
-                        case (SCROLL_PRESET):
-                            BeginBitmapUpdate();
-                            ScrollPreset(frame.Data);
-                            EndBitmpaUpdate();
-                            break;
-                        case (SCROLL_COPY):
-                            BeginBitmapUpdate();
-                            ScrollCopy(frame.Data);
-                            EndBitmpaUpdate();
-                            break;
-                        case (DEFINE_TRANSPARENT_COLOR):
-                            DefineTransparentColor(frame.Data);
-                            break;
-                        case (LOAD_COLOR_TABLE_LO):
-                            LoadColorTableLo(frame.Data);
-                            break;
-                        case (LOAD_COLOR_TABLE_HI):
-                            LoadColorTableHi(frame.Data);
-                            break;
-                        case (TILE_BLOCK_XOR):
-                            BeginBitmapUpdate();
-                            TileBlockXOR(frame.Data);
-                            EndBitmpaUpdate();
-                            break;
-                    }
-                }
-                _currentFrame++;
-            }
-            else
-                _frameTimer.Stop();
+                    //Do a set number of frames per tick as the timer can't keep up with the fast pace
+                    Frame frame = this.FrameList[_currentFrame];
 
+                    //Check that this frame is a CDG command
+                    if (frame.IsFrameCDGCommand())
+                    {
+                        //Perform the appropriate command based on the frame's command code
+                        switch (frame.Instruction)
+                        {
+                            case (MEMORY_PRESET):
+                                MemoryPreset(frame.Data);
+                                break;
+                            case (BORDER_PRESET):
+                                BorderPreset(frame.Data);
+                                break;
+                            case (TILE_BLOCK):
+                                TileBlockNormal(frame.Data);
+                                break;
+                            case (SCROLL_PRESET):
+                                ScrollPreset(frame.Data);
+                                break;
+                            case (SCROLL_COPY):
+                                ScrollCopy(frame.Data);
+                                break;
+                            case (DEFINE_TRANSPARENT_COLOR):
+                                DefineTransparentColor(frame.Data);
+                                break;
+                            case (LOAD_COLOR_TABLE_LO):
+                                LoadColorTableLo(frame.Data);
+                                break;
+                            case (LOAD_COLOR_TABLE_HI):
+                                LoadColorTableHi(frame.Data);
+                                break;
+                            case (TILE_BLOCK_XOR):
+                                TileBlockXOR(frame.Data);
+                                break;
+                        }
+                    }
+                    _currentFrame++;
+                }
+                else
+                    _frameTimer.Stop();
+            }
+
+            EndBitmpaUpdate();
         }
 
         #endregion
@@ -668,7 +670,16 @@ namespace DJ
             if (ImageData != null)
                 throw new InvalidOperationException();
 
-            ImageData = Image.LockBits(new Rectangle(0, 0, WIDTH, HEIGHT), ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
+            bool locked = false;
+            while (!locked)
+            {
+                try
+                {
+                    ImageData = Image.LockBits(new Rectangle(0, 0, WIDTH, HEIGHT), ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
+                    locked = true;
+                }
+                catch {  }
+            }
         }
 
         private void EndBitmpaUpdate()
@@ -676,8 +687,18 @@ namespace DJ
             if (ImageData == null)
                 throw new InvalidOperationException();
 
-            Image.UnlockBits(ImageData);
+            bool unlocked = false;
+            while (!unlocked)
+            {
+                try
+                {
+                    Image.UnlockBits(ImageData);
+                    unlocked = true;
+                }
+                catch { }
+            }
             ImageData = null;
+
             if (ImageInvalidated != null)
                 ImageInvalidated(this, new EventArgs());
         }

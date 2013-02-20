@@ -15,11 +15,16 @@ namespace DJ
 
         private WindowsMediaPlayer player;
         private CDGPlayer cdgPlayer;
+        private CDGForm cdgForm;
+
+        private bool isFormOpen;
 
         public KaraokeFilePlayer()
         {
             player = new WindowsMediaPlayer();
             cdgPlayer = new CDGPlayer();
+            cdgForm = new CDGForm();
+            isFormOpen = false;
 
             cdgPlayer.ImageInvalidated += ImageInvalidatedHandler;
         }
@@ -35,6 +40,11 @@ namespace DJ
 
         public void Play()
         {
+            if (!isFormOpen)
+            {
+                isFormOpen = true;
+                cdgForm.Show();
+            }
             player.controls.play();
             cdgPlayer.PlayCDGFile();
         }
@@ -47,6 +57,11 @@ namespace DJ
 
         public void Stop()
         {
+            if (isFormOpen)
+            {
+                cdgForm.Close();
+                isFormOpen = false;
+            }
             player.controls.stop();
             cdgPlayer.StopCDGFile();
         }
@@ -64,6 +79,8 @@ namespace DJ
         {
             if (this.ImageInvalidated != null)
                 this.ImageInvalidated(this, new EventArgs());
+
+            cdgForm.CDGImage = cdgPlayer.Image;
         }
 
         #endregion

@@ -77,7 +77,6 @@ namespace DJ
         {
             if (!args.Error)
             {
-                //QRGenerator.GenerateQR("Test code", "Venue X", "");
                 QRGenerator.GenerateQR(model.QRCode, "Venue X", "");
             }
         }
@@ -92,7 +91,10 @@ namespace DJ
 
         private void CDGImageInvalidatedHandler(object source, EventArgs args)
         {
-            BeginInvoke(new InvokeDelegate(InvokeUpdateCDGImage));
+            if (pictureBoxCDG.InvokeRequired)
+                BeginInvoke(new InvokeDelegate(InvokeUpdateCDGImage));
+            else
+                InvokeUpdateCDGImage();
         }
 
         //User has clicked to close the application.  Make sure that the user wants to close everything out.
@@ -135,7 +137,7 @@ namespace DJ
                     songString = singer.songs[0].artist + " - " + singer.songs[0].title;
                 queueList.Add(singer.user.userName + ":\t" + songString);
             }
-            
+
             ListBoxQueue.DataSource = queueList;
             ListBoxQueue.Refresh();
             ListBoxQueue.SelectionMode = SelectionMode.None;
@@ -151,7 +153,11 @@ namespace DJ
 
         private void InvokeUpdateCDGImage()
         {
-            pictureBoxCDG.Image = player.GetCDGImage();
+            try
+            {
+                pictureBoxCDG.Image = player.GetCDGImage();
+            }
+            catch { }
         }
 
         #endregion
@@ -200,8 +206,11 @@ namespace DJ
         //DJ clicked on the play button.  
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            player.Play();
-            isPlaying = true;
+            if (!isPlaying)
+            {
+                player.Play();
+                isPlaying = true;
+            }
         }
 
         //Pauses the current playback, or starts it back up if currently paused
