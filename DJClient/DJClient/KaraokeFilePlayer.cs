@@ -72,7 +72,7 @@ namespace DJ
 
         public Bitmap GetCDGImage()
         {
-            return cdgPlayer.Image;
+            return cdgPlayer.DisplayImage;
         }
 
         private void ImageInvalidatedHandler(object sender, EventArgs args)
@@ -80,7 +80,7 @@ namespace DJ
             if (this.ImageInvalidated != null)
                 this.ImageInvalidated(this, new EventArgs());
 
-            cdgForm.CDGImage = cdgPlayer.Image;
+            cdgForm.CDGImage = cdgPlayer.DisplayImage;
         }
 
         #endregion

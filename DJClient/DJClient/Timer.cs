@@ -1,3 +1,5 @@
+//Wrapper for the Window's multimedia high precision timers needed to play back karaoke files
+
 using System;
 using System.ComponentModel;
 using System.Diagnostics;

@@ -22,7 +22,7 @@ namespace DJ
                 _cdgImage = value;
                 try
                 {
-                    pictureBoxCDG.Image = _cdgImage;
+                    pictureBoxCDG.Image = value;
                 }
                 catch { }
             }
@@ -37,6 +37,29 @@ namespace DJ
 
             MouseDown += Form1_MouseDown;
             pictureBoxCDG.MouseDown += Form1_MouseDown;
+            pictureBoxCDG.LoadCompleted += PictureBoxLoadCompleted;
+            pictureBoxCDG.Paint += pictureBox1_Paint;
+        }
+
+        private void PictureBoxLoadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                int x = 0;
+            }
+
+            if (e.Error != null)
+            {
+                int x = 0;
+            }
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            if (pictureBoxCDG.Image == pictureBoxCDG.ErrorImage)
+            {
+                int x = 0;
+            }
         }
 
         private void Form1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)

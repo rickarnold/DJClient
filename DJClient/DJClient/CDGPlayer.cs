@@ -19,6 +19,8 @@ namespace DJ
         const int FRAMES_PER_TICK = 4;
         const int WIDTH = 300;
         const int HEIGHT = 216;
+        const int DISPLAY_WIDTH = 294;
+        const int DISPLAY_HEIGHT = 204;
 
         //CDG command instruction numbers
         const int MEMORY_PRESET = 1;
@@ -34,11 +36,24 @@ namespace DJ
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler ImageInvalidated;
 
-        public Bitmap Image { get; set; }
+        private Bitmap Image
+        {
+            get
+            {
+                while (isLocked)
+                    return _image;
+                return _image;
+            }
+            set { _image = value; }
+        }
         private BitmapData ImageData { get; set; }
+        public Bitmap DisplayImage { get; private set; }
 
         private List<Frame> FrameList { get; set; }
         private ColorPalette Palette { get; set; }
+
+        private bool isLocked = false;
+        private Bitmap _image;
 
         private Timer _frameTimer;
         private int _totalFrames = 0;
@@ -50,6 +65,7 @@ namespace DJ
             this.Image = new Bitmap(WIDTH, HEIGHT, PixelFormat.Format4bppIndexed);
             this.Palette = this.Image.Palette;
             this.ImageData = null;
+            this.DisplayImage = new Bitmap(DISPLAY_WIDTH, DISPLAY_HEIGHT, PixelFormat.Format4bppIndexed);
 
             //Set up the timer.  Have it tick every 13 milliseconds to handle a whole sector
             _frameTimer = new Timer();
@@ -677,8 +693,9 @@ namespace DJ
                 {
                     ImageData = Image.LockBits(new Rectangle(0, 0, WIDTH, HEIGHT), ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
                     locked = true;
+                    isLocked = true;
                 }
-                catch {  }
+                catch { }
             }
         }
 
@@ -694,10 +711,12 @@ namespace DJ
                 {
                     Image.UnlockBits(ImageData);
                     unlocked = true;
+                    isLocked = false;
                 }
                 catch { }
             }
             ImageData = null;
+            DisplayImage = Image.Clone(new Rectangle(6, 3, DISPLAY_WIDTH, DISPLAY_HEIGHT), Image.PixelFormat);
 
             if (ImageInvalidated != null)
                 ImageInvalidated(this, new EventArgs());
