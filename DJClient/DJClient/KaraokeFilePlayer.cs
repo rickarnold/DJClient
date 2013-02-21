@@ -27,6 +27,7 @@ namespace DJ
             isFormOpen = false;
 
             cdgPlayer.ImageInvalidated += ImageInvalidatedHandler;
+            player.PlayStateChange += Player_PlayStateChange;
         }
 
         #region Playback Methods
@@ -46,7 +47,6 @@ namespace DJ
                 cdgForm.Show();
             }
             player.controls.play();
-            cdgPlayer.PlayCDGFile();
         }
 
         public void Pause()
@@ -64,6 +64,16 @@ namespace DJ
             }
             player.controls.stop();
             cdgPlayer.StopCDGFile();
+        }
+
+        //Event handler triggered when the music begins to play
+        private void Player_PlayStateChange(int NewState)
+        {
+            if ((WMPLib.WMPPlayState)NewState == WMPLib.WMPPlayState.wmppsPlaying)
+            {
+                System.Threading.Thread.Sleep(450);
+                cdgPlayer.PlayCDGFile();
+            }
         }
 
         #endregion

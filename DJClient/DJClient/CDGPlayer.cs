@@ -123,9 +123,15 @@ namespace DJ
 
         #region Timer Methods
 
-        private void FrameElapsedHandler(Object state, EventArgs args)//, ElapsedEventArgs args)
+        private void FrameElapsedHandler(Object state, EventArgs args)
         {
             BeginBitmapUpdate();
+
+            //CDG lyrics run a little fast so use this to throttle it down every 100th frame
+            if (_currentFrame % 100 < 5)
+                _frameTimer.Period = 17;
+            else if (_frameTimer.Period == 17)
+                _frameTimer.Period = 13;
 
             for (int i = 0; i < FRAMES_PER_TICK; i++)
             {

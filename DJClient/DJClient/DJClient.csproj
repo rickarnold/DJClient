@@ -53,6 +53,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="taglib-sharp">
+      <HintPath>.\taglib-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +67,7 @@
     </Compile>
     <Compile Include="CDGPlayer.cs" />
     <Compile Include="DJModel.cs" />
+    <Compile Include="FillerMusicPlayer.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KaraokeDiskBrowser.cs" />
     <Compile Include="KaraokeFilePlayer.cs" />
