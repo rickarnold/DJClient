@@ -8,6 +8,8 @@ namespace DJ
 {
     class FillerMusicPlayer
     {
+        const int DEFAULT_VOLUME = 25;
+
         public List<FillerSong> FillerQueue { get; set; }
 
         private WindowsMediaPlayer mediaPlayer;
@@ -16,6 +18,8 @@ namespace DJ
         {
             FillerQueue = new List<FillerSong>();
             mediaPlayer = new WindowsMediaPlayer();
+
+            mediaPlayer.settings.volume = DEFAULT_VOLUME;
         }
 
         #region Queue Methods
@@ -76,6 +80,16 @@ namespace DJ
             mediaPlayer.controls.stop();
             if (FillerQueue.Count > 0)
                 FillerQueue.RemoveAt(0);
+        }
+
+        //Set the volume of the music being played back, range is [0,100]
+        public void SetVolume(int volume)
+        {
+            if (volume < 0)
+                volume = 0;
+            else if (volume > 100)
+                volume = 100;
+            mediaPlayer.settings.volume = volume;
         }
 
         #endregion

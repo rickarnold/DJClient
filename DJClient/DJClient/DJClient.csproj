@@ -87,6 +87,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QRGenerator.cs" />
+    <Compile Include="ScrollingText.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScrollingText.Designer.cs">
+      <DependentUpon>ScrollingText.cs</DependentUpon>
+    </Compile>
     <Compile Include="Service References\KaraokeService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -23,6 +23,8 @@ namespace DJ
         {
             InitializeComponent();
 
+            this.DoubleBuffered = true;
+
             model = DJModel.Instance;
 
             player = new KaraokeFilePlayer();
@@ -34,6 +36,9 @@ namespace DJ
             player.Open(@"C:\Karaoke\Beatles - Hey Jude.mp3");
             buttonPlay.Enabled = true;
             buttonPause.Enabled = true;
+
+            //////////////////////////////////////
+            scrollingTextTest.Text = "This is a test";
         }
 
         private void InitializeEventHandlers()

@@ -49,6 +49,7 @@
             this.pictureBoxCDG = new System.Windows.Forms.PictureBox();
             this.labelCurrentSinger = new System.Windows.Forms.Label();
             this.buttonPlay = new System.Windows.Forms.Button();
+            this.scrollingTextTest = new DJ.ScrollingText();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -191,12 +192,13 @@
             this.tableLayoutMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutMain.Controls.Add(this.panelQueue, 5, 0);
-            this.tableLayoutMain.Controls.Add(this.labelCurrentSong, 0, 1);
             this.tableLayoutMain.Controls.Add(this.buttonNextSinger, 4, 3);
             this.tableLayoutMain.Controls.Add(this.buttonPause, 2, 3);
             this.tableLayoutMain.Controls.Add(this.pictureBoxCDG, 2, 0);
-            this.tableLayoutMain.Controls.Add(this.labelCurrentSinger, 0, 5);
             this.tableLayoutMain.Controls.Add(this.buttonPlay, 2, 4);
+            this.tableLayoutMain.Controls.Add(this.labelCurrentSong, 0, 5);
+            this.tableLayoutMain.Controls.Add(this.labelCurrentSinger, 0, 3);
+            this.tableLayoutMain.Controls.Add(this.scrollingTextTest, 0, 0);
             this.tableLayoutMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutMain.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutMain.Name = "tableLayoutMain";
@@ -238,7 +240,7 @@
             this.labelCurrentSong.AutoSize = true;
             this.tableLayoutMain.SetColumnSpan(this.labelCurrentSong, 5);
             this.labelCurrentSong.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelCurrentSong.Location = new System.Drawing.Point(3, 270);
+            this.labelCurrentSong.Location = new System.Drawing.Point(3, 450);
             this.labelCurrentSong.Name = "labelCurrentSong";
             this.labelCurrentSong.Size = new System.Drawing.Size(120, 24);
             this.labelCurrentSong.TabIndex = 4;
@@ -283,7 +285,7 @@
             this.labelCurrentSinger.AutoSize = true;
             this.tableLayoutMain.SetColumnSpan(this.labelCurrentSinger, 5);
             this.labelCurrentSinger.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelCurrentSinger.Location = new System.Drawing.Point(3, 450);
+            this.labelCurrentSinger.Location = new System.Drawing.Point(3, 270);
             this.labelCurrentSinger.Name = "labelCurrentSinger";
             this.labelCurrentSinger.Size = new System.Drawing.Size(123, 24);
             this.labelCurrentSinger.TabIndex = 5;
@@ -300,6 +302,20 @@
             this.buttonPlay.Text = "Play";
             this.buttonPlay.UseVisualStyleBackColor = true;
             this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
+            // 
+            // scrollingTextTest
+            // 
+            this.scrollingTextTest.BackgroundColor = System.Drawing.Color.Black;
+            this.tableLayoutMain.SetColumnSpan(this.scrollingTextTest, 2);
+            this.scrollingTextTest.Font = new System.Drawing.Font("Times New Roman", 10F);
+            this.scrollingTextTest.FontColor = System.Drawing.Color.White;
+            this.scrollingTextTest.FontFamily = null;
+            this.scrollingTextTest.HeightPercentage = 8D;
+            this.scrollingTextTest.Location = new System.Drawing.Point(3, 3);
+            this.scrollingTextTest.Name = "scrollingTextTest";
+            this.scrollingTextTest.Size = new System.Drawing.Size(212, 37);
+            this.scrollingTextTest.Speed = 100;
+            this.scrollingTextTest.TabIndex = 7;
             // 
             // MainWindow
             // 
@@ -350,5 +366,6 @@
         private System.Windows.Forms.ToolStripMenuItem generateQRCodeToolStripMenuItem;
         private System.Windows.Forms.PictureBox pictureBoxCDG;
         private System.Windows.Forms.ToolStripMenuItem getNewQRCodeToolStripMenuItem;
+        private ScrollingText scrollingTextTest;
     }
 }

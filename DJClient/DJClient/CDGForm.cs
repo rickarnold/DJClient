@@ -32,6 +32,8 @@ namespace DJ
         {
             InitializeComponent();
 
+            this.DoubleBuffered = true;
+
             //Ensure that the lyrics are always on top
             this.TopMost = true;
 
