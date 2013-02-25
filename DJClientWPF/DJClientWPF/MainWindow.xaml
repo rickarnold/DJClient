@@ -77,7 +77,7 @@
             <Label x:Name="LabelNowSinging" Content="Singer Name" Margin="4,0,0,0" VerticalAlignment="Bottom" FontWeight="Bold"/>
         </StackPanel>
         
-        <Label x:Name="LabelSongRemaining" Content="-4:44" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,0,5,0"
+        <Label x:Name="LabelSongRemaining" Content="0:00" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,0,5,0"
                FontSize="24" FontWeight="Bold"/>
 
         <!-- CDG Video-->
@@ -133,8 +133,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox x:Name="ListBoxFillerMusic" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4">
-                
+                <ListBox x:Name="ListBoxFillerMusic" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4" Grid.Row="0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                 </ListBox>
                 
                 <Button x:Name="ButtonFillerBrowse" Content="Browse" Click="ButtonFillerBrowse_Click" Margin="10,10,10,10" FontWeight="Normal"

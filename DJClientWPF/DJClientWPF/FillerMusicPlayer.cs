@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WMPLib;
+using Microsoft.Win32;
 
 namespace DJClientWPF
 {
     class FillerMusicPlayer
     {
+        public delegate void EventHandler(object source, EventArgs args);
+        public event EventHandler FillerQueueUpdated;
+
         const int DEFAULT_VOLUME = 25;
 
         public List<FillerSong> FillerQueue { get; set; }
@@ -22,24 +26,50 @@ namespace DJClientWPF
             mediaPlayer.settings.volume = DEFAULT_VOLUME;
         }
 
+        #region Browse Methods
+
+        //Browse for filler music to play and add to the queue
+        public void BrowseForFillerMusic()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Music Files (*.mp3, *.wav) | *.mp3;*.wav | All Files (*.*) | *.*";
+            dialog.Multiselect = true;
+            bool? result = dialog.ShowDialog();
+            if (result == true)
+            {
+                //Get the files selected
+                foreach (string songPath in dialog.FileNames)
+                {
+                    FillerQueue.Add(GetFillerSongFromPath(songPath));
+                }
+
+                RaiseQueueUpdated();
+            }
+        }
+
+        #endregion
+
         #region Queue Methods
 
         //Add a new song to the end of the queue
         public void AddFillerSong(string path)
         {
             FillerQueue.Add(GetFillerSongFromPath(path));
+            RaiseQueueUpdated();
         }
 
         //Add a new song to the queue at a given index
         public void AddFillerSong(string path, int index)
         {
             FillerQueue.Insert(index, GetFillerSongFromPath(path));
+            RaiseQueueUpdated();
         }
 
         //Remove the song at the given index from the queue
         public void RemoveFillerSong(int index)
         {
             FillerQueue.RemoveAt(index);
+            RaiseQueueUpdated();
         }
 
         //Given the current index of a song move it to a new index in the filler song queue
@@ -49,15 +79,20 @@ namespace DJClientWPF
 
             FillerQueue.RemoveAt(previousIndex);
 
-            if (previousIndex < newIndex)
-                newIndex--;
-
             FillerQueue.Insert(newIndex, temp);
+            RaiseQueueUpdated();
         }
 
         public void ClearFillerSongQueue()
         {
             FillerQueue.Clear();
+            RaiseQueueUpdated();
+        }
+
+        public void RaiseQueueUpdated()
+        {
+            if (FillerQueueUpdated != null)
+                FillerQueueUpdated(this, new EventArgs());
         }
 
         #endregion
@@ -113,7 +148,7 @@ namespace DJClientWPF
     {
         public long Duration { get; private set; }
         public string Artist { get; private set; }
-        public string Title {get; private set;}
+        public string Title { get; private set; }
         public string Path { get; private set; }
 
         public FillerSong(long duration, string artist, string title, string path)

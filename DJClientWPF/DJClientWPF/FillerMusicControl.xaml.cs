@@ -34,9 +34,9 @@ namespace DJClientWPF
             get
             {
                 if (this.IsPlaying)
-                    return new SolidColorBrush(Color.FromArgb(255, 0, 0, 200));
+                    return new SolidColorBrush(Color.FromArgb(255, 255, 60, 60));
                 else
-                    return new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+                    return new SolidColorBrush(Color.FromArgb(255, 140, 230, 255));
             }
         }
         public FillerSong Song { get; set; }

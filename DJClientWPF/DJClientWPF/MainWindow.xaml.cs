@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DJClientWPF.KaraokeService;
+using System.Collections.ObjectModel;
 
 namespace DJClientWPF
 {
@@ -26,10 +27,11 @@ namespace DJClientWPF
         private KaraokeFilePlayer karaokePlayer;
         private FillerMusicPlayer fillerPlayer;
         private List<queueSinger> queueList;
-        private List<SongToPlay> fillerList;
+        private ObservableCollection<FillerMusicControl> fillerList;
         private bool isPlaying = false;
         private bool showProgressRemaining = true;
         private string progressString = "0:00";
+        private int fillerSelected = -1;
 
         public MainWindow()
         {
@@ -41,7 +43,7 @@ namespace DJClientWPF
             fillerPlayer = new FillerMusicPlayer();
 
             queueList = new List<queueSinger>();
-            fillerList = new List<SongToPlay>();
+            fillerList = new ObservableCollection<FillerMusicControl>();
 
             ListBoxFillerMusic.ItemsSource = fillerList;
             ListBoxSongQueue.ItemsSource = queueList;
@@ -63,10 +65,9 @@ namespace DJClientWPF
             karaokePlayer.ImageInvalidated += CDGImageInvalidatedHandler;
             karaokePlayer.ProgressUpdated += KaraokeProgressUpdatedHandler;
 
-            ////User is closing the program.  Make sure they log out
-            //this.FormClosing += FormClosingHandler;
+            fillerPlayer.FillerQueueUpdated += FillerQueueUpdatedHandler;
 
-            karaokePlayer.Open(@"C:\Karaoke\B\Beatles - Hey Jude.mp3");
+            karaokePlayer.Open(@"C:\Karaoke\B\Beatles - Hey Jude.mp3");////////TESTING
         }
 
         private void LoginCompleteHandler(object source, DJModelArgs args)
@@ -120,6 +121,11 @@ namespace DJClientWPF
             Dispatcher.BeginInvoke(new InvokeDelegate(InvokeUpdateProgress));
         }
 
+        private void FillerQueueUpdatedHandler(object source, EventArgs args)
+        {
+            Dispatcher.BeginInvoke(new InvokeDelegate(InvokeFillerUpdate));
+        }
+
         #endregion
 
         #region UI Thread Invokers
@@ -167,6 +173,19 @@ namespace DJClientWPF
         private void InvokeUpdateProgress()
         {
             LabelSongRemaining.Content = progressString;
+        }
+
+        private void InvokeFillerUpdate()
+        {
+            //Create filler music controls and add them to the list for display
+            fillerList.Clear();
+            foreach (FillerSong song in fillerPlayer.FillerQueue)
+            {
+                FillerMusicControl control = new FillerMusicControl(song);
+                fillerList.Add(control);
+            }
+            ListBoxFillerMusic.ItemsSource = fillerList;
+            ListBoxFillerMusic.SelectedIndex = fillerSelected;
         }
 
         #endregion
@@ -272,22 +291,47 @@ namespace DJClientWPF
 
         private void ButtonFillerBrowse_Click(object sender, RoutedEventArgs e)
         {
-
+            fillerPlayer.BrowseForFillerMusic();
         }
 
         private void ButtonFillerRemove_Click(object sender, RoutedEventArgs e)
         {
+            int selectedIndex = ListBoxFillerMusic.SelectedIndex;
+            fillerSelected = selectedIndex;
 
+            if (selectedIndex != -1)
+            {
+                fillerSelected--;
+                fillerPlayer.RemoveFillerSong(ListBoxFillerMusic.SelectedIndex);
+            }
         }
 
         private void ButtonFillerMoveUp_Click(object sender, RoutedEventArgs e)
         {
+            int selectedIndex = ListBoxFillerMusic.SelectedIndex;
+            fillerSelected = selectedIndex;
 
+            if (ListBoxFillerMusic.SelectedIndex > 0)
+            {
+                fillerSelected--;
+                int newIndex = selectedIndex - 1;
+
+                fillerPlayer.MoveFillerSongInQueue(selectedIndex, newIndex);
+            }
         }
 
         private void ButtonFillerMoveDown_Click(object sender, RoutedEventArgs e)
         {
+            int selectedIndex = ListBoxFillerMusic.SelectedIndex;
+            fillerSelected = selectedIndex;
 
+            if (selectedIndex != -1 && selectedIndex < ListBoxFillerMusic.Items.Count - 1)
+            {
+                fillerSelected++;
+                int newIndex = selectedIndex + 1;
+
+                fillerPlayer.MoveFillerSongInQueue(selectedIndex, newIndex);
+            }
         }
 
         #endregion
