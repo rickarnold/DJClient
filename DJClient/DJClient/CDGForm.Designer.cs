@@ -28,39 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBoxCDG = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCDG)).BeginInit();
+            this.cdgWindowScroller = new DJ.CDGWindowScroller();
             this.SuspendLayout();
             // 
-            // pictureBoxCDG
+            // cdgWindowScroller
             // 
-            this.pictureBoxCDG.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxCDG.Location = new System.Drawing.Point(0, 0);
-            this.pictureBoxCDG.Name = "pictureBoxCDG";
-            this.pictureBoxCDG.Size = new System.Drawing.Size(294, 204);
-            this.pictureBoxCDG.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBoxCDG.TabIndex = 0;
-            this.pictureBoxCDG.TabStop = false;
+            this.cdgWindowScroller.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cdgWindowScroller.Location = new System.Drawing.Point(0, 0);
+            this.cdgWindowScroller.Name = "cdgWindowScroller";
+            this.cdgWindowScroller.Size = new System.Drawing.Size(500, 339);
+            this.cdgWindowScroller.TabIndex = 0;
             // 
             // CDGForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(294, 204);
+            this.ClientSize = new System.Drawing.Size(500, 339);
             this.ControlBox = false;
-            this.Controls.Add(this.pictureBoxCDG);
+            this.Controls.Add(this.cdgWindowScroller);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "CDGForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCDG)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBoxCDG;
+        private CDGWindowScroller cdgWindowScroller;
+
+
     }
 }

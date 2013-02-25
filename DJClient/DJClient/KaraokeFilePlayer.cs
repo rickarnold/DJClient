@@ -10,6 +10,8 @@ namespace DJ
 {
     class KaraokeFilePlayer
     {
+        const int CDG_DELAY = 350;
+
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler ImageInvalidated;
 
@@ -71,7 +73,7 @@ namespace DJ
         {
             if ((WMPLib.WMPPlayState)NewState == WMPLib.WMPPlayState.wmppsPlaying)
             {
-                System.Threading.Thread.Sleep(450);
+                System.Threading.Thread.Sleep(CDG_DELAY);
                 cdgPlayer.PlayCDGFile();
             }
         }

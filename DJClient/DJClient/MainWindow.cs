@@ -33,12 +33,9 @@ namespace DJ
             InitializeEventHandlers();
 
             //////////////
-            player.Open(@"C:\Karaoke\Beatles - Hey Jude.mp3");
+            player.Open(@"C:\Karaoke\B\Beatles - Hey Jude.mp3");
             buttonPlay.Enabled = true;
             buttonPause.Enabled = true;
-
-            //////////////////////////////////////
-            scrollingTextTest.Text = "This is a test";
         }
 
         private void InitializeEventHandlers()
@@ -245,6 +242,12 @@ namespace DJ
                 UpdateNowPlaying(songToPlay);
         }
 
+        //Restart the current karaoke song
+        private void buttonRestart_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
         private void UpdateNowPlaying(SongToPlay songToPlay)
@@ -255,5 +258,6 @@ namespace DJ
             player.Open(songToPlay.Song.pathOnDisk);
             player.Stop();
         }
+
     }
 }

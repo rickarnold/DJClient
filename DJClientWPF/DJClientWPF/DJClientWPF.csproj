@@ -5,14 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0E02E4B6-F52F-4FE1-B3E1-1A3944F0F158}</ProjectGuid>
+    <ProjectGuid>{E826C35D-0D19-48FB-B307-AA2B9BC5F134}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DJ</RootNamespace>
-    <AssemblyName>DJ</AssemblyName>
+    <RootNamespace>DJClientWPF</RootNamespace>
+    <AssemblyName>DJClientWPF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -37,67 +39,55 @@
     <Reference Include="Gma.QrCodeNet.Encoding">
       <HintPath>.\Gma.QrCodeNet.Encoding.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.WMPLib">
+      <HintPath>.\Interop.WMPLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="PdfSharp-WPF">
       <HintPath>.\PdfSharp-WPF.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="taglib-sharp">
       <HintPath>.\taglib-sharp.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CDGForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CDGForm.Designer.cs">
-      <DependentUpon>CDGForm.cs</DependentUpon>
-    </Compile>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
     <Compile Include="CDGPlayer.cs" />
-    <Compile Include="CDGWindowScroller.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CDGWindowScroller.Designer.cs">
-      <DependentUpon>CDGWindowScroller.cs</DependentUpon>
+    <Compile Include="CDGWindow.xaml.cs">
+      <DependentUpon>CDGWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="DJModel.cs" />
+    <Compile Include="FillerMusicControl.xaml.cs">
+      <DependentUpon>FillerMusicControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FillerMusicPlayer.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="KaraokeDiskBrowser.cs" />
     <Compile Include="KaraokeFilePlayer.cs" />
-    <Compile Include="LoginForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LoginForm.Designer.cs">
-      <DependentUpon>LoginForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainWindow.Designer.cs">
-      <DependentUpon>MainWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="MyEventArgs.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QRGenerator.cs" />
-    <Compile Include="ScrollingText.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ScrollingText.Designer.cs">
-      <DependentUpon>ScrollingText.cs</DependentUpon>
+    <Compile Include="ScrollingText.xaml.cs">
+      <DependentUpon>ScrollingText.xaml</DependentUpon>
     </Compile>
     <Compile Include="Service References\KaraokeService\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -107,55 +97,55 @@
     <Compile Include="ServiceClient.cs" />
     <Compile Include="SongToPlay.cs" />
     <Compile Include="Timer.cs" />
-    <EmbeddedResource Include="CDGForm.resx">
-      <DependentUpon>CDGForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CDGWindowScroller.resx">
-      <DependentUpon>CDGWindowScroller.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LoginForm.resx">
-      <DependentUpon>LoginForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainWindow.resx">
-      <DependentUpon>MainWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    <Page Include="CDGWindow.xaml">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FillerMusicControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="ScrollingText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ScrollingText.resx">
-      <DependentUpon>ScrollingText.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Service References\KaraokeService\DJ.KaraokeService.LogInResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Service References\KaraokeService\DJ.KaraokeService.queueSinger.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\KaraokeService\DJ.KaraokeService.Response.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\KaraokeService\DJ.KaraokeService.Song.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
+    <AppDesigner Include="Properties\" />
     <None Include="Service References\KaraokeService\DJ.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -164,6 +154,18 @@
     </None>
     <None Include="Service References\KaraokeService\DJ2.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\KaraokeService\DJClientWPF.KaraokeService.LogInResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\KaraokeService\DJClientWPF.KaraokeService.queueSinger.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\KaraokeService\DJClientWPF.KaraokeService.Response.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\KaraokeService\DJClientWPF.KaraokeService.Song.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\KaraokeService\Service1.wsdl" />
   </ItemGroup>
@@ -187,17 +189,6 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="WMPLib">
-      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
