@@ -163,9 +163,13 @@ namespace DJClientWPF
         {
             if (ProgressUpdated != null)
             {
-                double duration = player.currentMedia.duration;
-                double position = player.controls.currentPosition;
-                ProgressUpdated(this, new DurationArgs(position, duration));
+                try
+                {
+                    double duration = player.currentMedia.duration;
+                    double position = player.controls.currentPosition;
+                    ProgressUpdated(this, new DurationArgs(position, duration));
+                }
+                catch { }
             }
 
         }

@@ -95,7 +95,7 @@ namespace DJClientWPF
               new XRect(0, HEIGHT - 20, page.Width, page.Height),
               XStringFormats.TopCenter);
 
-            gfx.DrawString("Scan this QR Code with the Karaoke Suite app on your", regFont, XBrushes.Black,
+            gfx.DrawString("Scan this QR Code with the Mobioke app on your", regFont, XBrushes.Black,
                           new XRect(0, HEIGHT +20, page.Width, page.Height),
                           XStringFormats.TopCenter);
 

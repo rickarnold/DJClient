@@ -27,6 +27,7 @@ namespace DJClientWPF
         private KaraokeFilePlayer karaokePlayer;
         private FillerMusicPlayer fillerPlayer;
         private List<queueSinger> queueList;
+        private ObservableCollection<QueueControl> queueControlList;
         private ObservableCollection<FillerMusicControl> fillerList;
         private bool isPlaying = false;
         private bool showProgressRemaining = true;
@@ -43,6 +44,7 @@ namespace DJClientWPF
             fillerPlayer = new FillerMusicPlayer();
 
             queueList = new List<queueSinger>();
+            queueControlList = new ObservableCollection<QueueControl>();
             fillerList = new ObservableCollection<FillerMusicControl>();
 
             ListBoxFillerMusic.ItemsSource = fillerList;
@@ -67,27 +69,47 @@ namespace DJClientWPF
 
             fillerPlayer.FillerQueueUpdated += FillerQueueUpdatedHandler;
 
-            karaokePlayer.Open(@"C:\Karaoke\B\Beatles - Hey Jude.mp3");////////TESTING
+            //karaokePlayer.Open(@"C:\Karaoke\B\Beatles - Hey Jude.mp3");////////TESTING
         }
 
         private void LoginCompleteHandler(object source, DJModelArgs args)
         {
-
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                MessageBox.Show("Login success = " + !args.Error);
+            }));
         }
 
         private void CreateSessionCompleteHandler(object source, DJModelArgs args)
         {
-
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                StackPanelPlaying.Visibility = Visibility.Visible;
+                StackPanelSinging.Visibility = Visibility.Visible;
+            }));
         }
 
         private void LogoutCompleteHandler(object source, DJModelArgs args)
         {
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
 
+            }));
         }
 
         private void QueueUpdatedHandler(object source, EventArgs args)
         {
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                queueControlList.Clear();
+                foreach (queueSinger singer in model.SongRequestQueue)
+                {
+                    QueueControl control = new QueueControl(singer);
+                    queueControlList.Add(control);
+                }
 
+                ListBoxSongQueue.ItemsSource = queueControlList;
+            }));
         }
 
         private void QRCodeCompleteHandler(object source, DJModelArgs args)
@@ -102,90 +124,51 @@ namespace DJClientWPF
         {
             if (!args.Error)
             {
-
+                QRGenerator.GenerateQR(model.QRCode, "Venue X", "");
             }
         }
 
         private void CDGImageInvalidatedHandler(object source, EventArgs args)
         {
-            Dispatcher.BeginInvoke(new InvokeDelegate(InvokeUpdateCDGImage));
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                try
+                {
+                    ImageCDG.Source = Helper.ConvertBitmapToSource(karaokePlayer.GetCDGImage());
+                }
+                catch { }
+            }));
         }
 
         private void KaraokeProgressUpdatedHandler(object source, DurationArgs args)
         {
+            //Check how the progress should be shown
             if (!showProgressRemaining)
                 progressString = args.CurrentDuration;
             else
                 progressString = args.RemainingDuration;
 
-            Dispatcher.BeginInvoke(new InvokeDelegate(InvokeUpdateProgress));
+            //Update the label text on the UI thread
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                LabelSongRemaining.Content = progressString;
+            }));
         }
 
         private void FillerQueueUpdatedHandler(object source, EventArgs args)
         {
-            Dispatcher.BeginInvoke(new InvokeDelegate(InvokeFillerUpdate));
-        }
-
-        #endregion
-
-        #region UI Thread Invokers
-
-        private void InvokeSongbook()
-        {
-            List<Song> songList = KaraokeDiskBrowser.GetSongList();
-            if (songList.Count > 0)
-                model.AddSongsToSongbook(songList);
-        }
-
-        private void InvokeUpdateQueue()
-        {
-            //queueList = new List<string>();
-            //foreach (queueSinger singer in model.SongRequestQueue)
-            //{
-            //    string songString = "NONE";
-            //    if (singer.songs.Length > 0)
-            //        songString = singer.songs[0].artist + " - " + singer.songs[0].title;
-            //    queueList.Add(singer.user.userName + ":\t" + songString);
-            //}
-
-            //ListBoxQueue.DataSource = queueList;
-            //ListBoxQueue.Refresh();
-            //ListBoxQueue.SelectionMode = SelectionMode.None;
-            //ListBoxQueue.Font = new Font(FontFamily.GenericSerif, 16);
-        }
-
-        private void InvokeEnableAfterLogin()
-        {
-            //buttonPlay.Enabled = true;
-            //buttonPause.Enabled = true;
-            //buttonNextSinger.Enabled = true;
-        }
-
-        private void InvokeUpdateCDGImage()
-        {
-            try
+            Dispatcher.BeginInvoke(new InvokeDelegate(()=>
             {
-                ImageCDG.Source = Helper.ConvertBitmapToSource(karaokePlayer.GetCDGImage());
-            }
-            catch { }
-        }
-
-        private void InvokeUpdateProgress()
-        {
-            LabelSongRemaining.Content = progressString;
-        }
-
-        private void InvokeFillerUpdate()
-        {
-            //Create filler music controls and add them to the list for display
-            fillerList.Clear();
-            foreach (FillerSong song in fillerPlayer.FillerQueue)
-            {
-                FillerMusicControl control = new FillerMusicControl(song);
-                fillerList.Add(control);
-            }
-            ListBoxFillerMusic.ItemsSource = fillerList;
-            ListBoxFillerMusic.SelectedIndex = fillerSelected;
+                //Create filler music controls and add them to the list for display
+                fillerList.Clear();
+                foreach (FillerSong song in fillerPlayer.FillerQueue)
+                {
+                    FillerMusicControl control = new FillerMusicControl(song);
+                    fillerList.Add(control);
+                }
+                ListBoxFillerMusic.ItemsSource = fillerList;
+                ListBoxFillerMusic.SelectedIndex = fillerSelected;
+            }));
         }
 
         #endregion
@@ -254,8 +237,8 @@ namespace DJClientWPF
         private void UpdateNowPlaying(SongToPlay songToPlay)
         {
 
-            LabelNowSinging.Content = "Now Singing: " + songToPlay.User.userName;
-            LabelNowPlaying.Content = "Now Playing: " + songToPlay.Song.artist + " - " + songToPlay.Song.title;
+            LabelNowSinging.Content = songToPlay.User.userName;
+            LabelNowPlaying.Content = songToPlay.Song.artist + " - " + songToPlay.Song.title;
 
             karaokePlayer.Open(songToPlay.Song.pathOnDisk);
             karaokePlayer.Stop();
@@ -267,22 +250,61 @@ namespace DJClientWPF
 
         private void LoginItem_Click(object sender, RoutedEventArgs e)
         {
+            LoginForm form = new LoginForm();
+            form.ShowDialog();
 
+            //Check if the user clicked to login
+            if (form.LoginClicked)
+            {
+                model.Login(form.UserName, form.Password);
+            }
         }
 
         private void StartSessionItem_Click(object sender, RoutedEventArgs e)
         {
-
+            if (model.IsLoggedIn)
+            {
+                model.CreateSession();
+            }
         }
 
         private void LogoutItem_Click(object sender, RoutedEventArgs e)
         {
-
+            if (model.IsLoggedIn)
+            {
+                model.Logout();
+            }
         }
 
         private void AddSongsItem_Click(object sender, RoutedEventArgs e)
         {
+            if (model.IsLoggedIn)
+            {
+                AddSongsForm form = new AddSongsForm();
+                form.ShowDialog();
+                List<Song> songList = form.SongList;
 
+                if (form.Success)
+                {
+                    Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+                    {
+                        if (songList.Count > 0)
+                            model.AddSongsToSongbook(songList);
+                    }));
+                }
+            }
+        }
+
+        private void MenuItemGetQR_Click(object sender, RoutedEventArgs e)
+        {
+            if (model.IsLoggedIn)
+                model.GetQRCode();
+        }
+
+        private void MenuItemNewQR_Click(object sender, RoutedEventArgs e)
+        {
+            if (model.IsLoggedIn)
+                model.GetNewQRCode();
         }
 
         #endregion
@@ -372,5 +394,7 @@ namespace DJClientWPF
                 karaokePlayer.CloseCDGWindow();
             }
         }
+
+        
     }
 }

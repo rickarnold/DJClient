@@ -19,8 +19,8 @@ namespace DJClientWPF
         const int FRAMES_PER_TICK = 4;
         const int WIDTH = 300;
         const int HEIGHT = 216;
-        const int DISPLAY_WIDTH = 294;
-        const int DISPLAY_HEIGHT = 204;
+        const int DISPLAY_WIDTH = 288;
+        const int DISPLAY_HEIGHT = 192;
 
         //CDG command instruction numbers
         const int MEMORY_PRESET = 1;
@@ -81,6 +81,9 @@ namespace DJClientWPF
         {
             FileStream cdgStream = File.Open(path, FileMode.Open);
 
+            //Clear out any old frames from a previous file
+            this.FrameList.Clear();
+
             long fileLength = cdgStream.Length;
 
             int count = 0;
@@ -92,6 +95,8 @@ namespace DJClientWPF
                 this.FrameList.Add(frame);
                 count++;
             }
+
+            cdgStream.Close();
 
             //Record the total number of frames
             _totalFrames = count;
@@ -722,7 +727,7 @@ namespace DJClientWPF
                 catch { }
             }
             ImageData = null;
-            DisplayImage = Image.Clone(new Rectangle(6, 3, DISPLAY_WIDTH, DISPLAY_HEIGHT), Image.PixelFormat);
+            DisplayImage = Image.Clone(new Rectangle(6, 12, DISPLAY_WIDTH, DISPLAY_HEIGHT), Image.PixelFormat);
 
             if (ImageInvalidated != null)
                 ImageInvalidated(this, new EventArgs());

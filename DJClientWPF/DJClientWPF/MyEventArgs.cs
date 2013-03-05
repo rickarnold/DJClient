@@ -32,6 +32,30 @@ namespace DJClientWPF
         }
     }
 
+    public class ProgressArgs : EventArgs
+    {
+        public int Current { get; private set; }
+        public int Total { get; private set; }
+
+        public ProgressArgs(int current, int total)
+        {
+            this.Current = current;
+            this.Total = total;
+        }
+    }
+
+    public class FillerStateArgs : EventArgs
+    {
+        public int NowPlayingIndex { get; private set; }
+        public bool IsPlaying { get; private set; }
+
+        public FillerStateArgs(int nowPlayingIndex, bool isPlaying)
+        {
+            this.NowPlayingIndex = nowPlayingIndex;
+            this.IsPlaying = isPlaying;
+        }
+    }
+
     public class LogInResponseArgs : EventArgs
     {
         public LogInResponse LogInResponse { get; private set; }

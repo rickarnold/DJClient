@@ -11,14 +11,17 @@ namespace DJClientWPF
 {
     class KaraokeDiskBrowser
     {
+        public delegate void ProgressHandler(object source, ProgressArgs args);
+        public event ProgressHandler ProgressUpdated;
+
         /// <summary>
         /// Opens a folder browser dialog, finds all the karaoke songs in the selected folder and any subfolders and returns a list of songs found.
         /// </summary>
         /// <returns>List of all valid karaoke songs found in the selected folder</returns>
-        public static List<Song> GetSongList()
+        public List<Song> GetSongList(string filePath)
         {
             //Open the folder dialog and ensure that a folder was selected
-            string folderPath = OpenFolderDialog();
+            string folderPath = filePath;
             if (folderPath.Equals(""))
                 return new List<Song>();
 
@@ -49,17 +52,27 @@ namespace DJClientWPF
 
             //Add the song duration to each of the songs
             WindowsMediaPlayer player = new WindowsMediaPlayer();
-            foreach (Song song in songList)
+            for (int x = 0; x < songList.Count; x++) 
             {
-                IWMPMedia media = player.newMedia(song.pathOnDisk);
-                song.duration = (int)media.duration;
+                IWMPMedia media = player.newMedia(songList[x].pathOnDisk);
+                songList[x].duration = (int)media.duration;
+
+                if (x % 10 == 0 && ProgressUpdated != null)
+                {
+                    ProgressUpdated(this, new ProgressArgs(x, songList.Count));
+                }
+            }
+
+            if (ProgressUpdated != null)
+            {
+                ProgressUpdated(this, new ProgressArgs(songList.Count, songList.Count));
             }
 
             return songList;
         }
 
         //Opens a folder dialog and returns the path of the selected folder.  Empty string returned if no folder was selected.
-        private static string OpenFolderDialog()
+        private string OpenFolderDialog()
         {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
@@ -75,7 +88,7 @@ namespace DJClientWPF
         }
 
         //Given a folder returns a list of the paths to all the subfolders in the folder
-        private static List<string> GetSubFoldersForPath(string folderPath)
+        private List<string> GetSubFoldersForPath(string folderPath)
         {
             List<string> subfolderList = new List<string>();
 
@@ -91,7 +104,7 @@ namespace DJClientWPF
         }
 
         //Given a file name get the artist and title for the song
-        private static Song GetSongFromFileName(string filePath, string fileName)
+        private Song GetSongFromFileName(string filePath, string fileName)
         {
             Song song = new Song();
             song.pathOnDisk = filePath;
@@ -113,7 +126,7 @@ namespace DJClientWPF
         }
 
         //Given an array of FileInfo's find all the valid karaoke songs
-        private static List<FileInfo> RemoveInvalidKaraokeFiles(FileInfo[] files)
+        private List<FileInfo> RemoveInvalidKaraokeFiles(FileInfo[] files)
         {
             List<FileInfo> validFiles = new List<FileInfo>();
             List<FileInfo> tempFiles = new List<FileInfo>();

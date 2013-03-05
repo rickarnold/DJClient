@@ -72,6 +72,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddSongsForm.xaml.cs">
+      <DependentUpon>AddSongsForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CDGPlayer.cs" />
     <Compile Include="CDGWindow.xaml.cs">
       <DependentUpon>CDGWindow.xaml</DependentUpon>
@@ -84,8 +87,14 @@
     <Compile Include="Helper.cs" />
     <Compile Include="KaraokeDiskBrowser.cs" />
     <Compile Include="KaraokeFilePlayer.cs" />
+    <Compile Include="LoginForm.xaml.cs">
+      <DependentUpon>LoginForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MyEventArgs.cs" />
     <Compile Include="QRGenerator.cs" />
+    <Compile Include="QueueControl.xaml.cs">
+      <DependentUpon>QueueControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ScrollingText.xaml.cs">
       <DependentUpon>ScrollingText.xaml</DependentUpon>
     </Compile>
@@ -97,11 +106,19 @@
     <Compile Include="ServiceClient.cs" />
     <Compile Include="SongToPlay.cs" />
     <Compile Include="Timer.cs" />
+    <Page Include="AddSongsForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CDGWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FillerMusicControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoginForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -117,6 +134,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="QueueControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ScrollingText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

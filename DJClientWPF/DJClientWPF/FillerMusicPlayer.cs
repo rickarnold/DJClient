@@ -12,11 +12,14 @@ namespace DJClientWPF
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler FillerQueueUpdated;
 
+
         const int DEFAULT_VOLUME = 25;
 
         public List<FillerSong> FillerQueue { get; set; }
+        public int QueuePosition { get; set; }
 
         private WindowsMediaPlayer mediaPlayer;
+        private int currentSong;
 
         public FillerMusicPlayer()
         {
@@ -105,8 +108,15 @@ namespace DJClientWPF
             if (FillerQueue.Count > 0)
             {
                 mediaPlayer.URL = FillerQueue[0].Path;
+                FillerQueue[0].IsPlaying = true;
                 mediaPlayer.controls.play();
             }
+        }
+
+        public void StopAndSetNextAsCurrent()
+        {
+            mediaPlayer.controls.stop();
+
         }
 
         //Stop playback of the current song and remove it from the queue
@@ -150,6 +160,7 @@ namespace DJClientWPF
         public string Artist { get; private set; }
         public string Title { get; private set; }
         public string Path { get; private set; }
+        public bool IsPlaying { get; set; }
 
         public FillerSong(long duration, string artist, string title, string path)
         {
@@ -157,6 +168,7 @@ namespace DJClientWPF
             this.Artist = artist;
             this.Title = title;
             this.Path = path;
+            this.IsPlaying = false;
         }
 
         public override string ToString()

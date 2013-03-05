@@ -96,7 +96,7 @@ namespace DJClientWPF
         }
 
         public int VenueID { get; private set; }
-        public bool SessionActive { get; private set; }
+        public bool IsSessionActive { get; private set; }
         public long DJKey { get; private set; }
         public List<Song> SongbookList { get; private set; }
         public List<queueSinger> SongRequestQueue { get; set; }
@@ -111,14 +111,14 @@ namespace DJClientWPF
             Timer timer = new Timer(5000);
             timer.Elapsed += TimerTickHandler;
             timer.Enabled = true;
-            timer.AutoReset = true;//false;   //Should be true but leaving it as false for now
+            timer.AutoReset = true;
             timer.Start();
         }
 
         //Timer has ticked so check the queue
         private void TimerTickHandler(object source, ElapsedEventArgs args)
         {
-            if (this.DJKey != 0)
+            if (this.IsSessionActive)
                 serviceClient.GetSingerQueueAsync(this.DJKey, null);
         }
 
@@ -153,10 +153,10 @@ namespace DJClientWPF
         //Create a new karaoke session and store the session key
         public void CreateSession()
         {
-            if (!this.SessionActive && this.IsLoggedIn)
+            if (!this.IsSessionActive && this.IsLoggedIn)
                 serviceClient.CreateSessionAsync(this.DJKey, null);
             //Not logged in so can't create a session.  Return an error event
-            else if (!this.SessionActive)
+            else if (!this.IsSessionActive)
             {
                 if (CreateSessionComplete != null)
                     CreateSessionComplete(this, new DJModelArgs(true, "You must be logged in to create a karaoke session.", null));
@@ -305,7 +305,7 @@ namespace DJClientWPF
         {
             if (!args.Response.error)
             {
-                this.SessionActive = false;
+                this.IsSessionActive = false;
                 this.IsLoggedIn = false;
                 this.DJKey = -1;
             }
@@ -326,7 +326,7 @@ namespace DJClientWPF
         {
             if (!args.Response.error)
             {
-                this.SessionActive = true;
+                this.IsSessionActive = true;
             }
 
             if (CreateSessionComplete != null)

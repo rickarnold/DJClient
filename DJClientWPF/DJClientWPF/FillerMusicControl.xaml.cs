@@ -22,11 +22,12 @@ namespace DJClientWPF
     {
         public bool IsPlaying
         {
-            get { return _isPlaying; }
+            get { return this.Song.IsPlaying; }
             set
             {
-                _isPlaying = value;
+                this.Song.IsPlaying = value;
                 OnPropertyChanged("BackgroundColor");
+                OnPropertyChanged("BackgroundGradient");
             }
         }
         public SolidColorBrush BackgroundColor
@@ -36,7 +37,28 @@ namespace DJClientWPF
                 if (this.IsPlaying)
                     return new SolidColorBrush(Color.FromArgb(255, 255, 60, 60));
                 else
-                    return new SolidColorBrush(Color.FromArgb(255, 140, 230, 255));
+                    return new SolidColorBrush(Color.FromArgb(255, 230, 230, 230));
+            }
+        }
+        public LinearGradientBrush BackgroundGradient
+        {
+            get
+            {
+                _brush = new LinearGradientBrush();
+                _brush.StartPoint = new Point(0.5, 0);
+                _brush.EndPoint = new Point(0.5, 1);
+                if (this.IsPlaying)
+                {
+                    _brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 255, 100, 100), 0));
+                    _brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 255, 50, 50), 1.0));
+                }
+                else
+                {
+                    _brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 100, 100, 100), 0));
+                    _brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 50, 50, 50), 1.0));
+                }
+                
+                return _brush;
             }
         }
         public FillerSong Song { get; set; }
@@ -51,6 +73,7 @@ namespace DJClientWPF
             }
         }
 
+        private LinearGradientBrush _brush;
         private bool _isPlaying;
         private int _position;
         private string _remaining;
@@ -60,6 +83,11 @@ namespace DJClientWPF
             this.Song = song;
             this.DisplayName = song.Artist + " - " + song.Title;
             _position = (int)song.Duration / 2;
+
+            _brush = new LinearGradientBrush();
+            _brush.StartPoint = new Point(0.5, 0);
+            _brush.EndPoint = new Point(0.5, 1);
+            
 
             InitializeComponent();
         }
