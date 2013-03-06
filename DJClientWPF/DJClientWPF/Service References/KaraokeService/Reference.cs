@@ -638,6 +638,9 @@ namespace DJClientWPF.KaraokeService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJNewUserWaitTime", ReplyAction="http://tempuri.org/IDJ/DJNewUserWaitTimeResponse")]
         DJClientWPF.KaraokeService.Response DJNewUserWaitTime(long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJTestQueueFill", ReplyAction="http://tempuri.org/IDJ/DJTestQueueFillResponse")]
+        DJClientWPF.KaraokeService.Response DJTestQueueFill(long DJKey);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -733,6 +736,10 @@ namespace DJClientWPF.KaraokeService {
         
         public DJClientWPF.KaraokeService.Response DJNewUserWaitTime(long DJKey) {
             return base.Channel.DJNewUserWaitTime(DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJTestQueueFill(long DJKey) {
+            return base.Channel.DJTestQueueFill(DJKey);
         }
     }
 }

@@ -261,6 +261,14 @@ namespace DJClientWPF
             });
         }
 
+        public void GetTestQueueAsync(long djKey)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+                {
+                    GetTestQueue(djKey);
+                });
+        }
+
         #endregion
 
         #region Singer Queue Workers
@@ -355,6 +363,14 @@ namespace DJClientWPF
             {
                 PopQueueComplete(this, new ResponseArgs(response, userState));
             }
+        }
+
+        private void GetTestQueue(long djKey)
+        {
+            //Fill up the queue for testing and then update the queue
+            Response response = _client.DJTestQueueFill(djKey);
+
+            GetSingerQueue(djKey, null);
         }
 
         #endregion

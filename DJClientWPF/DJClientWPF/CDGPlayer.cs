@@ -98,6 +98,8 @@ namespace DJClientWPF
 
             cdgStream.Close();
 
+            ClearBitmap();
+
             //Record the total number of frames
             _totalFrames = count;
             _currentFrame = 0;
@@ -122,6 +124,7 @@ namespace DJClientWPF
         {
             _frameTimer.Stop();
             _currentFrame = 0;
+            ClearBitmap();
         }
 
         #endregion
@@ -138,11 +141,11 @@ namespace DJClientWPF
             else if (_frameTimer.Period == 17)
                 _frameTimer.Period = 13;
 
+            //Do a set number of frames per tick as the timer can't handle non integer tick values
             for (int i = 0; i < FRAMES_PER_TICK; i++)
             {
                 if (_currentFrame < _totalFrames)
                 {
-                    //Do a set number of frames per tick as the timer can't keep up with the fast pace
                     Frame frame = this.FrameList[_currentFrame];
 
                     //Check that this frame is a CDG command
@@ -186,7 +189,7 @@ namespace DJClientWPF
                     _frameTimer.Stop();
             }
 
-            EndBitmpaUpdate();
+            EndBitmapUpdate();
         }
 
         #endregion
@@ -216,15 +219,12 @@ namespace DJClientWPF
 
             int colorIndex = data[0] & 0x0F;
 
-            int imageDataScan = ImageData.Scan0.ToInt32();
-
             //Paint the entire screen this color
             for (int y = 0; y < HEIGHT; y++)
                 for (int x = 0; x < WIDTH; x++)
                 {
                     SetPixel(x, y, colorIndex);
                 }
-
         }
 
         /// <summary>
@@ -255,6 +255,7 @@ namespace DJClientWPF
                 for (int x = 0; x < 12; x++)
                 {
                     SetPixel(x, y, colorIndex);
+                    SetPixel(x + 204, y, colorIndex);
                 }
 
             for (int y = 204; y < HEIGHT; y++)
@@ -710,7 +711,7 @@ namespace DJClientWPF
             }
         }
 
-        private void EndBitmpaUpdate()
+        private void EndBitmapUpdate()
         {
             if (ImageData == null)
                 throw new InvalidOperationException();
@@ -798,6 +799,20 @@ namespace DJClientWPF
                 // Upper 4 bits
                 return byteVal >> 4;
             }
+        }
+
+        private void ClearBitmap()
+        {
+            BeginBitmapUpdate();
+
+            this.Palette.Entries[0] = Color.Black;
+            for (int x = 0; x < WIDTH; x++)
+                for (int y = 0; y < HEIGHT; y++)
+                    SetPixel(x, y, 0);
+
+            this.Image.Palette = this.Palette;
+
+            EndBitmapUpdate();
         }
 
         #endregion

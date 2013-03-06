@@ -257,6 +257,42 @@ namespace DJClientWPF
             }
         }
 
+        //Returns true if the provided singer queue is different than the one currently in memory
+        private bool QueueHasChanged(List<queueSinger> newQueue)
+        {
+            int currentLength = this.SongRequestQueue.Count;
+
+            //If the counts are different then they are different
+            if (currentLength != newQueue.Count)
+                return true;
+
+            for (int i = 0; i < currentLength; i++)
+            {
+                queueSinger currentSinger = this.SongRequestQueue[i];
+                queueSinger newSinger = newQueue[i];
+
+                Song[] currentSongs = currentSinger.songs;
+                Song[] newSongs = newSinger.songs;
+
+                //User has added a new song request
+                if (currentSongs.Length != newSongs.Length)
+                    return true;
+
+                if (currentSinger.user.userID != newSinger.user.userID)
+                    return true;
+                if (currentSongs.Length != newSongs.Length)
+                    return true;
+                //Iterate over the songs and check that they're all the same
+                for (int x = 0; x < currentSongs.Length; x++)
+                {
+                    if (currentSongs[x].ID != newSongs[x].ID)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         #endregion Queue Management
 
         #region Login Event Handlers
@@ -524,42 +560,6 @@ namespace DJClientWPF
 
         #endregion
 
-        //Returns true if the provided singer queue is different than the one currently in memory
-        private bool QueueHasChanged(List<queueSinger> newQueue)
-        {
-            int currentLength = this.SongRequestQueue.Count;
-
-            //If the counts are different then they are different
-            if (currentLength != newQueue.Count)
-                return true;
-
-            for (int i = 0; i < currentLength; i++)
-            {
-                queueSinger currentSinger = this.SongRequestQueue[i];
-                queueSinger newSinger = newQueue[i];
-
-                Song[] currentSongs = currentSinger.songs;
-                Song[] newSongs = newSinger.songs;
-
-                //User has added a new song request
-                if (currentSongs.Length != newSongs.Length)
-                    return true;
-
-                if (currentSinger.user.userID != newSinger.user.userID)
-                    return true;
-                if (currentSongs.Length != newSongs.Length)
-                    return true;
-                //Iterate over the songs and check that they're all the same
-                for (int x = 0; x < currentSongs.Length; x++)
-                {
-                    if (currentSongs[x].ID != newSongs[x].ID)
-                        return true;
-                }
-            }
-
-            return false;
-        }
-
         #region QR Methods
 
         public void GetQRCode()
@@ -603,6 +603,16 @@ namespace DJClientWPF
 
             if (QRNewCodeComplete != null)
                 QRNewCodeComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+        }
+
+        #endregion
+
+        #region Testing Methods
+
+        public void GetTestQueue()
+        {
+            if (this.IsLoggedIn)
+                serviceClient.GetTestQueueAsync(this.DJKey);
         }
 
         #endregion

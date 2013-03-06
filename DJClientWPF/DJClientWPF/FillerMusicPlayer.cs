@@ -17,6 +17,8 @@ namespace DJClientWPF
 
         public List<FillerSong> FillerQueue { get; set; }
         public int QueuePosition { get; set; }
+        public bool IsPlaying { get; private set; }
+        public bool StartAtBeginning { get; set; }
 
         private WindowsMediaPlayer mediaPlayer;
         private int currentSong;
@@ -27,6 +29,8 @@ namespace DJClientWPF
             mediaPlayer = new WindowsMediaPlayer();
 
             mediaPlayer.settings.volume = DEFAULT_VOLUME;
+
+            this.StartAtBeginning = false;/////////////////////////////////////////////////////////
         }
 
         #region Browse Methods
@@ -110,13 +114,26 @@ namespace DJClientWPF
                 mediaPlayer.URL = FillerQueue[0].Path;
                 FillerQueue[0].IsPlaying = true;
                 mediaPlayer.controls.play();
+
+                if (!this.StartAtBeginning)
+                {
+                    //Start a minute in if not set as start at beginning
+                    if (mediaPlayer.currentMedia.duration < 120)
+                        mediaPlayer.controls.currentPosition = 60;
+                    else
+                        mediaPlayer.controls.currentPosition = mediaPlayer.currentMedia.duration / 2;
+                }
+
+                this.IsPlaying = true;
             }
+            else
+                this.IsPlaying = false;
         }
 
         public void StopAndSetNextAsCurrent()
         {
             mediaPlayer.controls.stop();
-
+            this.IsPlaying = false;
         }
 
         //Stop playback of the current song and remove it from the queue
@@ -125,6 +142,7 @@ namespace DJClientWPF
             mediaPlayer.controls.stop();
             if (FillerQueue.Count > 0)
                 FillerQueue.RemoveAt(0);
+            this.IsPlaying = false;
         }
 
         //Set the volume of the music being played back, range is [0,100]

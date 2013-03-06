@@ -26,6 +26,11 @@ namespace DJClientWPF
             this.LoginClicked = false;
 
             InitializeComponent();
+
+            TextBoxUserName.Focus();
+
+            TextBoxUserName.Text = "rick";
+            TextBoxPassword.Password = "changeme!";
         }
 
         private void ButtonLogin_Click(object sender, RoutedEventArgs e)

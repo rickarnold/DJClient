@@ -66,10 +66,9 @@ namespace DJClientWPF
 
             karaokePlayer.ImageInvalidated += CDGImageInvalidatedHandler;
             karaokePlayer.ProgressUpdated += KaraokeProgressUpdatedHandler;
+            karaokePlayer.SongFinished += SongFinishedHandler;
 
             fillerPlayer.FillerQueueUpdated += FillerQueueUpdatedHandler;
-
-            //karaokePlayer.Open(@"C:\Karaoke\B\Beatles - Hey Jude.mp3");////////TESTING
         }
 
         private void LoginCompleteHandler(object source, DJModelArgs args)
@@ -171,6 +170,12 @@ namespace DJClientWPF
             }));
         }
 
+        private void SongFinishedHandler(object source, EventArgs args)
+        {
+            //When the song finishes it's like clicking next
+            ButtonNext_Click(ButtonNext, new RoutedEventArgs());
+        }
+
         #endregion
 
         #region Volume Control Sliders
@@ -188,7 +193,8 @@ namespace DJClientWPF
 
         private void SliderFillerVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
+            if (fillerPlayer != null)
+                fillerPlayer.SetVolume((int)SliderFillerVolume.Value);
         }
 
         #endregion
@@ -202,16 +208,21 @@ namespace DJClientWPF
                 karaokePlayer.Play();
                 isPlaying = true;
             }
+            if (fillerPlayer.IsPlaying)
+            {
+                fillerPlayer.StopAndRemoveCurrent();
+            }
         }
 
         private void ButtonPause_Click(object sender, RoutedEventArgs e)
         {
             if (isPlaying)
+            {
                 karaokePlayer.Pause();
+                isPlaying = false;
+            }
             else
                 karaokePlayer.Play();
-
-            isPlaying = !isPlaying;
         }
 
         private void ButtonNext_Click(object sender, RoutedEventArgs e)
@@ -227,6 +238,8 @@ namespace DJClientWPF
 
             if (songToPlay != null)
                 UpdateNowPlaying(songToPlay);
+
+            fillerPlayer.PlayCurrent();
         }
 
         private void ButtonRestart_Click(object sender, RoutedEventArgs e)
@@ -305,6 +318,18 @@ namespace DJClientWPF
         {
             if (model.IsLoggedIn)
                 model.GetNewQRCode();
+        }
+
+        private void MenuItemTestQueue_Click(object sender, RoutedEventArgs e)
+        {
+            model.GetTestQueue();
+        }
+
+        private void MenuItemTimerOption_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+
+            showProgressRemaining = item.IsChecked;
         }
 
         #endregion
@@ -394,6 +419,8 @@ namespace DJClientWPF
                 karaokePlayer.CloseCDGWindow();
             }
         }
+
+
 
         
     }

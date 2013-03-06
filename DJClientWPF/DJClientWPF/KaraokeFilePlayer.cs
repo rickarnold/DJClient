@@ -16,6 +16,7 @@ namespace DJClientWPF
 
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler ImageInvalidated;
+        public event EventHandler SongFinished;
 
         public delegate void DurationHandler(object source, DurationArgs args);
         public event DurationHandler ProgressUpdated;
@@ -36,6 +37,7 @@ namespace DJClientWPF
         private CDGWindow cdgWindow;
         private int volume = 50;
         private bool isCDGOpen;
+        private bool isPlaying = false;
 
         //Timer for updating the progress
         private Timer progressTimer;
@@ -79,10 +81,17 @@ namespace DJClientWPF
             player.URL = filePath;
             player.controls.stop();
             cdgPlayer.OpenCDGFile(ConvertMP3PathToCDG(filePath));
+
+            if (!isCDGOpen)
+            {
+                isCDGOpen = true;
+                cdgWindow.Show();
+            }
         }
 
         public void Play()
         {
+            isPlaying = true;
             if (!isCDGOpen)
             {
                 isCDGOpen = true;
@@ -100,6 +109,7 @@ namespace DJClientWPF
 
         public void Stop()
         {
+            isPlaying = false;
             player.controls.stop();
             cdgPlayer.StopCDGFile();
             progressTimer.Stop();
@@ -128,6 +138,15 @@ namespace DJClientWPF
                 //The music takes a moment to start up so just sleep a bit and then start the cdg playback
                 System.Threading.Thread.Sleep(CDG_DELAY);
                 cdgPlayer.PlayCDGFile();
+                isPlaying = true;
+            }
+
+            else if ((WMPLib.WMPPlayState)NewState == WMPLib.WMPPlayState.wmppsStopped && isPlaying)
+            {
+                cdgPlayer.StopCDGFile();
+                if (SongFinished != null)
+                    SongFinished(this, new EventArgs());
+                isPlaying = false;
             }
         }
 
