@@ -24,6 +24,7 @@ namespace DJClientWPF
             return fileName.Substring(0, dotIndex);
         }
 
+        //Given a bitmap return a bitmap source that can be displayed in an image control
         public static BitmapSource ConvertBitmapToSource(Bitmap bitmap)
         {
             IntPtr hBitmap = bitmap.GetHbitmap();
@@ -35,6 +36,17 @@ namespace DJClientWPF
             {
                 DeleteObject(hBitmap);
             }
+        }
+
+        public static BitmapImage OpenBitmapSource(string path)
+        {
+            BitmapImage currentImage = new BitmapImage();
+            currentImage.BeginInit();
+            currentImage.UriSource = new Uri(path, UriKind.Relative);
+            currentImage.CacheOption = BitmapCacheOption.OnLoad;
+            currentImage.EndInit();
+
+            return currentImage;
         }
     }
 }

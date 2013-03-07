@@ -7,12 +7,14 @@ using WMPLib;
 using System.Drawing;
 using DJClientWPF.KaraokeService;
 using System.Timers;
+using System.Windows.Media.Imaging;
 
 namespace DJClientWPF
 {
     class KaraokeFilePlayer
     {
         const int CDG_DELAY = 350;  //Delay in ms for starting the cdg playback in order to be synced with the lyrics
+        public const string BACKGROUND_IMAGE_PATH = @"background.png";
 
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler ImageInvalidated;
@@ -31,6 +33,8 @@ namespace DJClientWPF
                     player.settings.volume = volume;
             }
         }
+        public BitmapImage BackgroundImage { get; private set; }
+
 
         private WindowsMediaPlayer player;
         private CDGPlayer cdgPlayer;
@@ -165,6 +169,16 @@ namespace DJClientWPF
         public Bitmap GetCDGImage()
         {
             return cdgPlayer.DisplayImage;
+        }
+
+        //Set the image that the player will display between singers
+        public void UpdateBackgroundImage()
+        {
+            try
+            {
+                this.BackgroundImage = Helper.OpenBitmapSource(BACKGROUND_IMAGE_PATH);// Helper.ConvertBitmapToSource(new Bitmap(BACKGROUND_IMAGE_PATH));
+            }
+            catch { }
         }
 
         //The cdg image has been invalidated so get the most recent copy to display and alert the main window as well

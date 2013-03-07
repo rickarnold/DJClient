@@ -176,6 +176,13 @@ namespace DJClientWPF
             ButtonNext_Click(ButtonNext, new RoutedEventArgs());
         }
 
+        //User has changed the background image to display between singers.  Update the karaoke player
+        void BackgroundImageUpdatedHandler(object source, EventArgs args)
+        {
+            if (karaokePlayer != null)
+                karaokePlayer.UpdateBackgroundImage();
+        }
+
         #endregion
 
         #region Volume Control Sliders
@@ -332,6 +339,13 @@ namespace DJClientWPF
             showProgressRemaining = item.IsChecked;
         }
 
+        private void MenuItemBackgroundImage_Click(object sender, RoutedEventArgs e)
+        {
+            BackgroundImageSelector background = new BackgroundImageSelector();
+            background.BackgroundImageUpdated += new BackgroundImageSelector.EventHandler(BackgroundImageUpdatedHandler);
+            background.Show();
+        }
+
         #endregion
 
         #region Filler Music Methods
@@ -419,6 +433,7 @@ namespace DJClientWPF
                 karaokePlayer.CloseCDGWindow();
             }
         }
+
 
     }
 }

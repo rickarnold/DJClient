@@ -813,6 +813,7 @@ namespace DJClientWPF
             this.Image.Palette = this.Palette;
 
             EndBitmapUpdate();
+
         }
 
         #endregion
