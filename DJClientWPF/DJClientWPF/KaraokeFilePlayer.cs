@@ -8,6 +8,7 @@ using System.Drawing;
 using DJClientWPF.KaraokeService;
 using System.Timers;
 using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace DJClientWPF
 {
@@ -33,9 +34,8 @@ namespace DJClientWPF
                     player.settings.volume = volume;
             }
         }
-        public BitmapImage BackgroundImage { get; private set; }
 
-
+        private BitmapImage backgroundImage;
         private WindowsMediaPlayer player;
         private CDGPlayer cdgPlayer;
         private CDGWindow cdgWindow;
@@ -60,34 +60,26 @@ namespace DJClientWPF
             progressTimer.Elapsed += ProgressTimerElpased;
             progressTimer.AutoReset = true;
 
-            cdgPlayer.ImageInvalidated += ImageInvalidatedHandler;
             player.PlayStateChange += Player_PlayStateChange;
+
+            //Get the background image from file if it exists
+            if (File.Exists(BACKGROUND_IMAGE_PATH))
+            {
+                backgroundImage = Helper.OpenBitmapImage(BACKGROUND_IMAGE_PATH);
+            }
         }
 
         #region Playback Methods
 
         //Prepare the player for the next singer by displaying the wait image and the name of the next singer
-        public bool ReadyNextSong(queueSinger singer)
+        public void ReadyNextSong(SongToPlay songToPlay)
         {
-            if (singer.songs.Length > 0)
-            {
-                string filePath = singer.songs[0].pathOnDisk;
-                player.URL = filePath;
-                cdgPlayer.OpenCDGFile(ConvertMP3PathToCDG(filePath));
-                UpdateToNextSingerImage(singer);
-                return true;
-            }
-            else
-                return false;
-        }
-
-        //Open the given file so that the karaoke player can play it upon request
-        public void Open(string filePath)
-        {
+            string filePath = songToPlay.Song.pathOnDisk;// singer.songs[0].pathOnDisk;
             player.URL = filePath;
             player.controls.stop();
             cdgPlayer.OpenCDGFile(ConvertMP3PathToCDG(filePath));
-
+            UpdateToNextSingerImage(songToPlay);
+            
             if (!isCDGOpen)
             {
                 isCDGOpen = true;
@@ -95,9 +87,25 @@ namespace DJClientWPF
             }
         }
 
+        ////Open the given file so that the karaoke player can play it upon request
+        //public void Open(string filePath)
+        //{
+        //    player.URL = filePath;
+        //    player.controls.stop();
+        //    cdgPlayer.OpenCDGFile(ConvertMP3PathToCDG(filePath));
+
+        //    if (!isCDGOpen)
+        //    {
+        //        isCDGOpen = true;
+        //        cdgWindow.Show();
+        //    }
+        //}
+
         //Play the currently loaded karaoke song
         public void Play()
         {
+            cdgPlayer.ImageInvalidated += ImageInvalidatedHandler;
+
             isPlaying = true;
             if (!isCDGOpen)
             {
@@ -118,6 +126,8 @@ namespace DJClientWPF
         //Stop current playback, resetting position to 0
         public void Stop()
         {
+            cdgPlayer.ImageInvalidated -= ImageInvalidatedHandler;
+
             isPlaying = false;
             player.controls.stop();
             cdgPlayer.StopCDGFile();
@@ -176,7 +186,7 @@ namespace DJClientWPF
         {
             try
             {
-                this.BackgroundImage = Helper.OpenBitmapSource(BACKGROUND_IMAGE_PATH);// Helper.ConvertBitmapToSource(new Bitmap(BACKGROUND_IMAGE_PATH));
+                backgroundImage = Helper.OpenBitmapImage(BACKGROUND_IMAGE_PATH);
             }
             catch { }
         }
@@ -191,10 +201,12 @@ namespace DJClientWPF
         }
 
         //A new singer is ready so set the image to the wait screen with the appropriate information
-        private void UpdateToNextSingerImage(queueSinger singer)
+        private void UpdateToNextSingerImage(SongToPlay songToPlay)
         {
             //TODO:  
             //Show default wait image.  Write the singer information to screen.
+            if (backgroundImage != null)
+                cdgWindow.CDGImage = Helper.ConvertBitmapImageToBitmap(backgroundImage);
         }
 
         #endregion

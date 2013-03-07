@@ -36,7 +36,7 @@ namespace DJClientWPF
             //Look for the current background image
             if (File.Exists(BACKGROUND_IMAGE_PATH))
             {
-                ImageCurrent.Source = Helper.OpenBitmapSource(BACKGROUND_IMAGE_PATH);
+                ImageCurrent.Source = Helper.OpenBitmapImage(BACKGROUND_IMAGE_PATH);
             }
         }
 
@@ -81,7 +81,7 @@ namespace DJClientWPF
                 //Try opening the file
                 try
                 {
-                    ImageCurrent.Source = Helper.OpenBitmapSource(BACKGROUND_IMAGE_PATH);
+                    ImageCurrent.Source = Helper.OpenBitmapImage(BACKGROUND_IMAGE_PATH);
                     newImagePath = dialog.FileName;
 
                     LabelError.Visibility = Visibility.Hidden;

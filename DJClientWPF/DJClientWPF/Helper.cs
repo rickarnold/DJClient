@@ -5,6 +5,8 @@ using System.Text;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Windows;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace DJClientWPF
 {
@@ -38,7 +40,36 @@ namespace DJClientWPF
             }
         }
 
-        public static BitmapImage OpenBitmapSource(string path)
+        public static BitmapImage ConvertBitmapToImage(Bitmap bitmap)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                bitmap.Save(stream, ImageFormat.Png);
+                stream.Position = 0;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = stream;
+                bitmapImage.EndInit();
+
+                return bitmapImage;
+            }
+        }
+
+        public static Bitmap ConvertBitmapImageToBitmap(BitmapImage bitmapImage)
+        {
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                // return bitmap; <-- leads to problems, stream is closed/closing ...
+                return new Bitmap(bitmap);
+            }
+        }
+
+        public static BitmapImage OpenBitmapImage(string path)
         {
             BitmapImage currentImage = new BitmapImage();
             currentImage.BeginInit();

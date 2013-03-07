@@ -260,8 +260,9 @@ namespace DJClientWPF
             LabelNowSinging.Content = songToPlay.User.userName;
             LabelNowPlaying.Content = songToPlay.Song.artist + " - " + songToPlay.Song.title;
 
-            karaokePlayer.Open(songToPlay.Song.pathOnDisk);
+            //karaokePlayer.Open(songToPlay.Song.pathOnDisk);
             karaokePlayer.Stop();
+            karaokePlayer.ReadyNextSong(songToPlay);
         }
 
         #endregion
