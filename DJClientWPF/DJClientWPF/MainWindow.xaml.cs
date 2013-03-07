@@ -420,8 +420,5 @@ namespace DJClientWPF
             }
         }
 
-
-
-        
     }
 }

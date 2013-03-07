@@ -4,18 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="60" d:DesignWidth="400">
-    <Grid>
+             d:DesignHeight="65" d:DesignWidth="400">
+    
+    <Grid x:Name="GridMain" Height="Auto" Width="Auto" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="30" x:Name="RowSongs"/>
         </Grid.RowDefinitions>
         
-        <Label x:Name="LabelSinger" Content="Rick Arnold" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" FontWeight="Bold"/>
+        <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.RowSpan="2" Margin="2,2,2,2" BorderBrush="Silver" BorderThickness="2" 
+                CornerRadius="8"/>
         
+        <Label x:Name="LabelSinger" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" FontWeight="Bold" Margin="8,0,0,0"
+               Content="Greg"/>
+
+        <Border x:Name="BorderExpand" CornerRadius="10" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,10,0" BorderBrush="LightGreen" BorderThickness="10"/>
+        <Label x:Name="LabelExpand" Content=" + " VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="16" FontWeight="Bold" Margin="15,0,5,0"
+               Foreground="Green" MouseLeftButtonDown="LabelExpand_MouseLeftButtonDown"/>
+
         <Border  VerticalAlignment="Bottom" Height="2" Margin="10,0,10,0" BorderBrush="Silver"/>
         
-        <Label x:Name="LabelSong" Content="Rage Against The Machine - Bulls On Parade" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="14"
-               Margin="15,0,0,0" FontStyle="Italic"/>
+        <Label x:Name="LabelSong" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12" Margin="15,0,0,0" FontStyle="Italic"
+               Content="Testing - Testing"/>
     </Grid>
 </UserControl>

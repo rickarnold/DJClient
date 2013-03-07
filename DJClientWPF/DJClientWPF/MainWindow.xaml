@@ -109,12 +109,9 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox x:Name="ListBoxSongQueue" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
+                <ListBox x:Name="ListBoxSongQueue" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4"
+                         ItemContainerStyle="{StaticResource ContainerStyle}">
+                    
                 </ListBox>
                 
                 <Button x:Name="ButtonQueueAdd" Grid.Row="1" Grid.Column="0" Content="Add" Click="ButtonQueueAdd_Click" Margin="10,10,10,10" FontWeight="Normal"/>
@@ -140,12 +137,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox x:Name="ListBoxFillerMusic" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4" Grid.Row="0">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
+                <ListBox x:Name="ListBoxFillerMusic" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4" Grid.Row="0"
+                         ItemContainerStyle="{StaticResource ContainerStyle}">
                 </ListBox>
                 
                 <Button x:Name="ButtonFillerBrowse" Content="Browse" Click="ButtonFillerBrowse_Click" Margin="10,10,10,10" FontWeight="Normal"

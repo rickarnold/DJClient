@@ -75,6 +75,9 @@
     <Compile Include="AddSongsForm.xaml.cs">
       <DependentUpon>AddSongsForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BackgroundImageSelector.xaml.cs">
+      <DependentUpon>BackgroundImageSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CDGPlayer.cs" />
     <Compile Include="CDGWindow.xaml.cs">
       <DependentUpon>CDGWindow.xaml</DependentUpon>
@@ -107,6 +110,10 @@
     <Compile Include="SongToPlay.cs" />
     <Compile Include="Timer.cs" />
     <Page Include="AddSongsForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BackgroundImageSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

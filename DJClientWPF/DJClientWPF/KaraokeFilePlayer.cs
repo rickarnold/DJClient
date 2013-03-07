@@ -12,7 +12,7 @@ namespace DJClientWPF
 {
     class KaraokeFilePlayer
     {
-        const int CDG_DELAY =350;
+        const int CDG_DELAY = 350;  //Delay in ms for starting the cdg playback in order to be synced with the lyrics
 
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler ImageInvalidated;
@@ -23,7 +23,7 @@ namespace DJClientWPF
 
         public int Volume
         {
-            get { return Volume; }
+            get { return volume; }
             set
             {
                 volume = value;
@@ -62,6 +62,7 @@ namespace DJClientWPF
 
         #region Playback Methods
 
+        //Prepare the player for the next singer by displaying the wait image and the name of the next singer
         public bool ReadyNextSong(queueSinger singer)
         {
             if (singer.songs.Length > 0)
@@ -76,6 +77,7 @@ namespace DJClientWPF
                 return false;
         }
 
+        //Open the given file so that the karaoke player can play it upon request
         public void Open(string filePath)
         {
             player.URL = filePath;
@@ -89,6 +91,7 @@ namespace DJClientWPF
             }
         }
 
+        //Play the currently loaded karaoke song
         public void Play()
         {
             isPlaying = true;
@@ -101,12 +104,14 @@ namespace DJClientWPF
             progressTimer.Start();
         }
 
+        //Pause karaoke playback
         public void Pause()
         {
             player.controls.pause();
             cdgPlayer.PauseCDGFile();
         }
 
+        //Stop current playback, resetting position to 0
         public void Stop()
         {
             isPlaying = false;
@@ -115,12 +120,14 @@ namespace DJClientWPF
             progressTimer.Stop();
         }
 
+        //Restart the currently playing karaoke song from the beginning
         public void Restart()
         {
             Stop();
             Play();
         }
 
+        //Close the second window
         public void CloseCDGWindow()
         {
             if (isCDGOpen)
@@ -154,11 +161,13 @@ namespace DJClientWPF
 
         #region Image Methods
 
+        //Return the cdg image to be displayed
         public Bitmap GetCDGImage()
         {
             return cdgPlayer.DisplayImage;
         }
 
+        //The cdg image has been invalidated so get the most recent copy to display and alert the main window as well
         private void ImageInvalidatedHandler(object sender, EventArgs args)
         {
             if (this.ImageInvalidated != null)
@@ -178,6 +187,7 @@ namespace DJClientWPF
 
         #region Progress Timer Methods
 
+        //Send an update on the amount of time left for the currently playing song
         private void ProgressTimerElpased(object source, ElapsedEventArgs args)
         {
             if (ProgressUpdated != null)
@@ -197,6 +207,7 @@ namespace DJClientWPF
 
         #region Private Methods
 
+        //Given a path to an mp3 karaoke file, return the cdg file path that matches the song
         private string ConvertMP3PathToCDG(string mp3Path)
         {
             return mp3Path.Replace(".mp3", ".cdg");
