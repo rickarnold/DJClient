@@ -153,7 +153,7 @@ namespace DJClientWPF
 
         private void FillerQueueUpdatedHandler(object source, EventArgs args)
         {
-            Dispatcher.BeginInvoke(new InvokeDelegate(()=>
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
             {
                 //Create filler music controls and add them to the list for display
                 fillerList.Clear();
@@ -240,6 +240,14 @@ namespace DJClientWPF
                 isPlaying = false;
                 karaokePlayer.Stop();
             }
+            //Could be skipping a singer, check with user
+            else if (model.CurrentSong != null)
+            {
+                MessageBoxResult result = MessageBox.Show("Are you sure you wish to skip this singer?\n\n" + model.CurrentSong.User.userName + "\n"
+                    + model.CurrentSong.Song.artist + " - " + model.CurrentSong.Song.title,  "Are You Sure?", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.Cancel)
+                    return;
+            }
 
             SongToPlay songToPlay = model.GetNextSongRequest();
 
@@ -261,9 +269,6 @@ namespace DJClientWPF
 
             karaokePlayer.Stop();
             karaokePlayer.ReadyNextSong(songToPlay);
-
-            //if (model.BackgroundImage != null)
-            //    ImageCDG.Source = model.BackgroundImage;
         }
 
         #endregion

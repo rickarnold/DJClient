@@ -169,8 +169,6 @@ namespace DJClientWPF
             if (this.ImageInvalidated != null)
                 this.ImageInvalidated(this, new EventArgs());
 
-            BitmapSource source = Helper.ConvertBitmapToSource(cdgPlayer.DisplayImage);
-
             cdgWindow.CDGImage = cdgPlayer.DisplayImage;
             mainWindow.UpdateCDG(cdgPlayer.DisplayImage);
         }

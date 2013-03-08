@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="400">
-    <Grid Height="30" Width="Auto" HorizontalAlignment="Stretch" Background="White" Margin="1,1,1,1">
+    <Grid Height="30" Width="Auto" HorizontalAlignment="Stretch" Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -13,6 +13,6 @@
         <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.RowSpan="1" Margin="2,2,2,2" BorderBrush="Silver" BorderThickness="2" 
                 CornerRadius="8"/>
 
-        <Label Content="{Binding DisplayName}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11" FontWeight="Normal" Foreground="Black"/>
+        <Label Content="{Binding DisplayName}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11" FontWeight="Normal" Foreground="Black" Margin="5,0,0,0"/>
     </Grid>
 </UserControl>

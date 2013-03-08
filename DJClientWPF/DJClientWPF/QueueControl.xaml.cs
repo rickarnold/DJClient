@@ -57,7 +57,7 @@ namespace DJClientWPF
 
             LabelExpand.Margin = new Thickness(15, 0, 3, 0);
             LabelExpand.Content = "-  ";
-            LabelExpand.Foreground = new SolidColorBrush(Colors.Red);
+            //LabelExpand.Foreground = new SolidColorBrush(Colors.Red);
             BorderExpand.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 125, 125));
 
             //Do nothing if the user has only one thing to display
@@ -96,7 +96,7 @@ namespace DJClientWPF
 
             LabelExpand.Margin = new Thickness(15, 0, 5, 0);
             LabelExpand.Content = " + ";
-            LabelExpand.Foreground = new SolidColorBrush(Colors.Green);
+            //LabelExpand.Foreground = new SolidColorBrush(Colors.Green);
             BorderExpand.BorderBrush = new SolidColorBrush(Colors.LightGreen);
 
             //Clear out any expanded labels created
