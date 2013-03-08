@@ -124,24 +124,20 @@ namespace DJClientWPF
                         mediaPlayer.controls.currentPosition = mediaPlayer.currentMedia.duration / 2;
                 }
 
+                FillerQueue.RemoveAt(0);
+
                 this.IsPlaying = true;
             }
             else
                 this.IsPlaying = false;
-        }
 
-        public void StopAndSetNextAsCurrent()
-        {
-            mediaPlayer.controls.stop();
-            this.IsPlaying = false;
+            RaiseQueueUpdated();
         }
 
         //Stop playback of the current song and remove it from the queue
-        public void StopAndRemoveCurrent()
+        public void Stop()
         {
             mediaPlayer.controls.stop();
-            if (FillerQueue.Count > 0)
-                FillerQueue.RemoveAt(0);
             this.IsPlaying = false;
         }
 

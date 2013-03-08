@@ -17,7 +17,7 @@ namespace DJClientWPF
         const int CDG_DELAY = 350;  //Delay in ms for starting the cdg playback in order to be synced with the lyrics
 
         public delegate void EventHandler(object source, EventArgs args);
-        public event EventHandler ImageInvalidated;
+        //public event EventHandler ImageInvalidated;
         public event EventHandler SongFinished;
 
         public delegate void DurationHandler(object source, DurationArgs args);
@@ -166,8 +166,8 @@ namespace DJClientWPF
         //The cdg image has been invalidated so get the most recent copy to display and alert the main window as well
         private void ImageInvalidatedHandler(object sender, EventArgs args)
         {
-            if (this.ImageInvalidated != null)
-                this.ImageInvalidated(this, new EventArgs());
+            //if (this.ImageInvalidated != null)
+            //    this.ImageInvalidated(this, new EventArgs());
 
             cdgWindow.CDGImage = cdgPlayer.DisplayImage;
             mainWindow.UpdateCDG(cdgPlayer.DisplayImage);

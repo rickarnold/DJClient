@@ -61,7 +61,7 @@ namespace DJClientWPF
             model.CreateSessionComplete += CreateSessionCompleteHandler;
             model.LogoutComplete += LogoutCompleteHandler;
 
-            karaokePlayer.ImageInvalidated += CDGImageInvalidatedHandler;
+            //karaokePlayer.ImageInvalidated += CDGImageInvalidatedHandler;
             karaokePlayer.ProgressUpdated += KaraokeProgressUpdatedHandler;
             karaokePlayer.SongFinished += SongFinishedHandler;
 
@@ -124,17 +124,17 @@ namespace DJClientWPF
             }
         }
 
-        private void CDGImageInvalidatedHandler(object source, EventArgs args)
-        {
-            //Dispatcher.BeginInvoke(new InvokeDelegate(() =>
-            //{
-            //    try
-            //    {
-            //        ImageCDG.Source = Helper.ConvertBitmapToSource(karaokePlayer.GetCDGImage());
-            //    }
-            //    catch { }
-            //}));
-        }
+        //private void CDGImageInvalidatedHandler(object source, EventArgs args)
+        //{
+        //    //Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+        //    //{
+        //    //    try
+        //    //    {
+        //    //        ImageCDG.Source = Helper.ConvertBitmapToSource(karaokePlayer.GetCDGImage());
+        //    //    }
+        //    //    catch { }
+        //    //}));
+        //}
 
         private void KaraokeProgressUpdatedHandler(object source, DurationArgs args)
         {
@@ -217,7 +217,7 @@ namespace DJClientWPF
             }
             if (fillerPlayer.IsPlaying)
             {
-                fillerPlayer.StopAndRemoveCurrent();
+                fillerPlayer.Stop();
             }
         }
 
