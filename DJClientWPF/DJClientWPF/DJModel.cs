@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using DJClientWPF.KaraokeService;
 using System.Timers;
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace DJClientWPF
 {
@@ -51,8 +53,6 @@ namespace DJClientWPF
 
             InitializeEventHandlers();
 
-            this.SongRequestQueue = new List<queueSinger>();
-
             SetUpQueueTimer();
         }
 
@@ -95,14 +95,30 @@ namespace DJClientWPF
             }
         }
 
+        public const string BACKGROUND_IMAGE_PATH = @"background.png";
+
         public int VenueID { get; private set; }
         public bool IsSessionActive { get; private set; }
         public long DJKey { get; private set; }
         public List<Song> SongbookList { get; private set; }
         public List<queueSinger> SongRequestQueue { get; set; }
-        public SongRequest CurrentSong { get; set; }
+        public SongToPlay CurrentSong { get; set; }
         public bool IsLoggedIn { get; private set; }
         public string QRCode { get; private set; }
+        public BitmapImage BackgroundImage
+        {
+            get
+            {
+                if (_backgroundImage == null && File.Exists(BACKGROUND_IMAGE_PATH))
+                    _backgroundImage = Helper.OpenBitmapImage(BACKGROUND_IMAGE_PATH);
+                return _backgroundImage;
+            }
+            set 
+            {
+                _backgroundImage = value;
+            }
+        }
+        private BitmapImage _backgroundImage;
 
         #region Queue Timer Methods
 
@@ -200,12 +216,15 @@ namespace DJClientWPF
         public SongToPlay GetNextSongRequest()
         {
             if (this.SongRequestQueue.Count == 0)
+            {
+                this.CurrentSong = null;
                 return null;
+            }
             else
             {
                 queueSinger nextSinger = this.SongRequestQueue[0];
                 int nextID = nextSinger.user.userID;
-                
+
                 //If this next singer doesn't have a song request keep popping until we find a valid request or we come back around
                 int currentID = -1;
                 while (nextSinger.songs.Length == 0 && currentID != nextID)
@@ -220,6 +239,7 @@ namespace DJClientWPF
                     return null;
 
                 SongToPlay songToPlay = new SongToPlay(nextSinger.songs[0], nextSinger.user);
+                this.CurrentSong = songToPlay;
                 PopSongQueue();
 
                 return songToPlay;
@@ -301,7 +321,7 @@ namespace DJClientWPF
         {
             if (!args.Response.error)
             {
-                
+
             }
             //Error occurred
             else
@@ -545,7 +565,7 @@ namespace DJClientWPF
         {
             if (!args.Response.error)
             {
-                
+
             }
             //Error occurred
             {

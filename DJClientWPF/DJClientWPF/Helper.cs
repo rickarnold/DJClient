@@ -72,9 +72,22 @@ namespace DJClientWPF
         public static BitmapImage OpenBitmapImage(string path)
         {
             BitmapImage currentImage = new BitmapImage();
+            //currentImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
             currentImage.BeginInit();
             currentImage.UriSource = new Uri(path, UriKind.Relative);
-            currentImage.CacheOption = BitmapCacheOption.OnLoad;
+            currentImage.CacheOption = BitmapCacheOption.OnLoad ;
+            currentImage.EndInit();
+
+            return currentImage;
+        }
+
+        public static BitmapImage OpenBitmapImageNoCache(string path)
+        {
+            BitmapImage currentImage = new BitmapImage();
+            currentImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+            currentImage.BeginInit();
+            currentImage.UriSource = new Uri(path, UriKind.Relative);
+            currentImage.CacheOption = BitmapCacheOption.None;
             currentImage.EndInit();
 
             return currentImage;

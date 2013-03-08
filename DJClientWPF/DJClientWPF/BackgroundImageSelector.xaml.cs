@@ -25,37 +25,40 @@ namespace DJClientWPF
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler BackgroundImageUpdated;
 
-        public const string BACKGROUND_IMAGE_PATH = @"background.png";
-        private string newImagePath;
-        private BitmapImage currentImage;
+        private string newImagePath = "";
 
         public BackgroundImageSelector()
         {
             InitializeComponent();
 
             //Look for the current background image
-            if (File.Exists(BACKGROUND_IMAGE_PATH))
+            if (File.Exists(DJModel.BACKGROUND_IMAGE_PATH))
             {
-                ImageCurrent.Source = Helper.OpenBitmapImage(BACKGROUND_IMAGE_PATH);
+                ImageCurrent.Source = Helper.OpenBitmapImage(DJModel.BACKGROUND_IMAGE_PATH);
             }
         }
 
         private void ButtonOK_Click(object sender, RoutedEventArgs e)
         {
+            //If no new image was selected close and do nothing
+            if (newImagePath.Equals(""))
+                this.Close();
+
             //Save the current image to the save path
             try
             {
-                if (File.Exists(BACKGROUND_IMAGE_PATH))
-                    File.Delete(BACKGROUND_IMAGE_PATH);
+                if (File.Exists(DJModel.BACKGROUND_IMAGE_PATH))
+                    File.Delete(DJModel.BACKGROUND_IMAGE_PATH);
                 Bitmap temp = new Bitmap(newImagePath);
-                temp.Save(BACKGROUND_IMAGE_PATH, System.Drawing.Imaging.ImageFormat.Png);
+                temp.Save(DJModel.BACKGROUND_IMAGE_PATH, System.Drawing.Imaging.ImageFormat.Png);
+                DJModel.Instance.BackgroundImage = Helper.OpenBitmapImage(newImagePath);
 
                 if (BackgroundImageUpdated != null)
                     BackgroundImageUpdated(this, new EventArgs());
 
                 this.Close();
             }
-            catch (Exception ex)
+            catch 
             {
                 LabelError.Content = "An error occurred trying to save the image to disk";
                 LabelError.Visibility = Visibility.Visible;
@@ -81,7 +84,7 @@ namespace DJClientWPF
                 //Try opening the file
                 try
                 {
-                    ImageCurrent.Source = Helper.OpenBitmapImage(BACKGROUND_IMAGE_PATH);
+                    ImageCurrent.Source = Helper.OpenBitmapImage(dialog.FileName);
                     newImagePath = dialog.FileName;
 
                     LabelError.Visibility = Visibility.Hidden;

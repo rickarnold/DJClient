@@ -22,6 +22,7 @@ namespace DJClientWPF
         public delegate void InvokeDelegate();
 
         private Bitmap _cdgImage;
+        private BitmapSource _cdgImageSource;
 
         public Bitmap CDGImage
         {
@@ -30,6 +31,16 @@ namespace DJClientWPF
             {
                 _cdgImage = value;
                 Dispatcher.BeginInvoke(new InvokeDelegate(UpdateImageCDG));
+            }
+        }
+
+        public BitmapSource CDGImageSource
+        {
+            get { return _cdgImageSource; }
+            set
+            {
+                _cdgImageSource = value;
+                Dispatcher.BeginInvoke(new InvokeDelegate(UpdateImageSourceCDG));
             }
         }
 
@@ -51,6 +62,11 @@ namespace DJClientWPF
         private void UpdateImageCDG()
         {
             ImageCDG.Source = Helper.ConvertBitmapToSource(_cdgImage);
+        }
+
+        private void UpdateImageSourceCDG()
+        {
+            ImageCDG.Source = _cdgImageSource;
         }
     }
 }

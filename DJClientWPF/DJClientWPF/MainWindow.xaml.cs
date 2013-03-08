@@ -16,9 +16,6 @@ using System.Collections.ObjectModel;
 
 namespace DJClientWPF
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public delegate void InvokeDelegate();
@@ -40,7 +37,7 @@ namespace DJClientWPF
 
             model = DJModel.Instance;
 
-            karaokePlayer = new KaraokeFilePlayer();
+            karaokePlayer = new KaraokeFilePlayer(this);
             fillerPlayer = new FillerMusicPlayer();
 
             queueList = new List<queueSinger>();
@@ -129,14 +126,14 @@ namespace DJClientWPF
 
         private void CDGImageInvalidatedHandler(object source, EventArgs args)
         {
-            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
-            {
-                try
-                {
-                    ImageCDG.Source = Helper.ConvertBitmapToSource(karaokePlayer.GetCDGImage());
-                }
-                catch { }
-            }));
+            //Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            //{
+            //    try
+            //    {
+            //        ImageCDG.Source = Helper.ConvertBitmapToSource(karaokePlayer.GetCDGImage());
+            //    }
+            //    catch { }
+            //}));
         }
 
         private void KaraokeProgressUpdatedHandler(object source, DurationArgs args)
@@ -180,7 +177,10 @@ namespace DJClientWPF
         void BackgroundImageUpdatedHandler(object source, EventArgs args)
         {
             if (karaokePlayer != null)
-                karaokePlayer.UpdateBackgroundImage();
+                karaokePlayer.UpdatedBackgroundImage();
+
+            //if (!isPlaying)
+            //    ImageCDG.Source = model.BackgroundImage;
         }
 
         #endregion
@@ -256,13 +256,14 @@ namespace DJClientWPF
 
         private void UpdateNowPlaying(SongToPlay songToPlay)
         {
-
             LabelNowSinging.Content = songToPlay.User.userName;
             LabelNowPlaying.Content = songToPlay.Song.artist + " - " + songToPlay.Song.title;
 
-            //karaokePlayer.Open(songToPlay.Song.pathOnDisk);
             karaokePlayer.Stop();
             karaokePlayer.ReadyNextSong(songToPlay);
+
+            //if (model.BackgroundImage != null)
+            //    ImageCDG.Source = model.BackgroundImage;
         }
 
         #endregion
@@ -422,6 +423,8 @@ namespace DJClientWPF
 
         #endregion
 
+        #region Window Methods
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
@@ -435,6 +438,30 @@ namespace DJClientWPF
             }
         }
 
+        public void UpdateCDG(System.Drawing.Bitmap image)
+        {
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                try
+                {
+                    ImageCDG.Source = Helper.ConvertBitmapToSource(image);
+                }
+                catch { }
+            }));
+        }
 
+        public void UpdateCDGSource(BitmapSource imageSource)
+        {
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                try
+                {
+                    ImageCDG.Source = imageSource;
+                }
+                catch { }
+            }));
+        }
+
+        #endregion
     }
 }

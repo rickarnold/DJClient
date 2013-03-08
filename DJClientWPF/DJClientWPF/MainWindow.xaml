@@ -90,7 +90,7 @@
             <GroupBox.Header>
                 Second Display
             </GroupBox.Header>
-            <Image x:Name="ImageCDG" HorizontalAlignment="Center" VerticalAlignment="Center" Height="204" Width="294" />
+            <Image x:Name="ImageCDG" Stretch="Fill" Source="{Binding CDGSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Height="204" Width="294" />
         </GroupBox>
 
         <!-- Singer Queue-->
