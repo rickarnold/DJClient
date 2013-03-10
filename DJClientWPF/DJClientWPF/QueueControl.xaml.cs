@@ -12,28 +12,39 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DJClientWPF.KaraokeService;
+using System.Windows.Media.Animation;
 
 namespace DJClientWPF
 {
     public partial class QueueControl : UserControl
     {
+        private const int HEADER_HEIGHT = 35;
         private const int LABEL_HEIGHT = 30;
         private const int ROW_INDEX = 1;
         private const int LEFT_MARGIN = 15;
 
         public queueSinger QueueSinger { get; set; }
+        public int SingerID { get; private set; }
         public bool IsExpanded { get; set; }
 
-        private List<Label> expandedList;
+        private List<Label> songLabelList;
 
         public QueueControl(queueSinger singer)
         {
             InitializeComponent();
 
             this.QueueSinger = singer;
+            this.SingerID = singer.user.userID;
 
             IsExpanded = false;
-            expandedList = new List<Label>();
+            songLabelList = new List<Label>();
+
+            SetLabels();
+        }
+
+        public void Update(queueSinger singer)
+        {
+            this.QueueSinger = singer;
 
             SetLabels();
         }
@@ -43,10 +54,59 @@ namespace DJClientWPF
         {
             LabelSinger.Content = this.QueueSinger.user.userName;
 
-            if (this.QueueSinger.songs.Length > 0)
-                LabelSong.Content = GetSongString(this.QueueSinger.songs[0]);
+            //Handle special case of no song yet selected for this user
+            if (this.QueueSinger.songs.Length == 0)
+            {
+                songLabelList = new List<Label>();
+                songLabelList.Add(new Label());
+                songLabelList[0].Content = "No Song Selected";
+            }
             else
-                LabelSong.Content = "No Song Selected";
+            {
+                //Make sure the count of labels in the list matches the number of songs
+                if (songLabelList.Count != this.QueueSinger.songs.Length)
+                {
+                    int labelCount = songLabelList.Count;
+                    int songCount = this.QueueSinger.songs.Length;
+
+                    //Need to add more labels
+                    if ((labelCount - songCount) < 0)
+                    {
+                        for (int i = labelCount; i < songCount; i++)
+                            songLabelList.Add(CreateNewLabel(i));
+                    }
+                    //Too many labels, remove some
+                    else
+                    {
+                        for (int i = labelCount - 1; i >= songCount; i--)
+                        {
+                            GridMain.Children.Remove(songLabelList[i]);
+                            songLabelList.RemoveAt(i);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < songLabelList.Count; i++)
+                    songLabelList[i].Content = GetSongString(this.QueueSinger.songs[i]);
+            }
+
+            if (IsExpanded)
+                UpdateExpand();
+        }
+
+        private void UpdateExpand()
+        {
+            double currentHeight = GridMain.Height;
+
+            int songCount = songLabelList.Count;
+            double expectedHeight = HEADER_HEIGHT + (songCount * LABEL_HEIGHT);
+
+            //Animate updating the expanded grid
+            DoubleAnimation animator = new DoubleAnimation();
+            animator.From = HEADER_HEIGHT + LABEL_HEIGHT;
+            animator.To = HEADER_HEIGHT + (songCount * LABEL_HEIGHT);
+            animator.Duration = new Duration(TimeSpan.FromSeconds(.1 * songCount));
+            GridMain.BeginAnimation(Grid.HeightProperty, animator);
         }
 
         private void Expand()
@@ -57,35 +117,36 @@ namespace DJClientWPF
 
             LabelExpand.Margin = new Thickness(15, 0, 3, 0);
             LabelExpand.Content = "-  ";
-            //LabelExpand.Foreground = new SolidColorBrush(Colors.Red);
             BorderExpand.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 125, 125));
 
             //Do nothing if the user has only one thing to display
             if (this.QueueSinger.songs.Length <= 1)
                 return;
 
-            //Hide the original contents
-            LabelSong.Visibility = Visibility.Hidden;
-
             //Calculate new height based on number of songs
             int songCount = this.QueueSinger.songs.Length;
-            RowSongs.Height = new GridLength(songCount * LABEL_HEIGHT);
 
-            expandedList.Clear();
+            DoubleAnimation animator = new DoubleAnimation();
+            animator.From = HEADER_HEIGHT + LABEL_HEIGHT;
+            animator.To = HEADER_HEIGHT + (songCount * LABEL_HEIGHT);
+            animator.Duration = new Duration(TimeSpan.FromSeconds(.1 * songCount));
+            GridMain.BeginAnimation(Grid.HeightProperty, animator);
 
-            //Create a new label for each song and place it in the grid
-            for (int i = 0; i < songCount; i++)
-            {
-                Label label = new Label();
-                label.Content = GetSongString(this.QueueSinger.songs[i]);
-                label.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-                label.Margin = new Thickness(LEFT_MARGIN, LABEL_HEIGHT * i, 0, 0);
-                label.FontSize = 12;
-                label.FontStyle = FontStyles.Italic;
-                Grid.SetRow(label, ROW_INDEX);
-                GridMain.Children.Add(label);
-                expandedList.Add(label);
-            }
+            //songLabelList.Clear();
+
+            ////Create a new label for each song and place it in the grid
+            //for (int i = 0; i < songCount; i++)
+            //{
+            //    Label label = new Label();
+            //    label.Content = GetSongString(this.QueueSinger.songs[i]);
+            //    label.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            //    label.Margin = new Thickness(LEFT_MARGIN, LABEL_HEIGHT * i, 0, 0);
+            //    label.FontSize = 12;
+            //    label.FontStyle = FontStyles.Italic;
+            //    Grid.SetRow(label, ROW_INDEX);
+            //    GridMain.Children.Add(label);
+            //    songLabelList.Add(label);
+            //}
         }
 
         private void Collapse()
@@ -96,22 +157,40 @@ namespace DJClientWPF
 
             LabelExpand.Margin = new Thickness(15, 0, 5, 0);
             LabelExpand.Content = " + ";
-            //LabelExpand.Foreground = new SolidColorBrush(Colors.Green);
             BorderExpand.BorderBrush = new SolidColorBrush(Colors.LightGreen);
 
-            //Clear out any expanded labels created
-            for (int i = 0; i < expandedList.Count; i++)
-            {
-                try
-                {
-                    GridMain.Children.Remove(expandedList[i]);
-                }
-                catch { }
-            }
+            //Animate the collapsing
+            DoubleAnimation animator = new DoubleAnimation();
+            animator.From = HEADER_HEIGHT + (songLabelList.Count * LABEL_HEIGHT);
+            animator.To = HEADER_HEIGHT + LABEL_HEIGHT;
+            animator.Duration = new Duration(TimeSpan.FromSeconds(.1 * songLabelList.Count));
+            GridMain.BeginAnimation(Grid.HeightProperty, animator);
 
-            //Reset the row height and make the top song label visible again
-            RowSongs.Height = new GridLength(LABEL_HEIGHT);
-            LabelSong.Visibility = Visibility.Visible;
+            ////Clear out any expanded labels created
+            //for (int i = 0; i < songLabelList.Count; i++)
+            //{
+            //    try
+            //    {
+            //        GridMain.Children.Remove(songLabelList[i]);
+            //    }
+            //    catch { }
+            //}
+
+            ////Reset the row height and make the top song label visible again
+            //LabelSong.Visibility = Visibility.Visible;
+        }
+
+        private Label CreateNewLabel(int index)
+        {
+            Label label = new Label();
+            label.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            label.Margin = new Thickness(LEFT_MARGIN, LABEL_HEIGHT * index, 0, 0);
+            label.FontSize = 12;
+            label.FontStyle = FontStyles.Italic;
+            Grid.SetRow(label, ROW_INDEX);
+            GridMain.Children.Add(label);
+
+            return label;
         }
 
         //Label has been clicked to expand or collapse

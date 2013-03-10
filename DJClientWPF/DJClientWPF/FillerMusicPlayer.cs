@@ -159,7 +159,24 @@ namespace DJClientWPF
         private FillerSong GetFillerSongFromPath(string path)
         {
             TagLib.File songFile = TagLib.File.Create(path);
-            string artist = songFile.Tag.AlbumArtists[0];
+            string artist;
+            try
+            {
+                artist = songFile.Tag.AlbumArtists[0];
+                if (artist.Equals(""))
+                    artist = songFile.Tag.Performers[0];
+            }
+            catch
+            {
+                try
+                {
+                    artist = songFile.Tag.Performers[0];
+                }
+                catch
+                {
+                    artist = "";
+                }
+            }
             string title = songFile.Tag.Title;
             long duration = songFile.Length;
             return new FillerSong(duration, artist, title, path);

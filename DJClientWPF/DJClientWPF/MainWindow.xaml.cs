@@ -13,12 +13,20 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DJClientWPF.KaraokeService;
 using System.Collections.ObjectModel;
+using System.Windows.Media.Animation;
 
 namespace DJClientWPF
 {
     public partial class MainWindow : Window
     {
         public delegate void InvokeDelegate();
+
+        public enum PlayState
+        {
+            NoSession, NotStarted, WaitingForSinger, PlayingSong, Paused
+        }
+
+        private const double OPACITY_ANIMATION_TIME = 1;
 
         private DJModel model;
         private KaraokeFilePlayer karaokePlayer;
@@ -27,7 +35,7 @@ namespace DJClientWPF
         private ObservableCollection<QueueControl> queueControlList;
         private ObservableCollection<FillerMusicControl> fillerList;
         private bool isPlaying = false;
-        private bool showProgressRemaining = true;
+        private bool showProgressRemaining = false;
         private string progressString = "0:00";
         private int fillerSelected = -1;
 
@@ -61,7 +69,6 @@ namespace DJClientWPF
             model.CreateSessionComplete += CreateSessionCompleteHandler;
             model.LogoutComplete += LogoutCompleteHandler;
 
-            //karaokePlayer.ImageInvalidated += CDGImageInvalidatedHandler;
             karaokePlayer.ProgressUpdated += KaraokeProgressUpdatedHandler;
             karaokePlayer.SongFinished += SongFinishedHandler;
 
@@ -80,8 +87,8 @@ namespace DJClientWPF
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
             {
-                StackPanelPlaying.Visibility = Visibility.Visible;
-                StackPanelSinging.Visibility = Visibility.Visible;
+                EnableNowPlaying();
+                EnableSingerQueueGroup();
             }));
         }
 
@@ -97,12 +104,71 @@ namespace DJClientWPF
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
             {
-                queueControlList.Clear();
+                List<int> validSingerIDList = new List<int>();
+
                 foreach (queueSinger singer in model.SongRequestQueue)
                 {
-                    QueueControl control = new QueueControl(singer);
-                    queueControlList.Add(control);
+                    //Find the control that matches this singer
+                    int singerID = singer.user.userID;
+                    int index = -1;
+                    for (int i = 0; i < queueControlList.Count; i++)
+                    {
+                        if (queueControlList[i].SingerID == singerID)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                    //Not found in the list so need to make a new control for them
+                    if (index == -1)
+                    {
+                        QueueControl control = new QueueControl(singer);
+                        queueControlList.Add(control);
+                    }
+                    else
+                        queueControlList[index].Update(singer);
+
+                    validSingerIDList.Add(singerID);
                 }
+
+                //Clear out any controls that no longer have singers in the queue for them
+                List<QueueControl> controlsToRemove = new List<QueueControl>();
+                foreach (QueueControl control in queueControlList)
+                {
+                    if (!validSingerIDList.Contains(control.SingerID))
+                        controlsToRemove.Add(control);
+                }
+                foreach (QueueControl removeIt in controlsToRemove)
+                    queueControlList.Remove(removeIt);
+
+                //Only valid controls are left in the list.  Now put them in the correct order
+                for (int index = 0; index < model.SongRequestQueue.Count; index++)
+                {
+                    int queueControlIndex = -1;
+                    //Find the matching queue control for this singer
+                    for (int j = 0; j < queueControlList.Count; j++)
+                    {
+                        if (model.SongRequestQueue[index].user.userID == queueControlList[j].SingerID)
+                        {
+                            queueControlIndex = j;
+                            break;
+                        }
+                    }
+                    if (queueControlIndex != -1 && index != queueControlIndex)
+                    {
+                        //Move the song from its old index to its new index
+                        QueueControl temp = queueControlList[index];
+                        queueControlList[index] = queueControlList[queueControlIndex];
+                        queueControlList[queueControlIndex] = temp;
+                    }
+                }
+
+                //queueControlList.Clear();
+                //foreach (queueSinger singer in model.SongRequestQueue)
+                //{
+                //    QueueControl control = new QueueControl(singer);
+                //    queueControlList.Add(control);
+                //}
 
                 ListBoxSongQueue.ItemsSource = queueControlList;
             }));
@@ -123,18 +189,6 @@ namespace DJClientWPF
                 QRGenerator.GenerateQR(model.QRCode, "Venue X", "");
             }
         }
-
-        //private void CDGImageInvalidatedHandler(object source, EventArgs args)
-        //{
-        //    //Dispatcher.BeginInvoke(new InvokeDelegate(() =>
-        //    //{
-        //    //    try
-        //    //    {
-        //    //        ImageCDG.Source = Helper.ConvertBitmapToSource(karaokePlayer.GetCDGImage());
-        //    //    }
-        //    //    catch { }
-        //    //}));
-        //}
 
         private void KaraokeProgressUpdatedHandler(object source, DurationArgs args)
         {
@@ -178,9 +232,6 @@ namespace DJClientWPF
         {
             if (karaokePlayer != null)
                 karaokePlayer.UpdatedBackgroundImage();
-
-            //if (!isPlaying)
-            //    ImageCDG.Source = model.BackgroundImage;
         }
 
         #endregion
@@ -266,6 +317,7 @@ namespace DJClientWPF
         {
             LabelNowSinging.Content = songToPlay.User.userName;
             LabelNowPlaying.Content = songToPlay.Song.artist + " - " + songToPlay.Song.title;
+            LabelSongRemaining.Content = "0:00";
 
             karaokePlayer.Stop();
             karaokePlayer.ReadyNextSong(songToPlay);
@@ -443,6 +495,37 @@ namespace DJClientWPF
             }
         }
 
+        //Display and enable the singer queue and buttons
+        private void EnableSingerQueueGroup()
+        {
+            //Animate the opacity of the queue being set to 1
+            DoubleAnimation animator = new DoubleAnimation();
+            animator.From = 0;
+            animator.To = 1;
+            animator.Duration = new Duration(TimeSpan.FromSeconds(OPACITY_ANIMATION_TIME));
+            GroupBoxQueue.BeginAnimation(GroupBox.OpacityProperty, animator);
+
+            ButtonQueueAdd.IsEnabled = true;
+            ButtonQueueMoveDown.IsEnabled = true;
+            ButtonQueueMoveUp.IsEnabled = true;
+            ButtonQueueRemove.IsEnabled = true;
+        }
+
+        private void EnableNowPlaying()
+        {
+            //Animate the opacity of the cdg window being set to 1
+            DoubleAnimation animator = new DoubleAnimation();
+            animator.From = 0;
+            animator.To = 1;
+            animator.Duration = new Duration(TimeSpan.FromSeconds(OPACITY_ANIMATION_TIME));
+
+            GroupBoxCDG.BeginAnimation(GroupBox.OpacityProperty, animator);
+            StackPanelSinging.BeginAnimation(StackPanel.OpacityProperty, animator);
+            StackPanelPlaying.BeginAnimation(StackPanel.OpacityProperty, animator);
+            LabelSongRemaining.BeginAnimation(Label.OpacityProperty, animator);
+        }
+
+        //Update the image displayed in the second window box
         public void UpdateCDG(System.Drawing.Bitmap image)
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
@@ -455,6 +538,7 @@ namespace DJClientWPF
             }));
         }
 
+        //Update the image displayed in the second window box
         public void UpdateCDGSource(BitmapSource imageSource)
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
