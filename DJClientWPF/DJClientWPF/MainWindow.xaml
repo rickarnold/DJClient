@@ -106,6 +106,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="0" x:Name="RowSingerQueueAddSongControl"/>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -119,13 +120,15 @@
                     
                 </ListBox>
                 
-                <Button x:Name="ButtonQueueAdd" Grid.Row="1" Grid.Column="0" Content="Add" Click="ButtonQueueAdd_Click" Margin="10,10,10,10" FontWeight="Normal"
+                <!--  Need to add AddSongControl here-->
+                
+                <Button x:Name="ButtonQueueAdd" Grid.Row="2" Grid.Column="0" Content="Add" Click="ButtonQueueAdd_Click" Margin="10,10,10,10" FontWeight="Normal"
                         IsEnabled="False"/>
-                <Button x:Name="ButtonQueueRemove" Grid.Row="1" Grid.Column="1" Content="Remove" Click="ButtonQueueRemove_Click" Margin="10,10,10,10" FontWeight="Normal"
+                <Button x:Name="ButtonQueueRemove" Grid.Row="2" Grid.Column="1" Content="Remove" Click="ButtonQueueRemove_Click" Margin="10,10,10,10" FontWeight="Normal"
                         IsEnabled="False"/>
-                <Button x:Name="ButtonQueueMoveUp" Grid.Row="1" Grid.Column="2" Content="Move Up" Click="ButtonQueueMoveUp_Click" Margin="10,10,10,10" FontWeight="Normal"
+                <Button x:Name="ButtonQueueMoveUp" Grid.Row="2" Grid.Column="2" Content="Move Up" Click="ButtonQueueMoveUp_Click" Margin="10,10,10,10" FontWeight="Normal"
                         IsEnabled="False"/>
-                <Button x:Name="ButtonQueueMoveDown" Grid.Row="1" Grid.Column="3" Content="Move Down" Click="ButtonQueueMoveDown_Click" Margin="10,10,10,10" FontWeight="Normal"
+                <Button x:Name="ButtonQueueMoveDown" Grid.Row="2" Grid.Column="3" Content="Move Down" Click="ButtonQueueMoveDown_Click" Margin="10,10,10,10" FontWeight="Normal"
                         IsEnabled="False"/>
             </Grid>
         </GroupBox>

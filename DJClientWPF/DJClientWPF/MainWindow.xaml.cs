@@ -68,6 +68,7 @@ namespace DJClientWPF
             model.QRNewCodeComplete += QRNewCodeCompleteHandler;
             model.CreateSessionComplete += CreateSessionCompleteHandler;
             model.LogoutComplete += LogoutCompleteHandler;
+            model.ListSongsInDatabaseComplete += SongListLoadedHandler;
 
             karaokePlayer.ProgressUpdated += KaraokeProgressUpdatedHandler;
             karaokePlayer.SongFinished += SongFinishedHandler;
@@ -163,13 +164,6 @@ namespace DJClientWPF
                     }
                 }
 
-                //queueControlList.Clear();
-                //foreach (queueSinger singer in model.SongRequestQueue)
-                //{
-                //    QueueControl control = new QueueControl(singer);
-                //    queueControlList.Add(control);
-                //}
-
                 ListBoxSongQueue.ItemsSource = queueControlList;
             }));
         }
@@ -228,10 +222,15 @@ namespace DJClientWPF
         }
 
         //User has changed the background image to display between singers.  Update the karaoke player
-        void BackgroundImageUpdatedHandler(object source, EventArgs args)
+        private void BackgroundImageUpdatedHandler(object source, EventArgs args)
         {
             if (karaokePlayer != null)
                 karaokePlayer.UpdatedBackgroundImage();
+        }
+
+        private void SongListLoadedHandler(object source, EventArgs args)
+        {
+            ButtonQueueAdd.IsEnabled = true;
         }
 
         #endregion

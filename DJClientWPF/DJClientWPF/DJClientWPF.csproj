@@ -72,6 +72,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddSongRequestControl.xaml.cs">
+      <DependentUpon>AddSongRequestControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddSongsForm.xaml.cs">
       <DependentUpon>AddSongsForm.xaml</DependentUpon>
     </Compile>
@@ -109,6 +112,10 @@
     <Compile Include="ServiceClient.cs" />
     <Compile Include="SongToPlay.cs" />
     <Compile Include="Timer.cs" />
+    <Page Include="AddSongRequestControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddSongsForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -50,6 +50,8 @@ namespace DJClientWPF
             this.QRCode = "";
             this.SongbookList = new List<Song>();
             this.SongRequestQueue = new List<queueSinger>();
+            this.ArtistDictionary = new Dictionary<string, List<Song>>();
+            this.TitleDictionary = new Dictionary<string, List<Song>>();
 
             InitializeEventHandlers();
 
@@ -102,6 +104,8 @@ namespace DJClientWPF
         public long DJKey { get; private set; }
         public List<Song> SongbookList { get; private set; }
         public List<queueSinger> SongRequestQueue { get; set; }
+        public Dictionary<string, List<Song>> ArtistDictionary { get; set; }
+        public Dictionary<string, List<Song>> TitleDictionary { get; set; }
         public SongToPlay CurrentSong { get; set; }
         public bool IsLoggedIn { get; private set; }
         public string QRCode { get; private set; }
@@ -113,7 +117,7 @@ namespace DJClientWPF
                     _backgroundImage = Helper.OpenBitmapImage(BACKGROUND_IMAGE_PATH);
                 return _backgroundImage;
             }
-            set 
+            set
             {
                 _backgroundImage = value;
             }
@@ -206,6 +210,22 @@ namespace DJClientWPF
         public void GetAllSongsInSongbook()
         {
             serviceClient.GetAllSongsInSongbookAsync(this.DJKey, null);
+        }
+
+        //Given a search term find all songs that have artist names that start with the given term
+        public List<Song> GetMatchingArtistsInSongbook(string term)
+        {
+            string key = GetKeyForSong(term);
+
+            return null;
+        }
+
+        //Given a search term find all songs that have titles that start with the given term
+        public List<Song> GetMatchingTitlesInSongbook(string term)
+        {
+            string key = GetKeyForSong(term);
+
+            return null;
         }
 
         #endregion Song Management
@@ -355,6 +375,9 @@ namespace DJClientWPF
             {
                 LoginComplete(this, new DJModelArgs(args.LogInResponse.error, args.LogInResponse.message, args.UserState));
             }
+
+            //Let's get all the songs in the songbook while we're waiting
+            GetAllSongsInSongbook();
         }
 
         private void LogoutCompleteHandler(object source, ResponseArgs args)
@@ -436,6 +459,26 @@ namespace DJClientWPF
             if (!args.Response.error)
             {
                 this.SongbookList = args.SongList;
+
+                //Store each song in its appropriate list
+                foreach (Song song in this.SongbookList)
+                {
+                    string artistKey = GetKeyForSong(song.artist);
+                    string titleKey = GetKeyForSong(song.title);
+
+                    if (!ArtistDictionary.ContainsKey(artistKey))
+                        ArtistDictionary[artistKey] = new List<Song>();
+                    if (!TitleDictionary.ContainsKey(titleKey))
+                        TitleDictionary[titleKey] = new List<Song>();
+
+                    List<Song> artistList = ArtistDictionary[artistKey];
+                    artistList.Add(song);
+                    artistList.Sort(CompareSongByArtist);
+
+                    List<Song> titleList = TitleDictionary[titleKey];
+                    titleList.Add(song);
+                    titleList.Sort(CompareSongByTitle);
+                }
             }
             //Error occurred
             else
@@ -447,6 +490,53 @@ namespace DJClientWPF
             {
                 ListSongsInDatabaseComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
             }
+        }
+
+        private static int CompareSongByArtist(Song x, Song y)
+        {
+            string xArtist = x.artist.ToLower();
+            string yArtist = y.artist.ToLower();
+
+            if (xArtist.Equals(yArtist))
+                return x.title.CompareTo(y.title);
+
+            else
+                return x.artist.CompareTo(y.artist);
+        }
+
+        private static int CompareSongByTitle(Song x, Song y)
+        {
+            string xTitle = x.title.ToLower();
+            string yTitle = y.title.ToLower();
+
+            if (xTitle.Equals(yTitle))
+                return x.artist.CompareTo(y.artist);
+
+            else
+                return xTitle.CompareTo(yTitle);
+        }
+
+        private string GetKeyForSong(string term)
+        {
+            string key;
+
+            switch (term.Length)
+            {
+                case (0):
+                    key = "";
+                    break;
+                case (1):
+                    key = term.Substring(0, 1);
+                    break;
+                case (2):
+                    key = term.Substring(0, 2);
+                    break;
+                default:
+                    key = term.Substring(0, 3);
+                    break;
+            }
+
+            return key;
         }
 
         #endregion
@@ -637,4 +727,6 @@ namespace DJClientWPF
 
         #endregion
     }
+
+
 }

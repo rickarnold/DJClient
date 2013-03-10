@@ -21,7 +21,6 @@ namespace DJClientWPF
         public bool StartAtBeginning { get; set; }
 
         private WindowsMediaPlayer mediaPlayer;
-        private int currentSong;
 
         public FillerMusicPlayer()
         {
@@ -30,7 +29,7 @@ namespace DJClientWPF
 
             mediaPlayer.settings.volume = DEFAULT_VOLUME;
 
-            this.StartAtBeginning = false;/////////////////////////////////////////////////////////
+            this.StartAtBeginning = false;
         }
 
         #region Browse Methods
