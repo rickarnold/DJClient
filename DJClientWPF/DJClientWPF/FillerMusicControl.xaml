@@ -14,5 +14,8 @@
                 CornerRadius="8"/>
 
         <Label Content="{Binding DisplayName}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11" FontWeight="Normal" Foreground="Black" Margin="5,0,0,0"/>
+        
+        <Label Content=" X " Foreground="Red" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12" FontWeight="Bold" Margin="5,0,5,0"
+               MouseDown="Label_MouseDown"/>
     </Grid>
 </UserControl>

@@ -11,14 +11,14 @@ namespace DJClientWPF
     {
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler FillerQueueUpdated;
-
+        public event EventHandler PlayStateChanged;
 
         const int DEFAULT_VOLUME = 25;
 
         public List<FillerSong> FillerQueue { get; set; }
-        public int QueuePosition { get; set; }
         public bool IsPlaying { get; private set; }
         public bool StartAtBeginning { get; set; }
+        public FillerSong NowPlaying { get; set; }
 
         private WindowsMediaPlayer mediaPlayer;
 
@@ -122,7 +122,7 @@ namespace DJClientWPF
                     else
                         mediaPlayer.controls.currentPosition = mediaPlayer.currentMedia.duration / 2;
                 }
-
+                this.NowPlaying = FillerQueue[0];
                 FillerQueue.RemoveAt(0);
 
                 this.IsPlaying = true;
@@ -131,6 +131,9 @@ namespace DJClientWPF
                 this.IsPlaying = false;
 
             RaiseQueueUpdated();
+
+            if (PlayStateChanged != null)
+                PlayStateChanged(this, new EventArgs());
         }
 
         //Stop playback of the current song and remove it from the queue
@@ -138,6 +141,10 @@ namespace DJClientWPF
         {
             mediaPlayer.controls.stop();
             this.IsPlaying = false;
+            this.NowPlaying = null;
+
+            if (PlayStateChanged != null)
+                PlayStateChanged(this, new EventArgs());
         }
 
         //Set the volume of the music being played back, range is [0,100]

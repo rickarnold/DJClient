@@ -36,6 +36,7 @@ namespace DJClientWPF
         public event DJModelEventHandler MoveUserComplete;
         public event DJModelEventHandler GetQueueComplete;
         public event DJModelEventHandler PopQueueComplete;
+        public event DJModelEventHandler WaitTimeComplete;
 
         public event DJModelEventHandler QRCodeComplete;
         public event DJModelEventHandler QRNewCodeComplete;
@@ -80,6 +81,7 @@ namespace DJClientWPF
             serviceClient.MoveUserComplete += MoveUserCompleteHandler;
             serviceClient.GetQueueComplete += GetQueueCompleteHandler;
             serviceClient.PopQueueComplete += PopQueueCompleteHandler;
+            serviceClient.WaitTimeComplete += WaitTimeCompleteHandler;
 
             //QR Management Handlers
             serviceClient.QRCodeComplete += QRCodeCompleteHandler;
@@ -109,6 +111,7 @@ namespace DJClientWPF
         public SongToPlay CurrentSong { get; set; }
         public bool IsLoggedIn { get; private set; }
         public string QRCode { get; private set; }
+        public string WaitTime { get; private set; }
         public BitmapImage BackgroundImage
         {
             get
@@ -139,7 +142,10 @@ namespace DJClientWPF
         private void TimerTickHandler(object source, ElapsedEventArgs args)
         {
             if (this.IsSessionActive)
+            {
                 serviceClient.GetSingerQueueAsync(this.DJKey, null);
+                serviceClient.GetWaitTimeAsync(this.DJKey, null);
+            }
         }
 
         #endregion
@@ -213,19 +219,45 @@ namespace DJClientWPF
         }
 
         //Given a search term find all songs that have artist names that start with the given term
-        public List<Song> GetMatchingArtistsInSongbook(string term)
+        public List<SongSearchResult> GetMatchingArtistsInSongbook(string term)
         {
+            List<SongSearchResult> resultList = new List<SongSearchResult>();
+
             string key = GetKeyForSong(term);
 
-            return null;
+            //If we have no songs matching this key return an empty list
+            if (!ArtistDictionary.ContainsKey(key))
+                return resultList;
+
+            List<Song> songList = ArtistDictionary[key];
+            foreach (Song song in songList)
+            {
+                if (song.artist.ToLower().StartsWith(term.ToLower()))
+                    resultList.Add(new SongSearchResult(song, song.artist, song.title));
+            }
+
+            return resultList;
         }
 
         //Given a search term find all songs that have titles that start with the given term
-        public List<Song> GetMatchingTitlesInSongbook(string term)
+        public List<SongSearchResult> GetMatchingTitlesInSongbook(string term)
         {
+            List<SongSearchResult> resultList = new List<SongSearchResult>();
+
             string key = GetKeyForSong(term);
 
-            return null;
+            //If we have no songs matching this key return an empty list
+            if (!TitleDictionary.ContainsKey(key))
+                return resultList;
+
+            List<Song> songList = TitleDictionary[key];
+            foreach (Song song in songList)
+            {
+                if (song.title.ToLower().StartsWith(term.ToLower()))
+                    resultList.Add(new SongSearchResult(song, song.title, song.artist));
+            }
+
+            return resultList;
         }
 
         #endregion Song Management
@@ -281,6 +313,11 @@ namespace DJClientWPF
         public void UpdateSongQueue(List<SongRequest> requestUpdates)
         {
 
+        }
+
+        public void MoveUser(int userID, int newIndex)
+        {
+            serviceClient.MoveUserAsync(userID, newIndex, this.DJKey, null);
         }
 
         //Updates the singer queue by popping off the top user, removing their first song and adding them back to the bottom
@@ -536,7 +573,7 @@ namespace DJClientWPF
                     break;
             }
 
-            return key;
+            return key.ToLower();
         }
 
         #endregion
@@ -658,6 +695,7 @@ namespace DJClientWPF
 
             }
             //Error occurred
+            else
             {
 
             }
@@ -666,6 +704,43 @@ namespace DJClientWPF
             {
                 PopQueueComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
             }
+        }
+
+        private void WaitTimeCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                int time;
+                try
+                {
+                    time = int.Parse(args.Response.message);
+                    int hours = time / (60 * 60);
+                    int minutes = (time / 60) % 60;
+                    int seconds = time % 60;
+
+                    string hourString = hours.ToString();
+                    string minuteString = minutes.ToString();
+                    if (minutes < 10)
+                        minuteString = "0" + minuteString;
+                    string secondString = seconds.ToString();
+                    if (seconds < 10)
+                        secondString = "0" + secondString;
+
+                    this.WaitTime = hourString + ":" + minuteString + ":" + secondString;
+                }
+                catch
+                {
+                    this.WaitTime = "0:00:00";
+                }
+            }
+            //Error occurred
+            else
+            {
+                this.WaitTime = "0:00:00";
+            }
+
+            if (WaitTimeComplete != null)
+                WaitTimeComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
         }
 
         #endregion
@@ -728,5 +803,17 @@ namespace DJClientWPF
         #endregion
     }
 
+    public class SongSearchResult
+    {
+        public Song Song { get; set; }
+        public string MainResult { get; set; }
+        public string SecondaryResult { get; set; }
 
+        public SongSearchResult(Song song, string mainResult, string secondaryResult)
+        {
+            this.Song = song;
+            this.MainResult = mainResult;
+            this.SecondaryResult = secondaryResult;
+        }
+    }
 }

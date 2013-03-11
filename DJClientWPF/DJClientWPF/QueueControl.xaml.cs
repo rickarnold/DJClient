@@ -115,8 +115,8 @@ namespace DJClientWPF
                 return;
             IsExpanded = true;
 
-            LabelExpand.Margin = new Thickness(15, 0, 3, 0);
-            LabelExpand.Content = "-  ";
+            LabelExpand.Margin = new Thickness(16, 3, 6, 0);
+            LabelExpand.Content = "\u25B2 ";
             BorderExpand.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 125, 125));
 
             //Do nothing if the user has only one thing to display
@@ -131,22 +131,6 @@ namespace DJClientWPF
             animator.To = HEADER_HEIGHT + (songCount * LABEL_HEIGHT);
             animator.Duration = new Duration(TimeSpan.FromSeconds(.1 * songCount));
             GridMain.BeginAnimation(Grid.HeightProperty, animator);
-
-            //songLabelList.Clear();
-
-            ////Create a new label for each song and place it in the grid
-            //for (int i = 0; i < songCount; i++)
-            //{
-            //    Label label = new Label();
-            //    label.Content = GetSongString(this.QueueSinger.songs[i]);
-            //    label.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-            //    label.Margin = new Thickness(LEFT_MARGIN, LABEL_HEIGHT * i, 0, 0);
-            //    label.FontSize = 12;
-            //    label.FontStyle = FontStyles.Italic;
-            //    Grid.SetRow(label, ROW_INDEX);
-            //    GridMain.Children.Add(label);
-            //    songLabelList.Add(label);
-            //}
         }
 
         private void Collapse()
@@ -155,8 +139,8 @@ namespace DJClientWPF
                 return;
             IsExpanded = false;
 
-            LabelExpand.Margin = new Thickness(15, 0, 5, 0);
-            LabelExpand.Content = " + ";
+            LabelExpand.Margin = new Thickness(16, 3, 6, 0);
+            LabelExpand.Content = "\u25BC ";
             BorderExpand.BorderBrush = new SolidColorBrush(Colors.LightGreen);
 
             //Animate the collapsing
@@ -165,19 +149,6 @@ namespace DJClientWPF
             animator.To = HEADER_HEIGHT + LABEL_HEIGHT;
             animator.Duration = new Duration(TimeSpan.FromSeconds(.1 * songLabelList.Count));
             GridMain.BeginAnimation(Grid.HeightProperty, animator);
-
-            ////Clear out any expanded labels created
-            //for (int i = 0; i < songLabelList.Count; i++)
-            //{
-            //    try
-            //    {
-            //        GridMain.Children.Remove(songLabelList[i]);
-            //    }
-            //    catch { }
-            //}
-
-            ////Reset the row height and make the top song label visible again
-            //LabelSong.Visibility = Visibility.Visible;
         }
 
         private Label CreateNewLabel(int index)

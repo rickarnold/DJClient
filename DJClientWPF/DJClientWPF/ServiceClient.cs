@@ -38,6 +38,7 @@ namespace DJClientWPF
         public event ResponseHandler MoveUserComplete;
         public event QueueHandler GetQueueComplete;
         public event ResponseHandler PopQueueComplete;
+        public event ResponseHandler WaitTimeComplete;
 
         public event ResponseHandler QRCodeComplete;
         public event ResponseHandler QRNewCodeComplete;
@@ -269,6 +270,14 @@ namespace DJClientWPF
                 });
         }
 
+        public void GetWaitTimeAsync(long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+                {
+                    GetWaitTime(djKey, userState);
+                });
+        }
+
         #endregion
 
         #region Singer Queue Workers
@@ -371,6 +380,14 @@ namespace DJClientWPF
             Response response = _client.DJTestQueueFill(djKey);
 
             GetSingerQueue(djKey, null);
+        }
+
+        private void GetWaitTime(long djKey, object userState)
+        {
+            Response response = _client.DJNewUserWaitTime(djKey);
+
+            if (WaitTimeComplete != null)
+                WaitTimeComplete(this, new ResponseArgs(response, userState));
         }
 
         #endregion

@@ -93,9 +93,7 @@
     <Compile Include="Helper.cs" />
     <Compile Include="KaraokeDiskBrowser.cs" />
     <Compile Include="KaraokeFilePlayer.cs" />
-    <Compile Include="LoginForm.xaml.cs">
-      <DependentUpon>LoginForm.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="MyConvertors.cs" />
     <Compile Include="MyEventArgs.cs" />
     <Compile Include="QRGenerator.cs" />
     <Compile Include="QueueControl.xaml.cs">
@@ -129,10 +127,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FillerMusicControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="LoginForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -227,6 +221,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\MobiokeIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MobiokeLogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -20,91 +20,24 @@ namespace DJClientWPF
     /// </summary>
     public partial class FillerMusicControl : UserControl
     {
-        public bool IsPlaying
-        {
-            get { return this.Song.IsPlaying; }
-            set
-            {
-                this.Song.IsPlaying = value;
-                OnPropertyChanged("BackgroundColor");
-                OnPropertyChanged("BackgroundGradient");
-            }
-        }
-        public SolidColorBrush BackgroundColor
-        {
-            get
-            {
-                if (this.IsPlaying)
-                    return new SolidColorBrush(Color.FromArgb(255, 255, 60, 60));
-                else
-                    return new SolidColorBrush(Color.FromArgb(255, 230, 230, 230));
-            }
-        }
-        public LinearGradientBrush BackgroundGradient
-        {
-            get
-            {
-                _brush = new LinearGradientBrush();
-                _brush.StartPoint = new Point(0.5, 0);
-                _brush.EndPoint = new Point(0.5, 1);
-                if (this.IsPlaying)
-                {
-                    _brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 255, 100, 100), 0));
-                    _brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 255, 50, 50), 1.0));
-                }
-                else
-                {
-                    _brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 100, 100, 100), 0));
-                    _brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 50, 50, 50), 1.0));
-                }
-                
-                return _brush;
-            }
-        }
+        public delegate void EventHandler(object source, EventArgs args);
+        public event EventHandler Removed;
+
         public FillerSong Song { get; set; }
         public string DisplayName { get; set; }
-        public string RemainingDuration
-        {
-            get { return _remaining; }
-            set
-            {
-                _remaining = value;
-                OnPropertyChanged("RemainingDuration");
-            }
-        }
-
-        private LinearGradientBrush _brush;
-        private bool _isPlaying;
-        private int _position;
-        private string _remaining;
 
         public FillerMusicControl(FillerSong song)
         {
             this.Song = song;
             this.DisplayName = song.Artist + " - " + song.Title;
-            _position = (int)song.Duration / 2;
-
-            _brush = new LinearGradientBrush();
-            _brush.StartPoint = new Point(0.5, 0);
-            _brush.EndPoint = new Point(0.5, 1);
-            
-
             InitializeComponent();
         }
 
-        #region INotifiedProperty Block
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
+        //Press the removed label
+        private void Label_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            if (Removed != null)
+                Removed(this, new EventArgs());
         }
-        #endregion
     }
 }

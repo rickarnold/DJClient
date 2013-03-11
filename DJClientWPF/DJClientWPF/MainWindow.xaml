@@ -1,7 +1,8 @@
-﻿<Window x:Class="DJClientWPF.MainWindow"
+﻿<Window xmlns:my="clr-namespace:DJClientWPF"  x:Class="DJClientWPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Mobioke DJ" Height="800" Width="1000" Closing="Window_Closing" Icon="Images\MobiokeIcon.ico">
+        Title="Mobioke DJ" Height="800" Width="1000" Closing="Window_Closing" Icon="Images\MobiokeIcon.ico" >
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -27,7 +28,7 @@
         <!-- Menu Bar-->
         <Menu IsMainMenu="True" Grid.ColumnSpan="10">
             <MenuItem Header="_DJ" >
-                <MenuItem x:Name="MenuItemLogin" Header="Log In" Click="LoginItem_Click"/>
+                <!--MenuItem x:Name="MenuItemLogin" Header="Log In" Click="LoginItem_Click"/-->
                 <MenuItem x:Name="MenuItemStartSession" Header="Start Session" Click="StartSessionItem_Click"/>
                 <Separator/>
                 <MenuItem x:Name="MenuItemLogout" Header="Log Out" Click="LogoutItem_Click"/>
@@ -75,22 +76,22 @@
                 Click="ButtonRestart_Click" FontSize="14"/>
         
         <!-- Now Playing-->
-        <StackPanel Grid.Row="2" Margin="10,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Orientation="Horizontal" x:Name="StackPanelPlaying" Opacity="0">
+        <StackPanel Grid.Row="2" Margin="10,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Orientation="Horizontal" x:Name="StackPanelPlaying" Opacity=".25">
             <Label Content="Now Playing:" VerticalAlignment="Top" FontWeight="Bold" FontSize="12"/>
             <Label x:Name="LabelNowPlaying" Margin="4,0,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="2" Margin="10,0,0,0" VerticalAlignment="Bottom" Grid.ColumnSpan="4" Orientation="Horizontal" x:Name="StackPanelSinging" Opacity="0">
+        <StackPanel Grid.Row="2" Margin="10,0,0,0" VerticalAlignment="Bottom" Grid.ColumnSpan="4" Orientation="Horizontal" x:Name="StackPanelSinging" Opacity=".25">
             <Label Content="Now Singing:" VerticalAlignment="Bottom" FontWeight="Bold"/>
             <Label x:Name="LabelNowSinging" Margin="4,0,0,0" VerticalAlignment="Bottom" FontWeight="Bold"/>
         </StackPanel>
         
         <Label x:Name="LabelSongRemaining" Content="0:00" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,0,5,0"
-               FontSize="24" FontWeight="Bold" Opacity="0"/>
+               FontSize="24" FontWeight="Bold" Opacity=".25"/>
 
         <!-- CDG Video-->
         <GroupBox Grid.Row="3" Grid.ColumnSpan="5" Margin="10,5,10,5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="230" Width="310" FontSize="14"
-                  FontWeight="Bold" x:Name="GroupBoxCDG" Opacity="0">
+                  FontWeight="Bold" x:Name="GroupBoxCDG" Opacity="0.25" BorderThickness="3">
             <GroupBox.Header>
                 Second Display
             </GroupBox.Header>
@@ -99,12 +100,13 @@
 
         <!-- Singer Queue-->
         <GroupBox Grid.Row="2" Grid.RowSpan="4" Grid.Column="5" Grid.ColumnSpan="5" Margin="10,5,10,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  FontSize="14" FontWeight="Bold" Opacity="0" x:Name="GroupBoxQueue">
+                  FontSize="14" FontWeight="Bold" Opacity=".25" x:Name="GroupBoxQueue" BorderThickness="3">
             <GroupBox.Header>
                 Singer Queue
             </GroupBox.Header>
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="38"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="0" x:Name="RowSingerQueueAddSongControl"/>
                     <RowDefinition Height="50"/>
@@ -115,31 +117,36 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox x:Name="ListBoxSongQueue" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4"
+
+                <Label x:Name="LabelWaitTime" Margin="4,0,5,0" FontWeight="Bold" FontSize="24" Content="0:00:00" HorizontalAlignment="Right" Grid.ColumnSpan="4"/>
+                
+                <ListBox x:Name="ListBoxSongQueue" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4" Grid.Row="1"
                          ItemContainerStyle="{StaticResource ContainerStyle}" BorderThickness="0">
                     
                 </ListBox>
                 
-                <!--  Need to add AddSongControl here-->
+                <my:AddSongRequestControl x:Name="AddSongRequestControlMain" Grid.Row="2" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 
-                <Button x:Name="ButtonQueueAdd" Grid.Row="2" Grid.Column="0" Content="Add" Click="ButtonQueueAdd_Click" Margin="10,10,10,10" FontWeight="Normal"
+                <Button x:Name="ButtonQueueAdd" Grid.Row="3" Grid.Column="0" Content="Add" Click="ButtonQueueAdd_Click" Margin="10,10,10,10" FontWeight="Normal"
                         IsEnabled="False"/>
-                <Button x:Name="ButtonQueueRemove" Grid.Row="2" Grid.Column="1" Content="Remove" Click="ButtonQueueRemove_Click" Margin="10,10,10,10" FontWeight="Normal"
+                <Button x:Name="ButtonQueueRemove" Grid.Row="3" Grid.Column="1" Content="Remove" Click="ButtonQueueRemove_Click" Margin="10,10,10,10" FontWeight="Normal"
                         IsEnabled="False"/>
-                <Button x:Name="ButtonQueueMoveUp" Grid.Row="2" Grid.Column="2" Content="Move Up" Click="ButtonQueueMoveUp_Click" Margin="10,10,10,10" FontWeight="Normal"
+                <Button x:Name="ButtonQueueMoveUp" Grid.Row="3" Grid.Column="2" Content="Move Up" Click="ButtonQueueMoveUp_Click" Margin="10,10,10,10" FontWeight="Normal"
                         IsEnabled="False"/>
-                <Button x:Name="ButtonQueueMoveDown" Grid.Row="2" Grid.Column="3" Content="Move Down" Click="ButtonQueueMoveDown_Click" Margin="10,10,10,10" FontWeight="Normal"
+                <Button x:Name="ButtonQueueMoveDown" Grid.Row="3" Grid.Column="3" Content="Move Down" Click="ButtonQueueMoveDown_Click" Margin="10,10,10,10" FontWeight="Normal"
                         IsEnabled="False"/>
             </Grid>
         </GroupBox>
         
         <!-- Filler Music-->
-        <GroupBox Grid.Row="4" Grid.RowSpan="2" Grid.ColumnSpan="5" Margin="10,5,10,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" FontWeight="Bold">
+        <GroupBox Grid.Row="4" Grid.RowSpan="2" Grid.ColumnSpan="5" Margin="10,5,10,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14" 
+                  FontWeight="Bold" BorderThickness="3">
             <GroupBox.Header>
                 Filler Music
             </GroupBox.Header>
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" Width="Auto">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="Auto" Width="Auto" Margin="2,2,2,2">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
@@ -149,20 +156,57 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox x:Name="ListBoxFillerMusic" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4" Grid.Row="0"
+                
+                <Label x:Name="LabelFillerMusicNow" HorizontalAlignment="Stretch" Grid.ColumnSpan="4" Margin="5,5,5,0" FontWeight="Bold" FontSize="12"/>
+                
+                <ListBox x:Name="ListBoxFillerMusic" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4" Grid.Row="1"
                          ItemContainerStyle="{StaticResource ContainerStyle}" BorderThickness="0">
                 </ListBox>
                 
                 <Button x:Name="ButtonFillerBrowse" Content="Browse" Click="ButtonFillerBrowse_Click" Margin="10,10,10,10" FontWeight="Normal"
-                        Grid.Row="1" Grid.Column="0"/>
-                <Button x:Name="ButtonFillerRemove" Content="Remove" Click="ButtonFillerRemove_Click" Margin="10,10,10,10" FontWeight="Normal"
-                        Grid.Row="1" Grid.Column="1"/>
+                        Grid.Row="2" Grid.Column="0"/>
+                <Button x:Name="ButtonFillerMoveNext" Content="Move Next" Click="ButtonFillerMoveToTop_Click" Margin="10,10,10,10" FontWeight="Normal"
+                        Grid.Row="2" Grid.Column="1"/>
                 <Button x:Name="ButtonFillerMoveUp" Content="Move Up" Click="ButtonFillerMoveUp_Click" Margin="10,10,10,10" FontWeight="Normal"
-                        Grid.Row="1" Grid.Column="2"/>
+                        Grid.Row="2" Grid.Column="2"/>
                 <Button x:Name="ButtonFillerMoveDown" Content="Move Down" Click="ButtonFillerMoveDown_Click" Margin="10,10,10,10" FontWeight="Normal"
-                        Grid.Row="1" Grid.Column="3"/>
+                        Grid.Row="2" Grid.Column="3"/>
             </Grid>
         </GroupBox>
+
+        <!-- Log In Form-->
+        <ScrollViewer x:Name="ScrollViewerLogin" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="6" Grid.ColumnSpan="10" VerticalScrollBarVisibility="Auto">
+        <Grid x:Name="GridLogin"  Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Image x:Name="ImageLogin" Source="Images\MobiokeLogo.png" Grid.ColumnSpan="2" Stretch="Uniform" Margin="50,50,50,50" Height="200"/>
+            <Image x:Name="ImageLoginToAnimate" Source="Images\MobiokeLogo.png" Grid.ColumnSpan="2" Stretch="Uniform" Margin="50,50,50,50" Height="200" Visibility="Hidden"/>
+
+            <Label x:Name="LabelLoginUserName" Content="User Name: " HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold"/>
+            <TextBox x:Name="TextBoxLoginUserName" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Width="300" FontSize="16"
+                     Text="rick"/>
+
+            <Label x:Name="LabelLoginPassword" Content="Password: " HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" FontSize="16" FontWeight="Bold"/>
+            <PasswordBox x:Name="TextBoxLoginPassword" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="300" FontSize="16"
+                         KeyDown="TextBoxLoginPassword_KeyDown" Password="changeme!"/>
+            
+            <Button x:Name="ButtonLoginForm" HorizontalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="2" Content="Login" Width="80" Height="40" FontSize="18"
+                    Click="ButtonLoginForm_Click"/>
+
+            <Label x:Name="LabelLoginMessage" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"
+                   Margin="0,15,0,0" Foreground="#2ED7E2"/>
+        </Grid>
+        </ScrollViewer>
     </Grid>
 
 </Window>
