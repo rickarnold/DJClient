@@ -21,6 +21,7 @@ namespace DJClientWPF
     {
         public delegate void InvokeDelegate();
 
+        //Properites used to animate opening and closing the add song user control
         public static readonly DependencyProperty AnimatableGridHeightProperty = DependencyProperty.Register(
             "AnimatableGridHeight", typeof(double), typeof(MainWindow), new PropertyMetadata(0.0));
 
@@ -45,9 +46,7 @@ namespace DJClientWPF
         private ObservableCollection<FillerMusicControl> fillerList;
         private bool isPlaying = false;
         private bool showProgressRemaining = false;
-        private string progressString = "0:00";
         private int fillerSelected = -1;
-        private DoubleAnimation loginAnimatorFadeIn;
         private bool songRequestOpen = false;
 
         public MainWindow()
@@ -65,8 +64,6 @@ namespace DJClientWPF
 
             ListBoxFillerMusic.ItemsSource = fillerList;
             ListBoxSongQueue.ItemsSource = queueList;
-
-            loginAnimatorFadeIn = new DoubleAnimation();
 
             InitializeEventHandlers();
 
@@ -232,6 +229,8 @@ namespace DJClientWPF
 
         private void KaraokeProgressUpdatedHandler(object source, DurationArgs args)
         {
+            string progressString;
+
             //Check how the progress should be shown
             if (!showProgressRemaining)
                 progressString = args.CurrentDuration;
@@ -406,9 +405,9 @@ namespace DJClientWPF
 
         private void UpdateNowPlaying(SongToPlay songToPlay)
         {
-            LabelNowSinging.Content = songToPlay.User.userName;
+            LabelNowSinging.Content = "Now Singing:  " + songToPlay.User.userName;
             LabelNowSinging.Foreground = new SolidColorBrush(Colors.Black);
-            LabelNowPlaying.Content = songToPlay.Song.artist + " - " + songToPlay.Song.title;
+            LabelNowPlaying.Content = "Now Playing:  " +  songToPlay.Song.artist + " - " + songToPlay.Song.title;
             LabelNowPlaying.Foreground = new SolidColorBrush(Colors.Black);
             LabelSongRemaining.Content = "0:00";
 
@@ -766,7 +765,7 @@ namespace DJClientWPF
 
         private void StartLoginAnimation()
         {
-
+            DoubleAnimation loginAnimatorFadeIn = new DoubleAnimation();
             loginAnimatorFadeIn.From = 1;
             loginAnimatorFadeIn.To = 0;
             loginAnimatorFadeIn.AutoReverse = true;

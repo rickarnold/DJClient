@@ -13,7 +13,7 @@ namespace DJClientWPF
         public event EventHandler FillerQueueUpdated;
         public event EventHandler PlayStateChanged;
 
-        const int DEFAULT_VOLUME = 25;
+        const int DEFAULT_VOLUME = 50;
 
         public List<FillerSong> FillerQueue { get; set; }
         public bool IsPlaying { get; private set; }

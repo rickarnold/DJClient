@@ -77,13 +77,13 @@
         
         <!-- Now Playing-->
         <StackPanel Grid.Row="2" Margin="10,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Orientation="Horizontal" x:Name="StackPanelPlaying" Opacity=".25">
-            <Label Content="Now Playing:" VerticalAlignment="Top" FontWeight="Bold" FontSize="12"/>
-            <Label x:Name="LabelNowPlaying" Margin="4,0,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+            <!--Label Content="Now Playing:" VerticalAlignment="Top" FontWeight="Bold" FontSize="12"/-->
+            <Label Content="Now Playing:" x:Name="LabelNowPlaying" Margin="4,0,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2" Margin="10,0,0,0" VerticalAlignment="Bottom" Grid.ColumnSpan="4" Orientation="Horizontal" x:Name="StackPanelSinging" Opacity=".25">
-            <Label Content="Now Singing:" VerticalAlignment="Bottom" FontWeight="Bold"/>
-            <Label x:Name="LabelNowSinging" Margin="4,0,0,0" VerticalAlignment="Bottom" FontWeight="Bold"/>
+            <!--Label Content="Now Singing:" VerticalAlignment="Bottom" FontWeight="Bold"/-->
+            <Label Content="Now Singing:" x:Name="LabelNowSinging" Margin="4,0,0,0" VerticalAlignment="Bottom" FontWeight="Bold"/>
         </StackPanel>
         
         <Label x:Name="LabelSongRemaining" Content="0:00" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,0,5,0"
