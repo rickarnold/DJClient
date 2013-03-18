@@ -44,6 +44,18 @@ namespace DJClientWPF
         }
     }
 
+    public class AddSongRequestArgs : EventArgs
+    {
+        public int NewID { get; private set; }
+        public int OldID { get; private set; }
+
+        public AddSongRequestArgs(int newID, int oldID)
+        {
+            this.NewID = newID;
+            this.OldID = oldID;
+        }
+    }
+
     public class FillerStateArgs : EventArgs
     {
         public int NowPlayingIndex { get; private set; }

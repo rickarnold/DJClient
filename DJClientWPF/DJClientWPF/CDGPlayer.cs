@@ -53,6 +53,8 @@ namespace DJClientWPF
         private List<Frame> FrameList { get; set; }
         private ColorPalette Palette { get; set; }
 
+        private int transparentColor = -1;
+
         private bool isLocked = false;
         private Bitmap _image;
 
@@ -623,9 +625,7 @@ namespace DJClientWPF
 
         private void DefineTransparentColor(byte[] data)
         {
-            //int color = data[0] & 0x0F;
-            //this.Palette.Entries[color] = Color.Transparent;
-            //this.Image.Palette = this.Palette;
+            transparentColor = data[0] & 0x0F;
         }
 
         /// <summary>

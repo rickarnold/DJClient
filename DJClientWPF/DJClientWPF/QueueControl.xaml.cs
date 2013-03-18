@@ -13,40 +13,138 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DJClientWPF.KaraokeService;
 using System.Windows.Media.Animation;
+using System.Collections.ObjectModel;
 
 namespace DJClientWPF
 {
     public partial class QueueControl : UserControl
     {
-        private const int HEADER_HEIGHT = 35;
+        private const int HEADER_HEIGHT = 30;
         private const int LABEL_HEIGHT = 30;
         private const int ROW_INDEX = 1;
         private const int LEFT_MARGIN = 15;
 
         public queueSinger QueueSinger { get; set; }
-        public int SingerID { get; private set; }
+        public int SingerID { get; set; }
         public bool IsExpanded { get; set; }
 
+        private ObservableCollection<QueueSongControl> songControlList;
         private List<Label> songLabelList;
 
         public QueueControl(queueSinger singer)
         {
             InitializeComponent();
-
+            
             this.QueueSinger = singer;
             this.SingerID = singer.user.userID;
 
             IsExpanded = false;
             songLabelList = new List<Label>();
+            songControlList = new ObservableCollection<QueueSongControl>();
 
-            SetLabels();
+            LabelSinger.Content = this.QueueSinger.user.userName;
+
+            SetSongList();
         }
 
         public void Update(queueSinger singer)
         {
             this.QueueSinger = singer;
 
-            SetLabels();
+            SetSongList();
+        }
+
+        private void SetSongList()
+        {
+            //Create a new song control for each song
+            songControlList.Clear();
+
+            //Check for an empty song queue for this singer
+            if (this.QueueSinger.songs.Length == 0)
+            {
+                QueueSongControl control = new QueueSongControl(null, 0, true);
+                songControlList.Add(control);
+            }
+            else
+            {
+                for (int x = 0; x < this.QueueSinger.songs.Length; x++)
+                {
+                    QueueSongControl control = new QueueSongControl(this.QueueSinger.songs[x], x, false);
+                    control.RemoveClicked += new QueueSongControl.EventHandler(control_RemoveClicked);
+                    control.MoveUpClicked += new QueueSongControl.EventHandler(control_MoveUpClicked);
+                    control.MoveDownClicked += new QueueSongControl.EventHandler(control_MoveDownClicked);
+                    songControlList.Add(control);
+
+                    if (this.IsExpanded)
+                        control.ShowControls();
+                }
+            }
+
+            ListBoxSongs.ItemsSource = songControlList;
+        }
+
+        void control_MoveDownClicked(object source, EventArgs args)
+        {
+            QueueSongControl control = source as QueueSongControl;
+
+            int index = songControlList.IndexOf(control);
+
+            //Check if this already the bottom one
+            if (index == (songControlList.Count - 1))
+                return;
+
+            SongRequest request = new SongRequest();
+            request.songID = control.Song.ID;
+            request.user = this.QueueSinger.user;
+            DJModel.Instance.MoveSongRequest(request, index + 1);
+
+            songControlList.Remove(control);
+            songControlList.Insert(index + 1, control);
+        }
+
+        void control_MoveUpClicked(object source, EventArgs args)
+        {
+            QueueSongControl control = source as QueueSongControl;
+
+            int index = songControlList.IndexOf(control);
+
+            //Check if this already the top one
+            if (index == 0)
+                return;
+
+            SongRequest request = new SongRequest();
+            request.songID = control.Song.ID;
+            request.user = this.QueueSinger.user;
+            DJModel.Instance.MoveSongRequest(request, index - 1);
+
+            songControlList.Remove(control);
+            songControlList.Insert(index - 1, control);
+        }
+
+        void control_RemoveClicked(object source, EventArgs args)
+        {
+            QueueSongControl control = source as QueueSongControl;
+
+            SongRequest requestToRemove = new SongRequest();
+            requestToRemove.songID = control.Song.ID;
+            requestToRemove.user = this.QueueSinger.user;
+            DJModel.Instance.RemoveSongRequest(requestToRemove);
+
+            //Handle the case when we have only 1 item left
+            if (songControlList.Count == 1 && control.IsEmpty == false)
+            {
+                songControlList[0].SetAsEmpty();
+                return;
+            }
+
+            songControlList.Remove(control);
+
+            //Animate the grid collapsing to fill the lost song
+            DoubleAnimation animator = new DoubleAnimation();
+            animator.From = HEADER_HEIGHT + ((songControlList.Count + 1) * LABEL_HEIGHT);
+            animator.To = HEADER_HEIGHT + (songControlList.Count * LABEL_HEIGHT);
+            animator.Duration = new Duration(TimeSpan.FromSeconds(.1));
+            GridMain.BeginAnimation(Grid.HeightProperty, animator);
         }
 
         //Set the initial label states of singer name and first song
@@ -119,10 +217,6 @@ namespace DJClientWPF
             LabelExpand.Content = "\u25B2 ";
             BorderExpand.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 125, 125));
 
-            //Do nothing if the user has only one thing to display
-            if (this.QueueSinger.songs.Length <= 1)
-                return;
-
             //Calculate new height based on number of songs
             int songCount = this.QueueSinger.songs.Length;
 
@@ -130,7 +224,16 @@ namespace DJClientWPF
             animator.From = HEADER_HEIGHT + LABEL_HEIGHT;
             animator.To = HEADER_HEIGHT + (songCount * LABEL_HEIGHT);
             animator.Duration = new Duration(TimeSpan.FromSeconds(.1 * songCount));
+            animator.Completed += new EventHandler(animator_Completed);
             GridMain.BeginAnimation(Grid.HeightProperty, animator);
+        }
+
+        //The expander animator has finished so now show editing controls
+        void animator_Completed(object sender, EventArgs e)
+        {
+            //Update the controls to show editing controls
+            foreach (QueueSongControl control in songControlList)
+                control.ShowControls();
         }
 
         private void Collapse()
@@ -143,11 +246,18 @@ namespace DJClientWPF
             LabelExpand.Content = "\u25BC ";
             BorderExpand.BorderBrush = new SolidColorBrush(Colors.LightGreen);
 
+            //Update the controls to hide editing controls
+            foreach (QueueSongControl control in songControlList)
+                control.HideControls();
+
+            //Calculate new height based on number of songs
+            int songCount = this.QueueSinger.songs.Length;
+
             //Animate the collapsing
             DoubleAnimation animator = new DoubleAnimation();
-            animator.From = HEADER_HEIGHT + (songLabelList.Count * LABEL_HEIGHT);
+            animator.From = HEADER_HEIGHT + (songCount * LABEL_HEIGHT);
             animator.To = HEADER_HEIGHT + LABEL_HEIGHT;
-            animator.Duration = new Duration(TimeSpan.FromSeconds(.1 * songLabelList.Count));
+            animator.Duration = new Duration(TimeSpan.FromSeconds(.1 * songCount));
             GridMain.BeginAnimation(Grid.HeightProperty, animator);
         }
 

@@ -18,8 +18,8 @@
         <!-- Ensure that items in list box stretch horizontally to fill container and control color when selected-->
         <Style TargetType="ListBoxItem" x:Key="ContainerStyle">
             <Style.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#F0F0F0" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#F8F8F8" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#402ED7E2" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#202ED7E2" />
             </Style.Resources>
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>

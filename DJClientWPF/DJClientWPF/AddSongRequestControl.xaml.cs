@@ -32,6 +32,7 @@ namespace DJClientWPF
 
         private SearchType searchType = SearchType.Artist;
         private ObservableCollection<SongSearchResult> searchResults;
+        private int userID = -1;
 
         public AddSongRequestControl()
         {
@@ -102,14 +103,19 @@ namespace DJClientWPF
 
             SongRequest request = new SongRequest();
             User user = new User();
-            user.userID = -1;
+            user.userID = userID--;
             user.userName = TextBoxUserName.Text.Trim();
 
             request.user = user;
             request.songID = songSearchResult.Song.ID;
 
-            DJModel.Instance.AddSongRequest(request, DJModel.Instance.SongRequestQueue.Count + 1);
+            DJModel.Instance.AddSongRequest(request, DJModel.Instance.SongRequestQueue.Count + 1, user.userID);
             CloseControl();
+        }
+
+        public void OpenControl()
+        {
+            TextBoxUserName.Focus();
         }
 
         //Animates this control closed

@@ -600,6 +600,9 @@ namespace DJClientWPF.KaraokeService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJCreateSession", ReplyAction="http://tempuri.org/IDJ/DJCreateSessionResponse")]
         DJClientWPF.KaraokeService.Response DJCreateSession(long DJKey);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJStopSession", ReplyAction="http://tempuri.org/IDJ/DJStopSessionResponse")]
+        DJClientWPF.KaraokeService.Response DJStopSession(long DJKey);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGetQRNumber", ReplyAction="http://tempuri.org/IDJ/DJGetQRNumberResponse")]
         DJClientWPF.KaraokeService.Response DJGetQRNumber(long DJKey);
         
@@ -623,6 +626,9 @@ namespace DJClientWPF.KaraokeService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJChangeSongRequest", ReplyAction="http://tempuri.org/IDJ/DJChangeSongRequestResponse")]
         DJClientWPF.KaraokeService.Response DJChangeSongRequest(DJClientWPF.KaraokeService.SongRequest newSR, DJClientWPF.KaraokeService.SongRequest oldSR, long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJMoveSongRequest", ReplyAction="http://tempuri.org/IDJ/DJMoveSongRequestResponse")]
+        DJClientWPF.KaraokeService.Response DJMoveSongRequest(DJClientWPF.KaraokeService.SongRequest sr, int newIndex, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJRemoveUser", ReplyAction="http://tempuri.org/IDJ/DJRemoveUserResponse")]
         DJClientWPF.KaraokeService.Response DJRemoveUser(int userID, long DJKey);
@@ -686,6 +692,10 @@ namespace DJClientWPF.KaraokeService {
             return base.Channel.DJCreateSession(DJKey);
         }
         
+        public DJClientWPF.KaraokeService.Response DJStopSession(long DJKey) {
+            return base.Channel.DJStopSession(DJKey);
+        }
+        
         public DJClientWPF.KaraokeService.Response DJGetQRNumber(long DJKey) {
             return base.Channel.DJGetQRNumber(DJKey);
         }
@@ -716,6 +726,10 @@ namespace DJClientWPF.KaraokeService {
         
         public DJClientWPF.KaraokeService.Response DJChangeSongRequest(DJClientWPF.KaraokeService.SongRequest newSR, DJClientWPF.KaraokeService.SongRequest oldSR, long DJKey) {
             return base.Channel.DJChangeSongRequest(newSR, oldSR, DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJMoveSongRequest(DJClientWPF.KaraokeService.SongRequest sr, int newIndex, long DJKey) {
+            return base.Channel.DJMoveSongRequest(sr, newIndex, DJKey);
         }
         
         public DJClientWPF.KaraokeService.Response DJRemoveUser(int userID, long DJKey) {

@@ -34,6 +34,7 @@ namespace DJClientWPF
         public event ResponseHandler AddSongRequestComplete;
         public event ResponseHandler RemoveSongRequestComplete;
         public event ResponseHandler ChangeSongRequestComplete;
+        public event ResponseHandler MoveSongRequestComplete;
         public event ResponseHandler RemoveUserComplete;
         public event ResponseHandler MoveUserComplete;
         public event QueueHandler GetQueueComplete;
@@ -230,6 +231,14 @@ namespace DJClientWPF
             });
         }
 
+        public void MoveSongRequestAsync(SongRequest request, int newIndex, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                MoveSongRequest(request, newIndex, djKey, userState);
+            });
+        }
+
         public void RemoveUserAsync(int userID, long djKey, object userState)
         {
             ThreadPool.QueueUserWorkItem(lambda =>
@@ -286,6 +295,9 @@ namespace DJClientWPF
         {
             Response response = _client.DJAddQueue(request, queueIndex, djKey);
 
+            //Get the new queue while we're at it
+            GetSingerQueue(djKey, null);
+
             if (AddSongRequestComplete != null)
             {
                 AddSongRequestComplete(this, new ResponseArgs(response, userState));
@@ -296,15 +308,31 @@ namespace DJClientWPF
         {
             Response response = _client.DJRemoveSongRequest(request, djKey);
 
+            //Get the new queue while we're at it
+            GetSingerQueue(djKey, null);
+
             if (RemoveSongRequestComplete != null)
             {
                 RemoveSongRequestComplete(this, new ResponseArgs(response, userState));
             }
         }
 
+        private void MoveSongRequest(SongRequest request, int newIndex, long djKey, object userState)
+        {
+            Response response = _client.DJMoveSongRequest(request, newIndex, djKey);
+
+            //Get the new queue while we're at it
+            GetSingerQueue(djKey, null);
+
+            if (MoveSongRequestComplete != null)
+                MoveSongRequestComplete(this, new ResponseArgs(response, userState));
+        }
+
         private void ChangeSongRequest(SongRequest newRequest, SongRequest oldRequest, long djKey, object userState)
         {
             Response response = _client.DJChangeSongRequest(newRequest, oldRequest, djKey);
+
+            GetSingerQueue(djKey, null);
 
             if (ChangeSongRequestComplete != null)
             {
@@ -316,6 +344,8 @@ namespace DJClientWPF
         {
             Response response = _client.DJRemoveUser(userID, djKey);
 
+            GetSingerQueue(djKey, null);
+
             if (RemoveUserComplete != null)
             {
                 RemoveUserComplete(this, new ResponseArgs(response, userState));
@@ -325,6 +355,8 @@ namespace DJClientWPF
         private void MoveUser(int userID, int index, long djKey, object userState)
         {
             Response response = _client.DJMoveUser(userID, index, djKey);
+
+            //GetSingerQueue(djKey, null);
 
             if (MoveUserComplete != null)
             {
@@ -353,6 +385,9 @@ namespace DJClientWPF
                 try
                 {
                     response = _client.DJPopQueue(request, djKey);
+
+                    //Get the new queue too
+                    GetSingerQueue(djKey, null);
                 }
                 catch
                 {

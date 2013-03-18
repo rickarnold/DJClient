@@ -18,6 +18,7 @@ namespace DJClientWPF
         //Delegates for use in the event handlers
         public delegate void DJModelEventHandler(object source, DJModelArgs args);
         public delegate void EventHandler(object source, EventArgs args);
+        public delegate void AddSongRequestHandler(object source, AddSongRequestArgs args);
 
         //Events raised when the calls to the service have completed
         public event DJModelEventHandler SignUpComplete;
@@ -29,9 +30,10 @@ namespace DJClientWPF
         public event DJModelEventHandler RemoveSongFromDatabaseComplete;
         public event DJModelEventHandler ListSongsInDatabaseComplete;
 
-        public event DJModelEventHandler AddSongRequestComplete;
+        public event AddSongRequestHandler AddSongRequestComplete;
         public event DJModelEventHandler RemoveSongRequestComplete;
         public event DJModelEventHandler ChangeSongRequestComplete;
+        public event DJModelEventHandler MoveSongRequestComplete;
         public event DJModelEventHandler RemoveUserComplete;
         public event DJModelEventHandler MoveUserComplete;
         public event DJModelEventHandler GetQueueComplete;
@@ -77,6 +79,7 @@ namespace DJClientWPF
             serviceClient.AddSongRequestComplete += AddSongRequestCompleteHandler;
             serviceClient.RemoveSongRequestComplete += RemoveSongRequestCompleteHandler;
             serviceClient.ChangeSongRequestComplete += ChangeSongRequestCompleteHandler;
+            serviceClient.MoveSongRequestComplete += MoveSongRequestCompleteHandler;
             serviceClient.RemoveUserComplete += RemoveUserCompleteHandler;
             serviceClient.MoveUserComplete += MoveUserCompleteHandler;
             serviceClient.GetQueueComplete += GetQueueCompleteHandler;
@@ -299,15 +302,21 @@ namespace DJClientWPF
         }
 
         //Adds a new song request to the singer queue
-        public void AddSongRequest(SongRequest request, int indexInQueue)
+        public void AddSongRequest(SongRequest request, int indexInQueue, int oldID)
         {
-            serviceClient.AddSongRequestAsync(request, indexInQueue, this.DJKey, null);
+            serviceClient.AddSongRequestAsync(request, indexInQueue, this.DJKey, oldID);
         }
 
         //Remove a song request from the singer queue
         public void RemoveSongRequest(SongRequest request)
         {
             serviceClient.RemoveSongRequestAsync(request, this.DJKey, null);
+        }
+
+        //Change the order of a song request for a user
+        public void MoveSongRequest(SongRequest request, int newIndex)
+        {
+            serviceClient.MoveSongRequestAsync(request, newIndex, this.DJKey, null);
         }
 
         public void UpdateSongQueue(List<SongRequest> requestUpdates)
@@ -582,18 +591,11 @@ namespace DJClientWPF
 
         private void AddSongRequestCompleteHandler(object source, ResponseArgs args)
         {
-            if (!args.Response.error)
-            {
-
-            }
-            //Error occurred
-            {
-
-            }
-
             if (AddSongRequestComplete != null)
             {
-                AddSongRequestComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+                int newID = args.Response.result;
+                int oldID = (int)args.UserState;
+                AddSongRequestComplete(this, new AddSongRequestArgs(newID, oldID));
             }
         }
 
@@ -629,6 +631,21 @@ namespace DJClientWPF
             {
                 ChangeSongRequestComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
             }
+        }
+
+        private void MoveSongRequestCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+
+            }
+            //Error occurred
+            {
+
+            }
+
+            if (MoveSongRequestComplete != null)
+                MoveSongRequestComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
         }
 
         private void RemoveUserCompleteHandler(object source, ResponseArgs args)

@@ -82,6 +82,7 @@ namespace DJClientWPF
             model.LogoutComplete += LogoutCompleteHandler;
             model.ListSongsInDatabaseComplete += SongListLoadedHandler;
             model.WaitTimeComplete += WaitTimeCompleteHandler;
+            model.AddSongRequestComplete += AddSongRequestCompleteHandler;
 
             karaokePlayer.ProgressUpdated += KaraokeProgressUpdatedHandler;
             karaokePlayer.SongFinished += SongFinishedHandler;
@@ -319,6 +320,17 @@ namespace DJClientWPF
             {
                 LabelWaitTime.Content = model.WaitTime;
             }));
+        }
+
+        //A manual user song request has been added to the queue.  Update the user's ID if they are not already in the queue control list.
+        private void AddSongRequestCompleteHandler(object source, AddSongRequestArgs args)
+        {
+            //Find the control that has the old ID
+            foreach (QueueControl control in queueControlList)
+            {
+                if (control.SingerID == args.OldID)
+                    control.SingerID = args.NewID;
+            }
         }
 
         #endregion
@@ -574,7 +586,7 @@ namespace DJClientWPF
         {
             int index = ListBoxSongQueue.SelectedIndex;
 
-            if (index >= 0)
+            if (index > 0)
             {
                 QueueControl control = ListBoxSongQueue.SelectedItem as QueueControl;
 
@@ -677,6 +689,8 @@ namespace DJClientWPF
         //Animate open the add song request control if it is not already open
         private void OpenAddSongRequestControl()
         {
+            AddSongRequestControlMain.OpenControl();
+
             if (!songRequestOpen)
             {
                 songRequestOpen = true;

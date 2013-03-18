@@ -99,6 +99,9 @@
     <Compile Include="QueueControl.xaml.cs">
       <DependentUpon>QueueControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="QueueSongControl.xaml.cs">
+      <DependentUpon>QueueSongControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ScrollingText.xaml.cs">
       <DependentUpon>ScrollingText.xaml</DependentUpon>
     </Compile>
@@ -146,6 +149,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="QueueSongControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ScrollingText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -169,7 +176,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
