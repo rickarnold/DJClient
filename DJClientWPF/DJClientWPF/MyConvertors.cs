@@ -7,6 +7,9 @@ using System.Windows;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Convertor used for animating a grid expanding and collapsing
+    /// </summary>
     [ValueConversion(typeof(Double), typeof(GridLength))]
     public class DoubleToGridLength : IValueConverter
     {

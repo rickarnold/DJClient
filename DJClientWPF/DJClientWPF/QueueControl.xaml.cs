@@ -17,6 +17,9 @@ using System.Collections.ObjectModel;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Control used in displaying a singer in the queue and the songs they have requested
+    /// </summary>
     public partial class QueueControl : UserControl
     {
         private const int HEADER_HEIGHT = 30;

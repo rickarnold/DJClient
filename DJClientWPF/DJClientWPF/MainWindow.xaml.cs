@@ -17,6 +17,9 @@ using System.Windows.Media.Animation;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Main display window of DJ client
+    /// </summary>
     public partial class MainWindow : Window
     {
         public delegate void InvokeDelegate();

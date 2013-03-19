@@ -6,6 +6,9 @@ using DJClientWPF.KaraokeService;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Custom event args used for passing information between events
+    /// </summary>
     public class DurationArgs : EventArgs
     {
         public string RemainingDuration { get; private set; }

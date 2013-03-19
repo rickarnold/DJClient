@@ -17,7 +17,7 @@ using Microsoft.Win32;
 namespace DJClientWPF
 {
     /// <summary>
-    /// Interaction logic for BackgroundImageSelector.xaml
+    /// Form that allows the user to select the image that is displayed between songs.  Also shows the currently selected image.
     /// </summary>
     public partial class BackgroundImageSelector : Window
     {

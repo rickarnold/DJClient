@@ -15,7 +15,7 @@ using System.Drawing;
 namespace DJClientWPF
 {
     /// <summary>
-    /// Interaction logic for CDGWindow.xaml
+    /// Second moveable and resizable window that displays the lyrics during karaoke playback.  Displays the default background image while waiting for the next singer.
     /// </summary>
     public partial class CDGWindow : Window
     {

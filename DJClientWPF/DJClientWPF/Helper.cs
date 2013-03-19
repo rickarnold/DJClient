@@ -10,11 +10,15 @@ using System.Drawing.Imaging;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Helper methods that are used through out the project.
+    /// </summary>
     class Helper
     {
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
 
+        //Given a file name return the name of the file minus the extension
         public static string RemoveExtensionFromFileName(string fileName)
         {
             //Find the '.'

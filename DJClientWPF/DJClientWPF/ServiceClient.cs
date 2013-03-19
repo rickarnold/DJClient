@@ -7,6 +7,9 @@ using System.Threading;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Class used to communicate asynchronously with the service
+    /// </summary>
     class ServiceClient
     {
         //Singleton instance of this object

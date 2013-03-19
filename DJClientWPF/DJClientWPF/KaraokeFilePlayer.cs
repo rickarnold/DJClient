@@ -12,6 +12,9 @@ using System.IO;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Main karaoke player that plays back music and lyrics of a karaoke file.
+    /// </summary>
     class KaraokeFilePlayer
     {
         const int CDG_DELAY = 350;  //Delay in ms for starting the cdg playback in order to be synced with the lyrics

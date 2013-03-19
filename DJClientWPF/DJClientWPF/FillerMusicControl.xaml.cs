@@ -16,7 +16,7 @@ using System.ComponentModel;
 namespace DJClientWPF
 {
     /// <summary>
-    /// Interaction logic for FillerMusicControl.xaml
+    /// Control that displays a filler song
     /// </summary>
     public partial class FillerMusicControl : UserControl
     {

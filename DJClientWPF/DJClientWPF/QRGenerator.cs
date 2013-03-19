@@ -16,6 +16,9 @@ using System.Windows.Forms;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Generates a QR code given the venue string and saves the QR code to a pdf
+    /// </summary>
     class QRGenerator
     {
         const int  WIDTH = 500;

@@ -12,6 +12,9 @@ using System.Windows.Media.Imaging;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Class that decodes a cdg file and creates the image with lyrics to be displayed during karaoke playback.
+    /// </summary>
     class CDGPlayer
     {
         const int PACKETS_PER_SECTOR = 4;

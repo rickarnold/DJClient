@@ -9,6 +9,9 @@ using System.IO;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Model that contains all data needed for the DJ client.
+    /// </summary>
     class DJModel
     {
         private static DJModel model;

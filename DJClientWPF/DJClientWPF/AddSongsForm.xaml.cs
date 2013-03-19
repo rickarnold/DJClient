@@ -17,7 +17,7 @@ using System.Windows.Forms;
 namespace DJClientWPF
 {
     /// <summary>
-    /// Interaction logic for AddSongsForm.xaml
+    /// Form that is displayed when a user adds songs from their hard drive to the list of songs in the database.
     /// </summary>
     public partial class AddSongsForm : Window
     {

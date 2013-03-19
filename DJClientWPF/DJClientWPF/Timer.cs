@@ -1,4 +1,5 @@
 //Wrapper for the Window's multimedia high precision timers needed to play back karaoke files
+//This is a third party library
 
 using System;
 using System.ComponentModel;

@@ -7,6 +7,9 @@ using Microsoft.Win32;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Class that handles selecting and playing back filler songs between singers.
+    /// </summary>
     class FillerMusicPlayer
     {
         public delegate void EventHandler(object source, EventArgs args);

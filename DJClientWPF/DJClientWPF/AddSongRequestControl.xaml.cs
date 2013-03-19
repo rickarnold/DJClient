@@ -17,6 +17,9 @@ using System.Windows.Media.Animation;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Control used to add song requests manually to the queue.  Displays a list of matching results given a partial artist or title.
+    /// </summary>
     public partial class AddSongRequestControl : UserControl
     {
         public delegate void EventHandler(object source, EventArgs args);

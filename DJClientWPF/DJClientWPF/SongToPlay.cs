@@ -6,6 +6,9 @@ using DJClientWPF.KaraokeService;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Class that represents a song that is going to be played
+    /// </summary>
     class SongToPlay
     {
         public Song Song { get; set; }

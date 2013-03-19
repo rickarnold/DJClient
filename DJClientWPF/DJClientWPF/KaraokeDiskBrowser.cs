@@ -9,6 +9,9 @@ using WMPLib;
 
 namespace DJClientWPF
 {
+    /// <summary>
+    /// Class that given a folder on disk finds and processes all valid karaoke files in that folder and all subfolders.
+    /// </summary>
     class KaraokeDiskBrowser
     {
         public delegate void ProgressHandler(object source, ProgressArgs args);

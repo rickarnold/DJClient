@@ -16,7 +16,7 @@ using DJClientWPF.KaraokeService;
 namespace DJClientWPF
 {
     /// <summary>
-    /// Interaction logic for QueueSongControl.xaml
+    /// Control that displays a song requested by a singer and allows for editing the request
     /// </summary>
     public partial class QueueSongControl : UserControl
     {
