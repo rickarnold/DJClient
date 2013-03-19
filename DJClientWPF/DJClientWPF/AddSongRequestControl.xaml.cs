@@ -17,9 +17,6 @@ using System.Windows.Media.Animation;
 
 namespace DJClientWPF
 {
-    /// <summary>
-    /// Interaction logic for AddSongRequestControl.xaml
-    /// </summary>
     public partial class AddSongRequestControl : UserControl
     {
         public delegate void EventHandler(object source, EventArgs args);
@@ -120,6 +117,7 @@ namespace DJClientWPF
 
             SongRequest request = new SongRequest();
 
+            //No matching user found so let's just make a new one
             if (user == null)
             {
                 user = new User();
