@@ -209,6 +209,7 @@ namespace DJClientWPF
                 }
 
                 ListBoxSongQueue.ItemsSource = queueControlList;
+                AddSongRequestControlMain.QueueControlList = queueControlList;
             }));
         }
 

@@ -30,6 +30,8 @@ namespace DJClientWPF
             Artist, Title
         }
 
+        public ObservableCollection<QueueControl> QueueControlList { get; set; }
+
         private SearchType searchType = SearchType.Artist;
         private ObservableCollection<SongSearchResult> searchResults;
         private int userID = -1;
@@ -37,6 +39,7 @@ namespace DJClientWPF
         public AddSongRequestControl()
         {
             searchResults = new ObservableCollection<SongSearchResult>();
+            this.QueueControlList = new ObservableCollection<QueueControl>();
 
             InitializeComponent();
 
@@ -83,6 +86,7 @@ namespace DJClientWPF
             //Check if no user name was entered
             if (TextBoxUserName.Text.Trim().Equals(""))
             {
+                //Animate the text box to flash red
                 ColorAnimation animation = new ColorAnimation();
                 animation.From = Colors.White;
                 animation.To = Color.FromArgb(255, 255, 125, 125);
@@ -101,10 +105,27 @@ namespace DJClientWPF
                 return;
             }
 
+            string userName = TextBoxUserName.Text.Trim();
+
+            //Let's check if this is already a current user
+            User user = null;
+            foreach (QueueControl control in this.QueueControlList)
+            {
+                if (control.QueueSinger.user.userName.ToLower().Equals(userName.ToLower()))
+                {
+                    user = control.QueueSinger.user;
+                    break;
+                }
+            }
+
             SongRequest request = new SongRequest();
-            User user = new User();
-            user.userID = userID--;
-            user.userName = TextBoxUserName.Text.Trim();
+
+            if (user == null)
+            {
+                user = new User();
+                user.userID = userID--;
+                user.userName = userName;
+            }
 
             request.user = user;
             request.songID = songSearchResult.Song.ID;

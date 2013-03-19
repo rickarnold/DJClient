@@ -43,9 +43,9 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding MainResult}"/>
-                        <Label Content="-"/>
-                        <Label Content="{Binding SecondaryResult}"/>
+                        <Label Content="{Binding MainResult}" FontSize="12"/>
+                        <Label Content="-" FontSize="12"/>
+                        <Label Content="{Binding SecondaryResult}" FontSize="12"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

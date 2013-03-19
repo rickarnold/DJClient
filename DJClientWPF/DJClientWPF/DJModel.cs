@@ -104,7 +104,6 @@ namespace DJClientWPF
 
         public const string BACKGROUND_IMAGE_PATH = @"background.png";
 
-        public int VenueID { get; private set; }
         public bool IsSessionActive { get; private set; }
         public long DJKey { get; private set; }
         public List<Song> SongbookList { get; private set; }

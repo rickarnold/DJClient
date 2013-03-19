@@ -29,7 +29,6 @@ namespace DJClientWPF
         public bool IsExpanded { get; set; }
 
         private ObservableCollection<QueueSongControl> songControlList;
-        private List<Label> songLabelList;
 
         public QueueControl(queueSinger singer)
         {
@@ -39,7 +38,6 @@ namespace DJClientWPF
             this.SingerID = singer.user.userID;
 
             IsExpanded = false;
-            songLabelList = new List<Label>();
             songControlList = new ObservableCollection<QueueSongControl>();
 
             LabelSinger.Content = this.QueueSinger.user.userName;
@@ -81,6 +79,9 @@ namespace DJClientWPF
             }
 
             ListBoxSongs.ItemsSource = songControlList;
+
+            if (IsExpanded)
+                UpdateExpand();
         }
 
         void control_MoveDownClicked(object source, EventArgs args)
@@ -147,63 +148,63 @@ namespace DJClientWPF
             GridMain.BeginAnimation(Grid.HeightProperty, animator);
         }
 
-        //Set the initial label states of singer name and first song
-        private void SetLabels()
-        {
-            LabelSinger.Content = this.QueueSinger.user.userName;
+        ////Set the initial label states of singer name and first song
+        //private void SetLabels()
+        //{
+        //    LabelSinger.Content = this.QueueSinger.user.userName;
 
-            //Handle special case of no song yet selected for this user
-            if (this.QueueSinger.songs.Length == 0)
-            {
-                songLabelList = new List<Label>();
-                songLabelList.Add(new Label());
-                songLabelList[0].Content = "No Song Selected";
-            }
-            else
-            {
-                //Make sure the count of labels in the list matches the number of songs
-                if (songLabelList.Count != this.QueueSinger.songs.Length)
-                {
-                    int labelCount = songLabelList.Count;
-                    int songCount = this.QueueSinger.songs.Length;
+        //    //Handle special case of no song yet selected for this user
+        //    if (this.QueueSinger.songs.Length == 0)
+        //    {
+        //        songLabelList = new List<Label>();
+        //        songLabelList.Add(new Label());
+        //        songLabelList[0].Content = "No Song Selected";
+        //    }
+        //    else
+        //    {
+        //        //Make sure the count of labels in the list matches the number of songs
+        //        if (songLabelList.Count != this.QueueSinger.songs.Length)
+        //        {
+        //            int labelCount = songLabelList.Count;
+        //            int songCount = this.QueueSinger.songs.Length;
 
-                    //Need to add more labels
-                    if ((labelCount - songCount) < 0)
-                    {
-                        for (int i = labelCount; i < songCount; i++)
-                            songLabelList.Add(CreateNewLabel(i));
-                    }
-                    //Too many labels, remove some
-                    else
-                    {
-                        for (int i = labelCount - 1; i >= songCount; i--)
-                        {
-                            GridMain.Children.Remove(songLabelList[i]);
-                            songLabelList.RemoveAt(i);
-                        }
-                    }
-                }
+        //            //Need to add more labels
+        //            if ((labelCount - songCount) < 0)
+        //            {
+        //                for (int i = labelCount; i < songCount; i++)
+        //                    songLabelList.Add(CreateNewLabel(i));
+        //            }
+        //            //Too many labels, remove some
+        //            else
+        //            {
+        //                for (int i = labelCount - 1; i >= songCount; i--)
+        //                {
+        //                    GridMain.Children.Remove(songLabelList[i]);
+        //                    songLabelList.RemoveAt(i);
+        //                }
+        //            }
+        //        }
 
-                for (int i = 0; i < songLabelList.Count; i++)
-                    songLabelList[i].Content = GetSongString(this.QueueSinger.songs[i]);
-            }
+        //        for (int i = 0; i < songLabelList.Count; i++)
+        //            songLabelList[i].Content = GetSongString(this.QueueSinger.songs[i]);
+        //    }
 
-            if (IsExpanded)
-                UpdateExpand();
-        }
+        //    if (IsExpanded)
+        //        UpdateExpand();
+        //}
 
         private void UpdateExpand()
         {
             double currentHeight = GridMain.Height;
 
-            int songCount = songLabelList.Count;
+            int songCount = songControlList.Count;
             double expectedHeight = HEADER_HEIGHT + (songCount * LABEL_HEIGHT);
 
             //Animate updating the expanded grid
             DoubleAnimation animator = new DoubleAnimation();
-            animator.From = HEADER_HEIGHT + LABEL_HEIGHT;
-            animator.To = HEADER_HEIGHT + (songCount * LABEL_HEIGHT);
-            animator.Duration = new Duration(TimeSpan.FromSeconds(.1 * songCount));
+            animator.From = currentHeight;
+            animator.To = expectedHeight;
+            animator.Duration = new Duration(TimeSpan.FromSeconds(.2));
             GridMain.BeginAnimation(Grid.HeightProperty, animator);
         }
 

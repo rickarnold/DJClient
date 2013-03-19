@@ -356,8 +356,6 @@ namespace DJClientWPF
         {
             Response response = _client.DJMoveUser(userID, index, djKey);
 
-            //GetSingerQueue(djKey, null);
-
             if (MoveUserComplete != null)
             {
                 MoveUserComplete(this, new ResponseArgs(response, userState));
@@ -369,6 +367,8 @@ namespace DJClientWPF
             queueSinger[] singerQueue = new queueSinger[0];
 
             Response response = _client.DJGetQueue(out singerQueue, djKey);
+
+            GetWaitTime(djKey, null);
 
             if (GetQueueComplete != null)
             {
