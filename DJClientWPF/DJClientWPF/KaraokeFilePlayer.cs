@@ -190,6 +190,15 @@ namespace DJClientWPF
 
         #endregion
 
+        #region
+
+        public void SetScrollingText(string text)
+        {
+            cdgWindow.SetScrollingText(text);
+        }
+
+        #endregion
+
         #region Progress Timer Methods
 
         //Send an update on the amount of time left for the currently playing song

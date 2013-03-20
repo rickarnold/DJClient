@@ -51,6 +51,11 @@ namespace DJClientWPF
             this.MouseDown += MouseButtonDown;
         }
 
+        public void SetScrollingText(string text)
+        {
+            ScrollingTextMain.Text = text;
+        }
+
         private void MouseButtonDown(object sender, MouseEventArgs args)
         {
             if (WindowState == System.Windows.WindowState.Maximized)

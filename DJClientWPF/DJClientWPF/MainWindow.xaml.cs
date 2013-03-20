@@ -213,6 +213,10 @@ namespace DJClientWPF
 
                 ListBoxSongQueue.ItemsSource = queueControlList;
                 AddSongRequestControlMain.QueueControlList = queueControlList;
+
+                //Let's update the scrolling text if necessary
+                if (model.HasQueueStringChanged)
+                    karaokePlayer.SetScrollingText(model.QueueString);
             }));
         }
 

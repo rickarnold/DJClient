@@ -117,6 +117,8 @@ namespace DJClientWPF
         public bool IsLoggedIn { get; private set; }
         public string QRCode { get; private set; }
         public string WaitTime { get; private set; }
+        public bool HasQueueStringChanged { get; private set; }
+        public string QueueString { get; private set; }
         public BitmapImage BackgroundImage
         {
             get
@@ -379,6 +381,29 @@ namespace DJClientWPF
             }
 
             return false;
+        }
+
+        private void GetScrollingTextFromQueue()
+        {
+            string scrollingText;
+
+            if (this.CurrentSong != null)
+                scrollingText = "Now singing:  " + this.CurrentSong.User.userName + "      Next:";
+            else
+                scrollingText = "Next:";
+
+            for (int x = 0; x < SongRequestQueue.Count; x++)
+            {
+                if (x != 0)
+                    scrollingText += ",";
+                scrollingText += "  (" + (x + 1) + ") " + SongRequestQueue[x].user.userName;
+            }
+
+            if (!scrollingText.Equals(this.QueueString))
+            {
+                this.HasQueueStringChanged = true;
+                this.QueueString = scrollingText;
+            }
         }
 
         #endregion Queue Management
@@ -690,7 +715,11 @@ namespace DJClientWPF
             {
                 if (QueueHasChanged(args.SingerQueue))
                 {
+                    //Save the new queue
                     this.SongRequestQueue = args.SingerQueue;
+
+                    //Update the scrolling text
+                    GetScrollingTextFromQueue();
 
                     if (QueueUpdated != null)
                         QueueUpdated(this, new EventArgs());

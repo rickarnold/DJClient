@@ -4,8 +4,10 @@
         Title="CDGWindow" Height="210" Width="300" WindowStyle="None" ShowInTaskbar="False" Topmost="True" ResizeMode="CanResize">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Image x:Name="ImageCDG" Stretch="Fill"/>
+        <my:ScrollingText x:Name="ScrollingTextMain" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>
 </Window>

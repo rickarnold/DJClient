@@ -6,7 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="60" d:DesignWidth="600">
     <Canvas x:Name="GridMain" Height="Auto" Width="Auto" Background="Black">
-            <TextBlock Text="This is a test string that is super long in order for me to test some things out." Margin="0,5,0,5" Foreground="White"
-                       FontWeight="Bold" x:Name="TextBlockMarquee" />
+        <TextBlock Margin="0,5,0,5" Foreground="White" x:Name="TextBlockMarquee"  CacheMode="BitmapCache"/>
     </Canvas>
 </UserControl>
