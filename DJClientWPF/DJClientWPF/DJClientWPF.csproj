@@ -66,6 +66,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>.\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -77,6 +80,9 @@
     </Compile>
     <Compile Include="AddSongsForm.xaml.cs">
       <DependentUpon>AddSongsForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AdjustableText.xaml.cs">
+      <DependentUpon>AdjustableText.xaml</DependentUpon>
     </Compile>
     <Compile Include="BackgroundImageSelector.xaml.cs">
       <DependentUpon>BackgroundImageSelector.xaml</DependentUpon>
@@ -118,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddSongsForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AdjustableText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -45,8 +45,6 @@ namespace DJClientWPF
         {
             InitializeComponent();
             
-            this.Text = "This is a really long string that I am using for testing to ensure that everything scrolls just right for me and my baby you know what I mean.";
-
             this.Loaded += new RoutedEventHandler(ScrollingText_Loaded);
             this.SizeChanged += new SizeChangedEventHandler(ScrollingText_SizeChanged);
         }

@@ -395,7 +395,7 @@ namespace DJClientWPF
             for (int x = 0; x < SongRequestQueue.Count; x++)
             {
                 if (x != 0)
-                    scrollingText += ",";
+                    scrollingText += " ,";
                 scrollingText += "  (" + (x + 1) + ") " + SongRequestQueue[x].user.userName;
             }
 
