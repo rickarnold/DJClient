@@ -123,6 +123,20 @@ namespace DJClientWPF
         }
     }
 
+    public class BannedUserArgs : EventArgs
+    {
+        public Response Response { get; private set; }
+        public List<User> BannedUserList { get; private set; }
+        public Object UserState { get; private set; }
+
+        public BannedUserArgs(Response response, List<User> bannedUserList, Object userState)
+        {
+            this.Response = response;
+            this.BannedUserList = bannedUserList;
+            this.UserState = userState;
+        }
+    }
+
     public class DJModelArgs : EventArgs
     {
         public bool Error { get; private set; }

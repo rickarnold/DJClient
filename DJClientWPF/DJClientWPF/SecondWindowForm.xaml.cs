@@ -20,7 +20,7 @@ namespace DJClientWPF
     /// <summary>
     /// Form that allows the user to select the image that is displayed between songs.  Also shows the currently selected image.
     /// </summary>
-    public partial class BackgroundImageSelector : Window
+    public partial class SecondWindowForm : Window
     {
         //Event to raise when the user has successfully updated the background image
         public delegate void EventHandler(object source, EventArgs args);
@@ -30,7 +30,7 @@ namespace DJClientWPF
 
         private string newImagePath = "";
 
-        public BackgroundImageSelector()
+        public SecondWindowForm()
         {
             InitializeComponent();
 
@@ -503,6 +503,13 @@ namespace DJClientWPF
                 ComboBoxFontSinger.SelectedValue = settings.TextSingerNameFontFamily;
 
             #endregion
+
+            #region Queue Scroll
+
+            SingerCount.Value = settings.QueueScrollCount;
+            TextBoxAdditionalText.Text = settings.QueueScrollMessage;
+
+            #endregion
         }
 
         //Updates the settings object with all the current values and calls the save to disk method
@@ -525,6 +532,9 @@ namespace DJClientWPF
             settings.TextSingerNameIsDisplayed = (bool)CheckBoxSinger.IsChecked;
             settings.TextSingerNameColor = LabelTextSinger.Foreground.ToString();
             settings.TextSingerNameFontFamily = LabelTextSinger.FontFamily.ToString();
+
+            settings.QueueScrollCount = (int)SingerCount.Value;
+            settings.QueueScrollMessage = TextBoxAdditionalText.Text;
 
             settings.SaveSettingsToDisk();
         }

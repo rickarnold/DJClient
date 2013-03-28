@@ -86,7 +86,11 @@ namespace DJClientWPF
 
         public void SetScrollingText(string text)
         {
-            ScrollingTextMain.Text = text;
+            Settings settings = DJModel.Instance.Settings;
+            if (settings.QueueScrollMessage.Equals(""))
+                ScrollingTextMain.Text = text;
+            else
+                ScrollingTextMain.Text = text + "   \"" + settings.QueueScrollMessage + "\"";
         }
 
         private void UpdateTextVisibility()

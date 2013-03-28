@@ -450,18 +450,6 @@ namespace DJClientWPF
 
         #region Menu Item Click Handlers
 
-        private void LoginItem_Click(object sender, RoutedEventArgs e)
-        {
-            //LoginForm form = new LoginForm();
-            //form.ShowDialog();
-
-            ////Check if the user clicked to login
-            //if (form.LoginClicked)
-            //{
-            //    model.Login(form.UserName, form.Password);
-            //}
-        }
-
         private void StartSessionItem_Click(object sender, RoutedEventArgs e)
         {
             if (model.IsLoggedIn)
@@ -525,9 +513,15 @@ namespace DJClientWPF
 
         private void MenuItemBackgroundImage_Click(object sender, RoutedEventArgs e)
         {
-            BackgroundImageSelector background = new BackgroundImageSelector();
-            background.BackgroundImageUpdated += new BackgroundImageSelector.EventHandler(BackgroundImageUpdatedHandler);
+            SecondWindowForm background = new SecondWindowForm();
+            background.BackgroundImageUpdated += new SecondWindowForm.EventHandler(BackgroundImageUpdatedHandler);
             background.Show();
+        }
+
+        private void MenuItemUserManagement_Click(object sender, RoutedEventArgs e)
+        {
+            BanUserForm form = new BanUserForm();
+            form.Show();
         }
 
         #endregion
@@ -847,5 +841,6 @@ namespace DJClientWPF
         }
 
         #endregion
+
     }
 }

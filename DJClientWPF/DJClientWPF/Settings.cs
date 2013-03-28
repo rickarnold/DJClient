@@ -23,6 +23,9 @@ namespace DJClientWPF
         //Number of users to display in the queue scroll in the second window
         public int QueueScrollCount { get; set; }
 
+        //Message to be displayed in the scrolling text along with the queue
+        public string QueueScrollMessage { get; set; }
+
         //Coordinates and size of the up next text in the second window
         public double TextUpNextX { get; set; }
         public double TextUpNextY { get; set; }
@@ -50,6 +53,7 @@ namespace DJClientWPF
         {
             this.TimerCountdown = false;
             this.QueueScrollCount = 5;
+            this.QueueScrollMessage = "";
             
             this.TextUpNextX = 100;
             this.TextUpNextY = 150;

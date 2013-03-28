@@ -43,6 +43,10 @@ namespace DJClientWPF
         public event DJModelEventHandler PopQueueComplete;
         public event DJModelEventHandler WaitTimeComplete;
 
+        public event DJModelEventHandler GetBannedUserComplete;
+        public event DJModelEventHandler BanUserComplete;
+        public event DJModelEventHandler UnbanUserComplete;
+
         public event DJModelEventHandler QRCodeComplete;
         public event DJModelEventHandler QRNewCodeComplete;
 
@@ -58,6 +62,7 @@ namespace DJClientWPF
             this.SongRequestQueue = new List<queueSinger>();
             this.ArtistDictionary = new Dictionary<string, List<Song>>();
             this.TitleDictionary = new Dictionary<string, List<Song>>();
+            this.BannedUserList = new List<User>();
 
             this.Settings = Settings.GetSettingsFromDisk();
 
@@ -90,6 +95,11 @@ namespace DJClientWPF
             serviceClient.GetQueueComplete += GetQueueCompleteHandler;
             serviceClient.PopQueueComplete += PopQueueCompleteHandler;
             serviceClient.WaitTimeComplete += WaitTimeCompleteHandler;
+            
+            //User Management Handlers
+            serviceClient.GetBannedUsersComplete += GetBannedUsersCompleteHandler;
+            serviceClient.BanUserComplete += BanUserCompleteHandler;
+            serviceClient.UnbanUserCompelte += UnbanUserCompelteHandler;
 
             //QR Management Handlers
             serviceClient.QRCodeComplete += QRCodeCompleteHandler;
@@ -116,6 +126,7 @@ namespace DJClientWPF
         public Dictionary<string, List<Song>> ArtistDictionary { get; set; }
         public Dictionary<string, List<Song>> TitleDictionary { get; set; }
         public SongToPlay CurrentSong { get; set; }
+        public List<User> BannedUserList { get; set; }
         public bool IsLoggedIn { get; private set; }
         public string QRCode { get; private set; }
         public string WaitTime { get; private set; }
@@ -136,19 +147,7 @@ namespace DJClientWPF
         }
         private BitmapImage _backgroundImage;
 
-        public Settings Settings
-        {
-            get
-            {
-                return _settings;
-            }
-            set
-            {
-                _settings = value;
-                _settings.SaveSettingsToDisk();
-            }
-        }
-        private Settings _settings;
+        public Settings Settings { get; set; }
 
         #region Queue Timer Methods
 
@@ -399,16 +398,19 @@ namespace DJClientWPF
             return false;
         }
 
+        //Create the text to be displayed in the scrolling queue in the second window.  The number of users to display is based off the Setting object.
         private void GetScrollingTextFromQueue()
         {
             string scrollingText;
+
+            int singerCount = Settings.QueueScrollCount;
 
             if (this.CurrentSong != null)
                 scrollingText = "Now singing:  " + this.CurrentSong.User.userName + "      Next:";
             else
                 scrollingText = "Next:";
 
-            for (int x = 0; x < SongRequestQueue.Count; x++)
+            for (int x = 0; x < SongRequestQueue.Count && x < singerCount; x++)
             {
                 if (x != 0)
                     scrollingText += " ,";
@@ -423,6 +425,35 @@ namespace DJClientWPF
         }
 
         #endregion Queue Management
+
+        #region User Management
+
+        public void GetBannedUserList()
+        {
+            //If there are no users in the list get a list from the server
+            if (this.BannedUserList.Count == 0)
+            {
+                serviceClient.GetBannedUsersAsync(this.DJKey, null);
+            }
+            //Already downloaded the banned user list so raise the completed event
+            else
+            {
+                if (GetBannedUserComplete != null)
+                    GetBannedUserComplete(this, new DJModelArgs(false, "", null));
+            }
+        }
+
+        public void BanUser(User user)
+        {
+            serviceClient.BanUserAsync(user, this.DJKey, user);
+        }
+
+        public void UnbanUser(User user)
+        {
+            serviceClient.UnbanUserAsync(user, this.DJKey, user);
+        }
+
+        #endregion
 
         #region Login Event Handlers
 
@@ -666,6 +697,7 @@ namespace DJClientWPF
 
             }
             //Error occurred
+            else
             {
 
             }
@@ -683,6 +715,7 @@ namespace DJClientWPF
 
             }
             //Error occurred
+            else
             {
 
             }
@@ -698,6 +731,7 @@ namespace DJClientWPF
 
             }
             //Error occurred
+            else
             {
 
             }
@@ -715,6 +749,7 @@ namespace DJClientWPF
 
             }
             //Error occurred
+            else
             {
 
             }
@@ -742,6 +777,7 @@ namespace DJClientWPF
                 }
             }
             //Error occurred
+            else
             {
 
             }
@@ -805,6 +841,66 @@ namespace DJClientWPF
 
             if (WaitTimeComplete != null)
                 WaitTimeComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+        }
+
+        #endregion
+
+        #region User Management Event Handlers
+
+        private void GetBannedUsersCompleteHandler(object source, BannedUserArgs args)
+        {
+            if (!args.Response.error)
+            {
+                this.BannedUserList = args.BannedUserList;
+            }
+            //Error occurred
+            else
+            {
+
+            }
+
+            if (GetBannedUserComplete != null)
+            {
+                GetBannedUserComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void BanUserCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                this.BannedUserList.Add((User)args.UserState);
+            }
+            //Error occurred
+            else
+            {
+
+            }
+
+            if (BanUserComplete != null)
+            {
+                BanUserComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void UnbanUserCompelteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                User user = (User)args.UserState;
+                if (this.BannedUserList.Contains(user))
+                    this.BannedUserList.Remove(user);
+            }
+            //Error occurred
+            else
+            {
+
+            }
+
+            if (UnbanUserComplete != null)
+            {
+                UnbanUserComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
         }
 
         #endregion

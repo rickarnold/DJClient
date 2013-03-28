@@ -41,7 +41,9 @@
                 <MenuItem x:Name="MenuItemNewQR" Header="New QR Code" Click="MenuItemNewQR_Click"/>
                 <Separator/>
                 <MenuItem x:Name="MenuItemTimerOption" Header="Timer Counts Down" IsCheckable="True" Click="MenuItemTimerOption_Click"/>
-                <MenuItem x:Name="MenuItemBackgroundImage" Header="Set Default Image" Click="MenuItemBackgroundImage_Click"/>
+                <MenuItem x:Name="MenuItemBackgroundImage" Header="Second Window" Click="MenuItemBackgroundImage_Click"/>
+                <Separator/>
+                <MenuItem x:Name="MenuItemUserManagement" Header="User Management" Click="MenuItemUserManagement_Click"/>
             </MenuItem>
             <MenuItem Header="_Help" >
                 <MenuItem x:Name="MenuItemTestQueue" Header="Get Test Queue" Click="MenuItemTestQueue_Click"/>

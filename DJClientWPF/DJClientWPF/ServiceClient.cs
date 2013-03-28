@@ -23,6 +23,7 @@ namespace DJClientWPF
         public delegate void ResponseHandler(object source, ResponseArgs args);
         public delegate void SongListHandler(object source, SongListArgs args);
         public delegate void QueueHandler(object source, QueueArgs args);
+        public delegate void BannedUserHandler(object source, BannedUserArgs args);
 
         //Events raised when the calls to the service have completed
         public event ResponseHandler SignUpServiceComplete;
@@ -43,6 +44,10 @@ namespace DJClientWPF
         public event QueueHandler GetQueueComplete;
         public event ResponseHandler PopQueueComplete;
         public event ResponseHandler WaitTimeComplete;
+
+        public event BannedUserHandler GetBannedUsersComplete;
+        public event ResponseHandler BanUserComplete;
+        public event ResponseHandler UnbanUserCompelte;
 
         public event ResponseHandler QRCodeComplete;
         public event ResponseHandler QRNewCodeComplete;
@@ -426,6 +431,70 @@ namespace DJClientWPF
 
             if (WaitTimeComplete != null)
                 WaitTimeComplete(this, new ResponseArgs(response, userState));
+        }
+
+        #endregion
+
+        #region User Management Public Methods
+
+        public void GetBannedUsersAsync(long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                GetBannedUsers(djKey, userState);
+            });
+        }
+
+        public void BanUserAsync(User user, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+                {
+                    BanUser(user, djKey, userState);
+                });
+        }
+
+        public void UnbanUserAsync(User user, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+                {
+                    UnbanUserAsync(user, djKey, userState);
+                });
+        }
+
+        #endregion
+
+        #region User Management Workers
+
+        private void GetBannedUsers(long djKey, object userState)
+        {
+            User[] bannedUsers = new User[0];
+
+            Response response = _client.DJGetBannedUsers(out bannedUsers, djKey);
+
+            if (GetBannedUsersComplete != null)
+            {
+                GetBannedUsersComplete(this, new BannedUserArgs(response, bannedUsers.ToList<User>(), userState));
+            }
+        }
+
+        private void BanUser(User user, long djKey, object userState)
+        {
+            Response response = _client.DJBanUser(user, djKey);
+
+            if (BanUserComplete != null)
+            {
+                BanUserComplete(this, new ResponseArgs(response, userState));
+            }
+        }
+
+        private void UnbanUser(User user, long djKey, object userState)
+        {
+            Response response = _client.DJUnbanUser(user, djKey);
+
+            if (UnbanUserCompelte != null)
+            {
+                UnbanUserCompelte(this, new ResponseArgs(response, userState));
+            }
         }
 
         #endregion

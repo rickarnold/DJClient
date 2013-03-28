@@ -84,8 +84,11 @@
     <Compile Include="AdjustableText.xaml.cs">
       <DependentUpon>AdjustableText.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BackgroundImageSelector.xaml.cs">
-      <DependentUpon>BackgroundImageSelector.xaml</DependentUpon>
+    <Compile Include="SecondWindowForm.xaml.cs">
+      <DependentUpon>SecondWindowForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BanUserForm.xaml.cs">
+      <DependentUpon>BanUserForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="CDGPlayer.cs" />
     <Compile Include="CDGWindow.xaml.cs">
@@ -132,7 +135,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="BackgroundImageSelector.xaml">
+    <Page Include="SecondWindowForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BanUserForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
