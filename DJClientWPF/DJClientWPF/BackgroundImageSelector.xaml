@@ -15,7 +15,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" >
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="Auto" Width="Auto" Loaded="Grid_Loaded">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="50"/>

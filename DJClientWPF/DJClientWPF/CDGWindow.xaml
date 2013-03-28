@@ -2,12 +2,22 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="CDGWindow" Height="210" Width="300" WindowStyle="None" ShowInTaskbar="False" Topmost="True" ResizeMode="CanResize">
-    <Grid>
+    <Grid SizeChanged="Grid_SizeChanged">
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Image x:Name="ImageCDG" Stretch="Fill"/>
+        
+        <Canvas x:Name="CanvasText" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Hidden">
+            <Viewbox x:Name="ViewBoxUpNext" Stretch="Uniform">
+                <Label x:Name="LabelUpNext" Content="Up Next: "/>
+            </Viewbox>
+            <Viewbox x:Name="ViewBoxSingerName" Stretch="Uniform">
+                <Label x:Name="LabelSinger"/>
+            </Viewbox>
+        </Canvas>
+        
         <my:ScrollingText x:Name="ScrollingTextMain" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>
 </Window>

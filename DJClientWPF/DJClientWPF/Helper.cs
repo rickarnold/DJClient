@@ -44,57 +44,32 @@ namespace DJClientWPF
             }
         }
 
-        public static BitmapImage ConvertBitmapToImage(Bitmap bitmap)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                bitmap.Save(stream, ImageFormat.Png);
-                stream.Position = 0;
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = stream;
-                bitmapImage.EndInit();
-
-                return bitmapImage;
-            }
-        }
-
-        public static Bitmap ConvertBitmapImageToBitmap(BitmapImage bitmapImage)
-        {
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
-                enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-                // return bitmap; <-- leads to problems, stream is closed/closing ...
-                return new Bitmap(bitmap);
-            }
-        }
-
         public static BitmapImage OpenBitmapImage(string path)
         {
             BitmapImage currentImage = new BitmapImage();
             //currentImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
             currentImage.BeginInit();
             currentImage.UriSource = new Uri(path, UriKind.Relative);
-            currentImage.CacheOption = BitmapCacheOption.OnLoad ;
+            currentImage.CacheOption = BitmapCacheOption.OnLoad;
             currentImage.EndInit();
 
             return currentImage;
         }
 
-        public static BitmapImage OpenBitmapImageNoCache(string path)
+        //Given a hex string for a color return a Color object with the same color.  Returns white if an invalid string is provided
+        public static System.Windows.Media.Color GetColorFromStirng(string colorString)
         {
-            BitmapImage currentImage = new BitmapImage();
-            currentImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-            currentImage.BeginInit();
-            currentImage.UriSource = new Uri(path, UriKind.Relative);
-            currentImage.CacheOption = BitmapCacheOption.None;
-            currentImage.EndInit();
+            System.Windows.Media.Color color = System.Windows.Media.Colors.White;
+            try
+            {
+                color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
+            }
+            catch
+            {
+                //Just return white
+            }
 
-            return currentImage;
+            return color;
         }
     }
 }

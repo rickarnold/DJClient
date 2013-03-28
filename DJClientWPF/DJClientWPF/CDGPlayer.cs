@@ -482,11 +482,14 @@ namespace DJClientWPF
             Bitmap tempBitmap = new Bitmap(WIDTH, HEIGHT, PixelFormat.Format4bppIndexed);
             BitmapData tempData = tempBitmap.LockBits(new Rectangle(0, 0, WIDTH, HEIGHT), ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
 
-            int sizeBytes = ImageData.Stride * HEIGHT;
+            //int sizeBytes = ImageData.Stride * HEIGHT;
+            UIntPtr sizeBytes = new UIntPtr((uint)HEIGHT * (uint)ImageData.Stride);
 
             // 4 bits per pixel = 2 pixels per byte
             int tileWidthBytes = 6;
-            int remainingWidth = WIDTH / 2 - tileWidthBytes;
+            
+            //int remainingWidth = WIDTH / 2 - tileWidthBytes;
+            UIntPtr remainingWidth = new UIntPtr((uint)(WIDTH / 2) - (uint)tileWidthBytes);
 
             // Copy all of the image to the temp buffer
             memcpy(tempData.Scan0, ImageData.Scan0, sizeBytes);
@@ -532,7 +535,8 @@ namespace DJClientWPF
             {
                 memcpy(ImageData.Scan0, new IntPtr(tempData.Scan0.ToInt32() + heightBytes), sizeBytes - heightBytes);
 
-                memset(new IntPtr(ImageData.Scan0.ToInt32() + sizeBytes - heightBytes), colorByte, heightBytes);
+                //memset(new IntPtr(ImageData.Scan0.ToInt32() + sizeBytes - heightBytes), colorByte, heightBytes);
+                memset(new IntPtr(ImageData.Scan0.ToInt32() + sizeBytes.ToUInt32() - heightBytes), colorByte, heightBytes);
             }
 
         }
@@ -566,11 +570,15 @@ namespace DJClientWPF
             Bitmap tempBitmap = new Bitmap(WIDTH, HEIGHT, PixelFormat.Format4bppIndexed);
             BitmapData tempData = tempBitmap.LockBits(new Rectangle(0, 0, WIDTH, HEIGHT), ImageLockMode.ReadWrite, PixelFormat.Format4bppIndexed);
 
-            int sizeBytes = ImageData.Stride * HEIGHT;
+            //int sizeBytes = ImageData.Stride * HEIGHT;
+            UIntPtr sizeBytes = new UIntPtr((uint)HEIGHT * (uint)ImageData.Stride);
 
             // 4 bits per pixel = 2 pixels per byte
-            int tileWidthBytes = 6;
-            int remainingWidth = WIDTH / 2 - tileWidthBytes;
+            //int tileWidthBytes = 6;
+            UIntPtr tileWidthBytes = new UIntPtr(6);
+
+            //int remainingWidth = WIDTH / 2 - tileWidthBytes;
+            UIntPtr remainingWidth = new UIntPtr((uint)(WIDTH / 2) - (uint)tileWidthBytes);
 
             // Copy all of the image to the temp buffer
             memcpy(tempData.Scan0, ImageData.Scan0, sizeBytes);
@@ -583,11 +591,11 @@ namespace DJClientWPF
                 for (int y = 0; y < HEIGHT; y++)
                 {
                     int yOffset = y * ImageData.Stride;
-                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset + tileWidthBytes),
+                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset + tileWidthBytes.ToUInt32()),
                         new IntPtr(tempData.Scan0.ToInt32() + yOffset), remainingWidth);
 
                     memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset),
-                            new IntPtr(tempData.Scan0.ToInt32() + yOffset + remainingWidth), tileWidthBytes);
+                            new IntPtr(tempData.Scan0.ToInt32() + yOffset + remainingWidth.ToUInt32()), tileWidthBytes);
                 }
             }
             else if (hCmd != 0 && hCmd == 2) //Scroll left
@@ -595,34 +603,36 @@ namespace DJClientWPF
                 for (int y = 0; y < HEIGHT; y++)
                 {
                     int yOffset = y * ImageData.Stride;
-                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset + tileWidthBytes),
+                    memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset + tileWidthBytes.ToUInt32()),
                         new IntPtr(tempData.Scan0.ToInt32() + yOffset), remainingWidth);
 
                     memcpy(new IntPtr(ImageData.Scan0.ToInt32() + yOffset),
-                        new IntPtr(tempData.Scan0.ToInt32() + yOffset + remainingWidth), tileWidthBytes);
+                        new IntPtr(tempData.Scan0.ToInt32() + yOffset + remainingWidth.ToUInt32()), tileWidthBytes);
                 }
 
             }
 
-            int heightBytes = ImageData.Stride * 12;
+            //int heightBytes = ImageData.Stride * 12;
+            UIntPtr heightBytes = new UIntPtr((uint)ImageData.Stride * (uint)12);
+            UIntPtr diffBytes = new UIntPtr(sizeBytes.ToUInt32() - heightBytes.ToUInt32());
 
             //Do the vertical scrolling
             if (vCmd != 0 && vCmd == 1) //Scroll down
             {
-                memcpy(new IntPtr(ImageData.Scan0.ToInt32() + heightBytes), tempData.Scan0,
-                        sizeBytes - heightBytes);
+                memcpy(new IntPtr(ImageData.Scan0.ToInt32() + heightBytes.ToUInt32()), tempData.Scan0,
+                        diffBytes);// sizeBytes - heightBytes);
 
                 // Copy pixel data from the bottom row to the top
                 memcpy(ImageData.Scan0,
-                    new IntPtr(tempData.Scan0.ToInt32() + sizeBytes - heightBytes),
+                    new IntPtr(tempData.Scan0.ToInt32() + sizeBytes.ToUInt32() - heightBytes.ToUInt32()),
                     heightBytes);
             }
             else if (vCmd != 0 && vCmd == 2) //Scroll up
             {
-                memcpy(ImageData.Scan0, new IntPtr(tempData.Scan0.ToInt32() + heightBytes), sizeBytes - heightBytes);
+                memcpy(ImageData.Scan0, new IntPtr(tempData.Scan0.ToInt32() + heightBytes.ToUInt32()), diffBytes);// sizeBytes - heightBytes);
 
                 // Copy pixel data from the top row into the bottom
-                memcpy(new IntPtr(ImageData.Scan0.ToInt32() + sizeBytes - heightBytes), tempData.Scan0, heightBytes);
+                memcpy(new IntPtr(ImageData.Scan0.ToInt32() + sizeBytes.ToUInt32() - heightBytes.ToUInt32()), tempData.Scan0, heightBytes);
             }
         }
 
@@ -827,8 +837,10 @@ namespace DJClientWPF
         [DllImport("msvcrt.dll")]
         private static extern void memset(IntPtr dest, byte val, int count);
 
-        [DllImport("msvcrt.dll")]
-        public static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
+        //[DllImport("msvcrt.dll")]
+        //public static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
+        [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+        public static extern IntPtr memcpy(IntPtr dest, IntPtr src, UIntPtr count);
 
         #endregion
     }

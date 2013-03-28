@@ -18,14 +18,15 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://sunny.eng.utah.edu/DJ.svc" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://sunny.eng.utah.edu:1717/DJ.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="DJ.xsd" MetadataType="Schema" ID="4bf3aea9-93f4-462a-842a-126f9f1df01f" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd1" />
-    <MetadataFile FileName="DJ1.xsd" MetadataType="Schema" ID="fb679f6e-0680-4c39-9567-e17b0aa46736" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd0" />
-    <MetadataFile FileName="DJ2.xsd" MetadataType="Schema" ID="848cb70d-fa3a-4bca-9f06-705e3c6043fe" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?xsd=xsd2" />
-    <MetadataFile FileName="Service1.wsdl" MetadataType="Wsdl" ID="d375d723-848a-4715-b421-ed4c8aad2ea7" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?wsdl" />
-    <MetadataFile FileName="DJ.disco" MetadataType="Disco" ID="c27397b3-4dd2-44ac-afae-b787f6f0dbec" SourceId="1" SourceUrl="http://sunny.eng.utah.edu/DJ.svc?disco" />
+    <MetadataFile FileName="DJ31.xsd" MetadataType="Schema" ID="f093de51-8d55-4290-b539-ae37b480a8d4" SourceId="1" SourceUrl="http://sunny.eng.utah.edu:1717/DJ.svc?xsd=xsd1" />
+    <MetadataFile FileName="DJ3.xsd" MetadataType="Schema" ID="420d6661-64fb-45eb-abe4-5002b1cba664" SourceId="1" SourceUrl="http://sunny.eng.utah.edu:1717/DJ.svc?xsd=xsd0" />
+    <MetadataFile FileName="DJ1.disco" MetadataType="Disco" ID="3338214a-3bfb-48b1-9f4b-99796ea2e083" SourceId="1" SourceUrl="http://sunny.eng.utah.edu:1717/DJ.svc?disco" />
+    <MetadataFile FileName="DJ32.xsd" MetadataType="Schema" ID="5feb8066-7230-42db-9943-5ed5186bb93b" SourceId="1" SourceUrl="http://sunny.eng.utah.edu:1717/DJ.svc?xsd=xsd2" />
+    <MetadataFile FileName="Service11.wsdl" MetadataType="Wsdl" ID="b502e435-d246-46f7-8482-ef4085e64da1" SourceId="1" SourceUrl="http://sunny.eng.utah.edu:1717/DJ.svc?wsdl" />
+    <MetadataFile FileName="DJ.xsd" MetadataType="Schema" ID="e767ec4c-53d0-4d21-bb96-c440b9002784" SourceId="1" SourceUrl="http://sunny.eng.utah.edu:1717/DJ.svc?xsd=xsd3" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

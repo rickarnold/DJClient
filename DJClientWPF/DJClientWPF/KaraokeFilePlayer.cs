@@ -169,9 +169,6 @@ namespace DJClientWPF
         //The cdg image has been invalidated so get the most recent copy to display and alert the main window as well
         private void ImageInvalidatedHandler(object sender, EventArgs args)
         {
-            //if (this.ImageInvalidated != null)
-            //    this.ImageInvalidated(this, new EventArgs());
-
             cdgWindow.CDGImage = cdgPlayer.DisplayImage;
             mainWindow.UpdateCDG(cdgPlayer.DisplayImage);
         }
@@ -179,12 +176,16 @@ namespace DJClientWPF
         //A new singer is ready so set the image to the wait screen with the appropriate information
         private void UpdateToNextSingerImage(SongToPlay songToPlay)
         {
-            //TODO:  
             //Show default wait image.  Write the singer information to screen.
             if (DJModel.Instance.BackgroundImage != null)
             {
                 cdgWindow.CDGImageSource = DJModel.Instance.BackgroundImage;
                 mainWindow.UpdateCDGSource(DJModel.Instance.BackgroundImage);
+
+                //Update the user name
+                cdgWindow.NextSingerName = songToPlay.User.userName;
+
+                cdgWindow.IsPlaying = false;
             }
         }
 

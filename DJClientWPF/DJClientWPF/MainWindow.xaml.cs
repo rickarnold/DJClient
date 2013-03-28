@@ -68,9 +68,20 @@ namespace DJClientWPF
             ListBoxFillerMusic.ItemsSource = fillerList;
             ListBoxSongQueue.ItemsSource = queueList;
 
+            InitialSettings();
+
             InitializeEventHandlers();
 
             TextBoxLoginUserName.Focus();
+        }
+
+        private void InitialSettings()
+        {
+            Settings settings = model.Settings;
+
+            showProgressRemaining = settings.TimerCountdown;
+            if (showProgressRemaining)
+                MenuItemTimerOption.IsChecked = true;
         }
 
         #region Event Handlers
@@ -508,6 +519,8 @@ namespace DJClientWPF
             MenuItem item = (MenuItem)sender;
 
             showProgressRemaining = item.IsChecked;
+
+            model.Settings.TimerCountdown = showProgressRemaining;
         }
 
         private void MenuItemBackgroundImage_Click(object sender, RoutedEventArgs e)

@@ -117,6 +117,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="ServiceClient.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="SongToPlay.cs" />
     <Compile Include="Timer.cs" />
     <Page Include="AddSongRequestControl.xaml">
@@ -197,10 +198,13 @@
     <None Include="Service References\KaraokeService\DJ.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\KaraokeService\DJ1.xsd">
+    <None Include="Service References\KaraokeService\DJ3.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\KaraokeService\DJ2.xsd">
+    <None Include="Service References\KaraokeService\DJ31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\KaraokeService\DJ32.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\KaraokeService\DJClientWPF.KaraokeService.LogInResponse.datasource">
@@ -215,16 +219,16 @@
     <None Include="Service References\KaraokeService\DJClientWPF.KaraokeService.Song.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\KaraokeService\Service1.wsdl" />
+    <None Include="Service References\KaraokeService\DJClientWPF.KaraokeService.User.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\KaraokeService\Service11.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\KaraokeService\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\KaraokeService\DJ.disco" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\KaraokeService\configuration91.svcinfo" />
@@ -243,6 +247,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\MobiokeLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\KaraokeService\DJ1.disco" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

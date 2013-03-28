@@ -26,11 +26,15 @@ namespace DJClientWPF
         public delegate void EventHandler(object source, EventArgs args);
         public event EventHandler BackgroundImageUpdated;
 
+        private List<string> fontFamilyList;
+
         private string newImagePath = "";
 
         public BackgroundImageSelector()
         {
             InitializeComponent();
+
+            InitializeFontList();
 
             //Look for the current background image
             if (File.Exists(DJModel.BACKGROUND_IMAGE_PATH))
@@ -39,6 +43,22 @@ namespace DJClientWPF
             }
         }
 
+        //Obtain a list of all available fonts and set the font combo box lists itemssource's to the font list
+        private void InitializeFontList()
+        {
+            fontFamilyList = new List<string>();
+
+            foreach (System.Drawing.FontFamily font in System.Drawing.FontFamily.Families)
+            {
+                fontFamilyList.Add(font.Name);
+            }
+
+            //Add the list of fonts to the comboboxes
+            ComboBoxFontUpNext.ItemsSource = fontFamilyList;
+            ComboBoxFontSinger.ItemsSource = fontFamilyList;
+        }
+
+        //User has clicked the OK button.  Save the image selected and update the settings object.
         private void ButtonOK_Click(object sender, RoutedEventArgs e)
         {
             //If no new image was selected close and do nothing
@@ -54,6 +74,9 @@ namespace DJClientWPF
                 temp.Save(DJModel.BACKGROUND_IMAGE_PATH, System.Drawing.Imaging.ImageFormat.Png);
                 DJModel.Instance.BackgroundImage = Helper.OpenBitmapImage(newImagePath);
 
+                //Save the changes made to the text controls in the settings for the program
+                SaveSettings();
+
                 if (BackgroundImageUpdated != null)
                     BackgroundImageUpdated(this, new EventArgs());
 
@@ -61,17 +84,19 @@ namespace DJClientWPF
             }
             catch 
             {
-                LabelError.Content = "An error occurred trying to save the image to disk";
+                LabelError.Content = "An error occurred trying to save changes";
                 LabelError.Visibility = Visibility.Visible;
             }
         }
 
+        //User has clicked the cancel button
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
             //Save nothing and close
             this.Close();
         }
 
+        //User has clicked the button to browse for a new image to be displayed in the background
         private void ButtonBrowse_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -143,6 +168,7 @@ namespace DJClientWPF
 
         }
 
+        //Thumb resizer that controls the size of the text is being dragged
         private void ThumbResizer_DragDelta1(object sender, DragDeltaEventArgs e)
         {
             //Check that the control has not been resized to spill off the left or right of the canvas
@@ -357,7 +383,8 @@ namespace DJClientWPF
 
         private void ComboBoxFontUpNext_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+            string font = ((ComboBox)sender).SelectedValue as string;
+            LabelTextUpNext.FontFamily = new System.Windows.Media.FontFamily(font);
         }
 
         private void CheckBoxUpNext_Checked(object sender, RoutedEventArgs e)
@@ -377,7 +404,8 @@ namespace DJClientWPF
 
         private void ComboBoxFontSinger_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            string font = ((ComboBox)sender).SelectedValue as string;
+            LabelTextSinger.FontFamily = new System.Windows.Media.FontFamily(font);
         }
 
         private void ColorPickerSing_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color> e)
@@ -394,6 +422,111 @@ namespace DJClientWPF
                 else
                     HideControl2();
             }
+        }
+
+        #endregion
+
+        #region Settings Methods
+
+        //When the grid is loaded update the components according to the settings
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Get the settings for the text
+            Settings settings = DJModel.Instance.Settings;
+
+            #region Up Next
+
+            Canvas.SetLeft(ViewBoxLabel1, settings.TextUpNextX);
+            Canvas.SetTop(ViewBoxLabel1, settings.TextUpNextY);
+            ViewBoxLabel1.Width = settings.TextUpNextWidth;
+            ViewBoxLabel1.Height = settings.TextUpNextHeight;
+            if (settings.TextUpNextIsDisplayed)
+                ViewBoxLabel1.Visibility = Visibility.Visible;
+            else
+                ViewBoxLabel1.Visibility = Visibility.Hidden;
+
+            Canvas.SetLeft(myThumb1, settings.TextUpNextX);
+            Canvas.SetTop(myThumb1, settings.TextUpNextY);
+            myThumb1.Width = settings.TextUpNextWidth;
+            myThumb1.Height = settings.TextUpNextHeight;
+            if (settings.TextUpNextIsDisplayed)
+                myThumb1.Visibility = Visibility.Visible;
+            else
+                myThumb1.Visibility = Visibility.Hidden;
+
+            Canvas.SetLeft(ThumbResizer1, settings.TextUpNextX + settings.TextUpNextWidth - 10);
+            Canvas.SetTop(ThumbResizer1, settings.TextUpNextY + settings.TextUpNextHeight - 10);
+            if (settings.TextUpNextIsDisplayed)
+                ThumbResizer1.Visibility = Visibility.Visible;
+            else
+                ThumbResizer1.Visibility = Visibility.Hidden;
+
+            LabelTextUpNext.Foreground = new SolidColorBrush(Helper.GetColorFromStirng(settings.TextUpNextColor));
+
+            //Set the font family from the list
+            if (ComboBoxFontUpNext.Items.Contains(settings.TextUpNextFontFamily))
+                ComboBoxFontUpNext.SelectedValue = settings.TextUpNextFontFamily;
+
+            #endregion
+
+            #region Singer Name
+
+            Canvas.SetLeft(ViewBoxLabel2, settings.TextSingerNameX);
+            Canvas.SetTop(ViewBoxLabel2, settings.TextSingerNameY);
+            ViewBoxLabel2.Width = settings.TextSingerNameWidth;
+            ViewBoxLabel2.Height = settings.TextSingerNameHeight;
+            if (settings.TextSingerNameIsDisplayed)
+                ViewBoxLabel2.Visibility = Visibility.Visible;
+            else
+                ViewBoxLabel2.Visibility = Visibility.Hidden;
+
+            Canvas.SetLeft(myThumb2, settings.TextSingerNameX);
+            Canvas.SetTop(myThumb2, settings.TextSingerNameY);
+            myThumb2.Width = settings.TextSingerNameWidth;
+            myThumb2.Height = settings.TextSingerNameHeight;
+            if (settings.TextSingerNameIsDisplayed)
+                myThumb2.Visibility = Visibility.Visible;
+            else
+                myThumb2.Visibility = Visibility.Hidden;
+
+            Canvas.SetLeft(ThumbResizer2, settings.TextSingerNameX + settings.TextSingerNameWidth - 10);
+            Canvas.SetTop(ThumbResizer2, settings.TextSingerNameY + settings.TextSingerNameHeight - 10);
+            if (settings.TextSingerNameIsDisplayed)
+                ThumbResizer2.Visibility = Visibility.Visible;
+            else
+                ThumbResizer2.Visibility = Visibility.Hidden;
+
+            LabelTextSinger.Foreground = new SolidColorBrush(Helper.GetColorFromStirng(settings.TextSingerNameColor));
+
+            //Set the font family from the list
+            if (ComboBoxFontSinger.Items.Contains(settings.TextSingerNameFontFamily))
+                ComboBoxFontSinger.SelectedValue = settings.TextSingerNameFontFamily;
+
+            #endregion
+        }
+
+        //Updates the settings object with all the current values and calls the save to disk method
+        private void SaveSettings()
+        {
+            Settings settings = DJModel.Instance.Settings;
+
+            settings.TextUpNextX = Canvas.GetLeft(ViewBoxLabel1);
+            settings.TextUpNextY = Canvas.GetTop(ViewBoxLabel1);
+            settings.TextUpNextHeight = ViewBoxLabel1.ActualHeight;
+            settings.TextUpNextWidth = ViewBoxLabel1.ActualWidth;
+            settings.TextUpNextIsDisplayed = (bool)CheckBoxUpNext.IsChecked;
+            settings.TextUpNextColor = LabelTextUpNext.Foreground.ToString();
+            settings.TextUpNextFontFamily = LabelTextUpNext.FontFamily.ToString();
+
+            settings.TextSingerNameX = Canvas.GetLeft(ViewBoxLabel1);
+            settings.TextSingerNameY = Canvas.GetTop(ViewBoxLabel1);
+            settings.TextSingerNameHeight = ViewBoxLabel1.ActualHeight;
+            settings.TextSingerNameWidth = ViewBoxLabel1.ActualWidth;
+            settings.TextSingerNameIsDisplayed = (bool)CheckBoxSinger.IsChecked;
+            settings.TextSingerNameColor = LabelTextSinger.Foreground.ToString();
+            settings.TextSingerNameFontFamily = LabelTextSinger.FontFamily.ToString();
+
+            settings.SaveSettingsToDisk();
         }
 
         #endregion

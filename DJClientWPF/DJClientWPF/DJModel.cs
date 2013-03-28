@@ -59,6 +59,8 @@ namespace DJClientWPF
             this.ArtistDictionary = new Dictionary<string, List<Song>>();
             this.TitleDictionary = new Dictionary<string, List<Song>>();
 
+            this.Settings = Settings.GetSettingsFromDisk();
+
             InitializeEventHandlers();
 
             SetUpQueueTimer();
@@ -133,6 +135,20 @@ namespace DJClientWPF
             }
         }
         private BitmapImage _backgroundImage;
+
+        public Settings Settings
+        {
+            get
+            {
+                return _settings;
+            }
+            set
+            {
+                _settings = value;
+                _settings.SaveSettingsToDisk();
+            }
+        }
+        private Settings _settings;
 
         #region Queue Timer Methods
 

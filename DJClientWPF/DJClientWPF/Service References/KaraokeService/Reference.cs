@@ -647,6 +647,18 @@ namespace DJClientWPF.KaraokeService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJTestQueueFill", ReplyAction="http://tempuri.org/IDJ/DJTestQueueFillResponse")]
         DJClientWPF.KaraokeService.Response DJTestQueueFill(long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGetMostPopularSongs", ReplyAction="http://tempuri.org/IDJ/DJGetMostPopularSongsResponse")]
+        DJClientWPF.KaraokeService.Response DJGetMostPopularSongs(out DJClientWPF.KaraokeService.Song[] songs, out int[] counts, long DJKey, bool limitToVenue, int start, int count);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJBanUser", ReplyAction="http://tempuri.org/IDJ/DJBanUserResponse")]
+        DJClientWPF.KaraokeService.Response DJBanUser(DJClientWPF.KaraokeService.User userToBan, long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJUnbanUser", ReplyAction="http://tempuri.org/IDJ/DJUnbanUserResponse")]
+        DJClientWPF.KaraokeService.Response DJUnbanUser(DJClientWPF.KaraokeService.User userToUnban, long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGetBannedUsers", ReplyAction="http://tempuri.org/IDJ/DJGetBannedUsersResponse")]
+        DJClientWPF.KaraokeService.Response DJGetBannedUsers(out DJClientWPF.KaraokeService.User[] users, long DJKey);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -754,6 +766,22 @@ namespace DJClientWPF.KaraokeService {
         
         public DJClientWPF.KaraokeService.Response DJTestQueueFill(long DJKey) {
             return base.Channel.DJTestQueueFill(DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJGetMostPopularSongs(out DJClientWPF.KaraokeService.Song[] songs, out int[] counts, long DJKey, bool limitToVenue, int start, int count) {
+            return base.Channel.DJGetMostPopularSongs(out songs, out counts, DJKey, limitToVenue, start, count);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJBanUser(DJClientWPF.KaraokeService.User userToBan, long DJKey) {
+            return base.Channel.DJBanUser(userToBan, DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJUnbanUser(DJClientWPF.KaraokeService.User userToUnban, long DJKey) {
+            return base.Channel.DJUnbanUser(userToUnban, DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJGetBannedUsers(out DJClientWPF.KaraokeService.User[] users, long DJKey) {
+            return base.Channel.DJGetBannedUsers(out users, DJKey);
         }
     }
 }
