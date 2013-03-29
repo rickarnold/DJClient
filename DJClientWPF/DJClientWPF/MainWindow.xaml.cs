@@ -225,9 +225,8 @@ namespace DJClientWPF
                 ListBoxSongQueue.ItemsSource = queueControlList;
                 AddSongRequestControlMain.QueueControlList = queueControlList;
 
-                //Let's update the scrolling text if necessary
-                if (model.HasQueueStringChanged)
-                    karaokePlayer.SetScrollingText(model.QueueString);
+                //Let's update the scrolling text
+                karaokePlayer.SetScrollingText(model.QueueString);
             }));
         }
 
@@ -321,7 +320,7 @@ namespace DJClientWPF
         private void BackgroundImageUpdatedHandler(object source, EventArgs args)
         {
             if (karaokePlayer != null)
-                karaokePlayer.UpdatedBackgroundImage();
+                karaokePlayer.UpdateCDGWindow();
         }
 
         private void SongListLoadedHandler(object source, EventArgs args)
@@ -438,7 +437,7 @@ namespace DJClientWPF
         {
             LabelNowSinging.Content = "Now Singing:  " + songToPlay.User.userName;
             LabelNowSinging.Foreground = new SolidColorBrush(Colors.Black);
-            LabelNowPlaying.Content = "Now Playing:  " +  songToPlay.Song.artist + " - " + songToPlay.Song.title;
+            LabelNowPlaying.Content = "Now Playing:  " + songToPlay.Song.artist + " - " + songToPlay.Song.title;
             LabelNowPlaying.Foreground = new SolidColorBrush(Colors.Black);
             LabelSongRemaining.Content = "0:00";
 
@@ -514,7 +513,7 @@ namespace DJClientWPF
         private void MenuItemBackgroundImage_Click(object sender, RoutedEventArgs e)
         {
             SecondWindowForm background = new SecondWindowForm();
-            background.BackgroundImageUpdated += new SecondWindowForm.EventHandler(BackgroundImageUpdatedHandler);
+            background.SecondWindowUpdated += new SecondWindowForm.EventHandler(BackgroundImageUpdatedHandler);
             background.Show();
         }
 
@@ -583,7 +582,7 @@ namespace DJClientWPF
             if (ListBoxSongQueue.SelectedIndex != -1)
             {
                 QueueControl control = ListBoxSongQueue.SelectedItem as QueueControl;
-                
+
                 foreach (Song song in control.QueueSinger.songs)
                 {
                     SongRequest requestToRemove = new SongRequest();
@@ -776,7 +775,7 @@ namespace DJClientWPF
                 model.Login(userName, password);
                 StartLoginAnimation();
 
-                LabelLoginMessage.Content = "Now logging into Mobioke server...";
+                LabelLoginMessageToAnimate.Content = "Now logging into Mobioke server...";
 
                 HideLoginControls();
             }
@@ -800,17 +799,16 @@ namespace DJClientWPF
             loginAnimatorFadeIn.AutoReverse = true;
             loginAnimatorFadeIn.RepeatBehavior = RepeatBehavior.Forever;
             loginAnimatorFadeIn.Duration = new Duration(TimeSpan.FromMilliseconds(1000));
-            ImageLoginToAnimate.BeginAnimation(Image.OpacityProperty, loginAnimatorFadeIn);
+            LabelLoginMessageToAnimate.BeginAnimation(Label.OpacityProperty, loginAnimatorFadeIn);
 
-            ImageLoginToAnimate.Opacity = 1;
-            ImageLoginToAnimate.Visibility = System.Windows.Visibility.Visible;
-            ImageLogin.Visibility = System.Windows.Visibility.Hidden;
+            LabelLoginMessageToAnimate.Visibility = System.Windows.Visibility.Visible;
+            LabelLoginMessage.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void EndLoginAnimation()
         {
-            ImageLoginToAnimate.Visibility = System.Windows.Visibility.Hidden;
-            ImageLogin.Visibility = System.Windows.Visibility.Visible;
+            LabelLoginMessageToAnimate.Visibility = System.Windows.Visibility.Hidden;
+            LabelLoginMessage.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void HideLoginControls()

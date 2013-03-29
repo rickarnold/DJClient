@@ -24,7 +24,7 @@ namespace DJClientWPF
     {
         //Event to raise when the user has successfully updated the background image
         public delegate void EventHandler(object source, EventArgs args);
-        public event EventHandler BackgroundImageUpdated;
+        public event EventHandler SecondWindowUpdated;
 
         private List<string> fontFamilyList;
 
@@ -71,13 +71,13 @@ namespace DJClientWPF
                     Bitmap temp = new Bitmap(newImagePath);
                     temp.Save(DJModel.BACKGROUND_IMAGE_PATH, System.Drawing.Imaging.ImageFormat.Png);
                     DJModel.Instance.BackgroundImage = Helper.OpenBitmapImage(newImagePath);
-
-                    if (BackgroundImageUpdated != null)
-                        BackgroundImageUpdated(this, new EventArgs());
                 }
 
                 //Save the changes made to the text controls in the settings for the program
                 SaveSettings();
+
+                if (SecondWindowUpdated != null)
+                    SecondWindowUpdated(this, new EventArgs());
 
                 this.Close();
             }

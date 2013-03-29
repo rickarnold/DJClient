@@ -130,8 +130,8 @@ namespace DJClientWPF
         public bool IsLoggedIn { get; private set; }
         public string QRCode { get; private set; }
         public string WaitTime { get; private set; }
-        public bool HasQueueStringChanged { get; private set; }
-        public string QueueString { get; private set; }
+        //public bool HasQueueStringChanged { get; private set; }
+        public string QueueString { get { return GetScrollingTextFromQueue(); } }
         public BitmapImage BackgroundImage
         {
             get
@@ -399,7 +399,7 @@ namespace DJClientWPF
         }
 
         //Create the text to be displayed in the scrolling queue in the second window.  The number of users to display is based off the Setting object.
-        private void GetScrollingTextFromQueue()
+        private string GetScrollingTextFromQueue()
         {
             string scrollingText;
 
@@ -417,11 +417,13 @@ namespace DJClientWPF
                 scrollingText += "  (" + (x + 1) + ") " + SongRequestQueue[x].user.userName;
             }
 
-            if (!scrollingText.Equals(this.QueueString))
-            {
-                this.HasQueueStringChanged = true;
-                this.QueueString = scrollingText;
-            }
+            //if (!scrollingText.Equals(this.QueueString))
+            //{
+            //    this.HasQueueStringChanged = true;
+            //    this.QueueString = scrollingText;
+            //}
+
+            return scrollingText;
         }
 
         #endregion Queue Management

@@ -30,10 +30,13 @@ namespace DJClientWPF
             }
             set
             {
-                _text = value;
-                TextBlockMarquee.Text = _text;
-                if (_isAnimating)
-                    ScrollingText_SizeChanged(this, new RoutedEventArgs());
+                if (!value.Equals(_text))
+                {
+                    _text = value;
+                    TextBlockMarquee.Text = _text;
+                    if (_isAnimating)
+                        ScrollingText_SizeChanged(this, new RoutedEventArgs());
+                }
             }
         }
 

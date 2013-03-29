@@ -93,6 +93,11 @@ namespace DJClientWPF
                 ScrollingTextMain.Text = text + "   \"" + settings.QueueScrollMessage + "\"";
         }
 
+        public void UpdateTextFields()
+        {
+            SetSizeOfTextControlsFromSettings();
+        }
+
         private void UpdateTextVisibility()
         {
             if (_isPlaying)

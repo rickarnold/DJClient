@@ -192,7 +192,6 @@
             </Grid.ColumnDefinitions>
             
             <Image x:Name="ImageLogin" Source="Images\MobiokeLogo.png" Grid.ColumnSpan="2" Stretch="Uniform" Margin="50,50,50,50" Height="200"/>
-            <Image x:Name="ImageLoginToAnimate" Source="Images\MobiokeLogo.png" Grid.ColumnSpan="2" Stretch="Uniform" Margin="50,50,50,50" Height="200" Visibility="Hidden"/>
 
             <Label x:Name="LabelLoginUserName" Content="User Name: " HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold"/>
             <TextBox x:Name="TextBoxLoginUserName" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Width="300" FontSize="16"
@@ -207,7 +206,9 @@
 
             <Label x:Name="LabelLoginMessage" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"
                    Margin="0,15,0,0" Foreground="#2ED7E2"/>
-        </Grid>
+            <Label x:Name="LabelLoginMessageToAnimate" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"
+                   Margin="0,15,0,0" Foreground="#2ED7E2" Visibility="Hidden" />
+            </Grid>
         </ScrollViewer>
     </Grid>
 

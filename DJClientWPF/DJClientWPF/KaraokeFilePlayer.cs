@@ -96,6 +96,7 @@ namespace DJClientWPF
                 isCDGOpen = true;
                 cdgWindow.Show();
             }
+            cdgWindow.IsPlaying = true;
             player.controls.play();
             progressTimer.Start();
         }
@@ -160,10 +161,15 @@ namespace DJClientWPF
         #region Image Methods
 
         //Set the image that the player will display between singers
-        public void UpdatedBackgroundImage()
+        public void UpdateCDGWindow()
         {
             if (!isPlaying)
                 UpdateToNextSingerImage(DJModel.Instance.CurrentSong);
+
+            
+            cdgWindow.SetScrollingText(DJModel.Instance.QueueString);
+            cdgWindow.UpdateTextFields();
+            cdgWindow.IsPlaying = isPlaying;
         }
 
         //The cdg image has been invalidated so get the most recent copy to display and alert the main window as well
