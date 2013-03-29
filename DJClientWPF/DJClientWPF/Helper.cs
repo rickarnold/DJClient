@@ -51,6 +51,7 @@ namespace DJClientWPF
             currentImage.BeginInit();
             currentImage.UriSource = new Uri(path, UriKind.Relative);
             currentImage.CacheOption = BitmapCacheOption.OnLoad;
+            currentImage.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
             currentImage.EndInit();
 
             return currentImage;

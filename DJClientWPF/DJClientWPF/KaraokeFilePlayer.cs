@@ -183,7 +183,8 @@ namespace DJClientWPF
                 mainWindow.UpdateCDGSource(DJModel.Instance.BackgroundImage);
 
                 //Update the user name
-                cdgWindow.NextSingerName = songToPlay.User.userName;
+                if (songToPlay != null)
+                    cdgWindow.NextSingerName = songToPlay.User.userName;
 
                 cdgWindow.IsPlaying = false;
             }

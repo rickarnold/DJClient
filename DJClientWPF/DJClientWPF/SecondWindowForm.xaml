@@ -84,9 +84,9 @@
             </GroupBox.Header>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="3,3,3,3">
                 <Label Content="Singer Count: " VerticalAlignment="Center"/>
-                <xctk:IntegerUpDown x:Name="SingerCount" Minimum="0" Maximum="100" Width="40" Height="30" Margin="5,0,5,0"/>
+                <xctk:IntegerUpDown x:Name="SingerCount" Minimum="0" Maximum="100" Width="45" Height="30" Margin="5,0,5,0"/>
                 <Label Content="Additional Text: " VerticalAlignment="Center"/>
-                <TextBox x:Name="TextBoxAdditionalText" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="30" Margin="5,0,10,0"/>
+                <TextBox x:Name="TextBoxAdditionalText" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="330" Height="30" Margin="5,0,10,0"/>
             </StackPanel>
         </GroupBox>
 

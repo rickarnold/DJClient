@@ -65,11 +65,11 @@ namespace DJClientWPF
             this.TextSingerNameWidth = 100;
             this.TextSingerNameHeight = 40;
 
-            this.TextUpNextColor = Colors.White.ToString();
+            this.TextUpNextColor = Colors.Black.ToString();
             this.TextUpNextFontFamily = "Arial";
             this.TextUpNextIsDisplayed = true;
 
-            this.TextSingerNameColor = Colors.White.ToString();
+            this.TextSingerNameColor = Colors.Black.ToString();
             this.TextSingerNameFontFamily = "Arial";
             this.TextSingerNameIsDisplayed = true;
         }
