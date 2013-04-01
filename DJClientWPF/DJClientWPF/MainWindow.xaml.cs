@@ -523,6 +523,12 @@ namespace DJClientWPF
             form.Show();
         }
 
+        private void MenuItemAchievements_Click(object sender, RoutedEventArgs e)
+        {
+            Achivements form = new Achivements();
+            form.Show();
+        }
+
         #endregion
 
         #region Filler Music Methods
@@ -839,6 +845,8 @@ namespace DJClientWPF
         }
 
         #endregion
+
+
 
     }
 }

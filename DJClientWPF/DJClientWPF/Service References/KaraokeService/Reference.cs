@@ -584,6 +584,299 @@ namespace DJClientWPF.KaraokeService {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Achievement", Namespace="http://schemas.datacontract.org/2004/07/KServer")]
+    [System.SerializableAttribute()]
+    public partial class Achievement : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IDField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string descriptionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[] imageArrayField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string nameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private DJClientWPF.KaraokeService.AchievementSelect[] selectListField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool statementsAndField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ID {
+            get {
+                return this.IDField;
+            }
+            set {
+                if ((this.IDField.Equals(value) != true)) {
+                    this.IDField = value;
+                    this.RaisePropertyChanged("ID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.descriptionField, value) != true)) {
+                    this.descriptionField = value;
+                    this.RaisePropertyChanged("description");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] imageArray {
+            get {
+                return this.imageArrayField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.imageArrayField, value) != true)) {
+                    this.imageArrayField = value;
+                    this.RaisePropertyChanged("imageArray");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string name {
+            get {
+                return this.nameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.nameField, value) != true)) {
+                    this.nameField = value;
+                    this.RaisePropertyChanged("name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public DJClientWPF.KaraokeService.AchievementSelect[] selectList {
+            get {
+                return this.selectListField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.selectListField, value) != true)) {
+                    this.selectListField = value;
+                    this.RaisePropertyChanged("selectList");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool statementsAnd {
+            get {
+                return this.statementsAndField;
+            }
+            set {
+                if ((this.statementsAndField.Equals(value) != true)) {
+                    this.statementsAndField = value;
+                    this.RaisePropertyChanged("statementsAnd");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AchievementSelect", Namespace="http://schemas.datacontract.org/2004/07/KServer")]
+    [System.SerializableAttribute()]
+    public partial class AchievementSelect : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private DJClientWPF.KaraokeService.ClauseKeyword clauseKeywordField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string clauseValueField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime endDateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private DJClientWPF.KaraokeService.SelectKeyword selectKeywordField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string selectValueField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime startDateField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public DJClientWPF.KaraokeService.ClauseKeyword clauseKeyword {
+            get {
+                return this.clauseKeywordField;
+            }
+            set {
+                if ((this.clauseKeywordField.Equals(value) != true)) {
+                    this.clauseKeywordField = value;
+                    this.RaisePropertyChanged("clauseKeyword");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string clauseValue {
+            get {
+                return this.clauseValueField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.clauseValueField, value) != true)) {
+                    this.clauseValueField = value;
+                    this.RaisePropertyChanged("clauseValue");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime endDate {
+            get {
+                return this.endDateField;
+            }
+            set {
+                if ((this.endDateField.Equals(value) != true)) {
+                    this.endDateField = value;
+                    this.RaisePropertyChanged("endDate");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public DJClientWPF.KaraokeService.SelectKeyword selectKeyword {
+            get {
+                return this.selectKeywordField;
+            }
+            set {
+                if ((this.selectKeywordField.Equals(value) != true)) {
+                    this.selectKeywordField = value;
+                    this.RaisePropertyChanged("selectKeyword");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string selectValue {
+            get {
+                return this.selectValueField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.selectValueField, value) != true)) {
+                    this.selectValueField = value;
+                    this.RaisePropertyChanged("selectValue");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime startDate {
+            get {
+                return this.startDateField;
+            }
+            set {
+                if ((this.startDateField.Equals(value) != true)) {
+                    this.startDateField = value;
+                    this.RaisePropertyChanged("startDate");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ClauseKeyword", Namespace="http://schemas.datacontract.org/2004/07/KServer")]
+    public enum ClauseKeyword : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Artist = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Title = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        SongID = 2,
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="SelectKeyword", Namespace="http://schemas.datacontract.org/2004/07/KServer")]
+    public enum SelectKeyword : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        CountEqual = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        CountNotEqual = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        CountGreaterThan = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        CountLessThan = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Max = 4,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Min = 5,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Newest = 6,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Oldest = 7,
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="KaraokeService.IDJ")]
     public interface IDJ {
@@ -659,6 +952,15 @@ namespace DJClientWPF.KaraokeService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGetBannedUsers", ReplyAction="http://tempuri.org/IDJ/DJGetBannedUsersResponse")]
         DJClientWPF.KaraokeService.Response DJGetBannedUsers(out DJClientWPF.KaraokeService.User[] users, long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJAddAchievement", ReplyAction="http://tempuri.org/IDJ/DJAddAchievementResponse")]
+        DJClientWPF.KaraokeService.Response DJAddAchievement(DJClientWPF.KaraokeService.Achievement achievement, long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJDeleteAchievement", ReplyAction="http://tempuri.org/IDJ/DJDeleteAchievementResponse")]
+        DJClientWPF.KaraokeService.Response DJDeleteAchievement(int achievementID, long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJViewAchievements", ReplyAction="http://tempuri.org/IDJ/DJViewAchievementsResponse")]
+        DJClientWPF.KaraokeService.Response DJViewAchievements(out DJClientWPF.KaraokeService.Achievement[] achievements, long DJKey);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -782,6 +1084,18 @@ namespace DJClientWPF.KaraokeService {
         
         public DJClientWPF.KaraokeService.Response DJGetBannedUsers(out DJClientWPF.KaraokeService.User[] users, long DJKey) {
             return base.Channel.DJGetBannedUsers(out users, DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJAddAchievement(DJClientWPF.KaraokeService.Achievement achievement, long DJKey) {
+            return base.Channel.DJAddAchievement(achievement, DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJDeleteAchievement(int achievementID, long DJKey) {
+            return base.Channel.DJDeleteAchievement(achievementID, DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJViewAchievements(out DJClientWPF.KaraokeService.Achievement[] achievements, long DJKey) {
+            return base.Channel.DJViewAchievements(out achievements, DJKey);
         }
     }
 }

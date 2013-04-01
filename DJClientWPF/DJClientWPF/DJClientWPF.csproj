@@ -75,6 +75,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Achievements.xaml.cs">
+      <DependentUpon>Achievements.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddSongRequestControl.xaml.cs">
       <DependentUpon>AddSongRequestControl.xaml</DependentUpon>
     </Compile>
@@ -123,6 +126,10 @@
     <Compile Include="Settings.cs" />
     <Compile Include="SongToPlay.cs" />
     <Compile Include="Timer.cs" />
+    <Page Include="Achievements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddSongRequestControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -213,6 +220,9 @@
     </None>
     <None Include="Service References\KaraokeService\DJ32.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\KaraokeService\DJClientWPF.KaraokeService.Achievement.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\KaraokeService\DJClientWPF.KaraokeService.LogInResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>

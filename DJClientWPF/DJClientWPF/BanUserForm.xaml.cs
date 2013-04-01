@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using DJClientWPF.KaraokeService;
+using System.Collections.ObjectModel;
 
 namespace DJClientWPF
 {
@@ -19,10 +20,12 @@ namespace DJClientWPF
     /// </summary>
     public partial class BanUserForm : Window
     {
+        public delegate void InvokeDelegate();
+
         DJModel model;
 
-        List<User> userList;
-        List<User> bannedUserList;
+        public ObservableCollection<User> userList { get; set; }
+        public ObservableCollection<User> bannedUserList { get; set; }
 
         public BanUserForm()
         {
@@ -34,13 +37,15 @@ namespace DJClientWPF
             model.BanUserComplete += BanUserCompleteHandler;
             model.UnbanUserComplete += UnbanUserCompleteHandler;
 
-            userList = new List<User>();
-            bannedUserList = new List<User>();
+            userList = new ObservableCollection<User>();
+            bannedUserList = new ObservableCollection<User>();
 
             //Get the list of banned users
             model.GetBannedUserList();
 
             AddCurrentUsers();
+
+            //ListBoxUnban.ItemsSource = bannedUserList;
         }
 
         //Adds all the users that are currently in the queue to list of users that can be banned
@@ -61,30 +66,42 @@ namespace DJClientWPF
         //Model has finished retrieving the list of banned users
         private void GetBannedUserCompleteHandler(object sender, DJModelArgs args)
         {
-            bannedUserList = model.BannedUserList;
-
             //Display the list of banned users in the list box
-            ListBoxUnban.ItemsSource = bannedUserList;
+            this.Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                List<User> banned = model.BannedUserList;
+                foreach (User user in banned)
+                {
+                    if (!bannedUserList.Contains(user))
+                        bannedUserList.Add(user);
+                }
+            }));
         }
 
         //Model has finished banning a user.  Update the banned list
         private void BanUserCompleteHandler(object sender, DJModelArgs args)
         {
-            bannedUserList = model.BannedUserList;
-            ListBoxUnban.Items.Refresh();
+            this.Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                User bannedUser = (User)args.UserState;
+                if (!bannedUserList.Contains(bannedUser))
+                    bannedUserList.Add(bannedUser);
+                if (userList.Contains(bannedUser))
+                    userList.Remove(bannedUser);
+            }));
         }
 
         //Model has finished unbanning a user.  Update the combobox of users available to be banned
         private void UnbanUserCompleteHandler(object sender, DJModelArgs args)
         {
-            User unbannedUser = (User)args.UserState;
-            if (!userList.Contains(unbannedUser))
-                userList.Add(unbannedUser);
-
-            //Add this banned user to the user list and refresh
-            Object selected = ComboBoxUserName.SelectedItem;
-            ComboBoxUserName.Items.Refresh();
-            ComboBoxUserName.SelectedItem = selected;
+            this.Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                User unbannedUser = (User)args.UserState;
+                if (!userList.Contains(unbannedUser))
+                    userList.Add(unbannedUser);
+                if (bannedUserList.Contains(unbannedUser))
+                    bannedUserList.Remove(unbannedUser);
+            }));
         }
 
         #endregion
@@ -97,8 +114,8 @@ namespace DJClientWPF
                 model.BanUser(user);
 
                 //Update the combo box
-                ComboBoxUserName.Items.Remove(user);
-                ComboBoxUserName.Items.Refresh();
+                if (userList.Contains(user))
+                    userList.Remove(user);
             }
         }
 
@@ -112,6 +129,10 @@ namespace DJClientWPF
 
         private void ButtonUnban_Click(object sender, RoutedEventArgs e)
         {
+            string test = ListBoxUnban.SelectedValue.GetType().ToString();
+            string test2 = ListBoxUnban.SelectedItem.GetType().ToString();
+            string test3 = ListBoxUnban.SelectedValuePath.GetType().ToString();
+
             User user = (User)ListBoxUnban.SelectedItem;
             model.UnbanUser(user);
         }
