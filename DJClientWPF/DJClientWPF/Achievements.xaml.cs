@@ -28,7 +28,38 @@ namespace DJClientWPF
 
         }
 
+        #region Current Achievement Methods
+
+
+        #endregion
+
+
+        #region Edit Achievement Methods
+
+
+        #endregion
+
+        #region New Achievement Methods
+
+
+        #endregion
+
         private void ButtonCurrentEdit_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonAddNewAdd_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonCurrentAddControl_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonAddNewAddControl_Click(object sender, RoutedEventArgs e)
         {
 
         }

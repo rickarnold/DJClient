@@ -103,7 +103,10 @@ namespace DJClientWPF
             if (_isPlaying)
                 CanvasText.Visibility = Visibility.Hidden;
             else
+            {
                 CanvasText.Visibility = Visibility.Visible;
+                SetSizeOfTextControlsFromSettings();
+            }
         }
 
         private void UpdateNextSingerName()

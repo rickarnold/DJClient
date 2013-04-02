@@ -600,7 +600,10 @@ namespace DJClientWPF.KaraokeService {
         private string descriptionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] imageArrayField;
+        private DJClientWPF.KaraokeService.AchievementImage imageField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool isPermanantField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string nameField;
@@ -648,14 +651,27 @@ namespace DJClientWPF.KaraokeService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] imageArray {
+        public DJClientWPF.KaraokeService.AchievementImage image {
             get {
-                return this.imageArrayField;
+                return this.imageField;
             }
             set {
-                if ((object.ReferenceEquals(this.imageArrayField, value) != true)) {
-                    this.imageArrayField = value;
-                    this.RaisePropertyChanged("imageArray");
+                if ((this.imageField.Equals(value) != true)) {
+                    this.imageField = value;
+                    this.RaisePropertyChanged("image");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool isPermanant {
+            get {
+                return this.isPermanantField;
+            }
+            set {
+                if ((this.isPermanantField.Equals(value) != true)) {
+                    this.isPermanantField = value;
+                    this.RaisePropertyChanged("isPermanant");
                 }
             }
         }
@@ -707,6 +723,41 @@ namespace DJClientWPF.KaraokeService {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AchievementImage", Namespace="http://schemas.datacontract.org/2004/07/KServer")]
+    public enum AchievementImage : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image0 = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image1 = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image2 = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image3 = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image4 = 4,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image5 = 5,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image6 = 6,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image7 = 7,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image8 = 8,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Image9 = 9,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -956,11 +1007,20 @@ namespace DJClientWPF.KaraokeService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJAddAchievement", ReplyAction="http://tempuri.org/IDJ/DJAddAchievementResponse")]
         DJClientWPF.KaraokeService.Response DJAddAchievement(DJClientWPF.KaraokeService.Achievement achievement, long DJKey);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJModifyAchievement", ReplyAction="http://tempuri.org/IDJ/DJModifyAchievementResponse")]
+        DJClientWPF.KaraokeService.Response DJModifyAchievement(DJClientWPF.KaraokeService.Achievement achievement, long DJKey);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJDeleteAchievement", ReplyAction="http://tempuri.org/IDJ/DJDeleteAchievementResponse")]
         DJClientWPF.KaraokeService.Response DJDeleteAchievement(int achievementID, long DJKey);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJViewAchievements", ReplyAction="http://tempuri.org/IDJ/DJViewAchievementsResponse")]
         DJClientWPF.KaraokeService.Response DJViewAchievements(out DJClientWPF.KaraokeService.Achievement[] achievements, long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJEvaluateAchievements", ReplyAction="http://tempuri.org/IDJ/DJEvaluateAchievementsResponse")]
+        DJClientWPF.KaraokeService.Response DJEvaluateAchievements(long DJKey);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/ViewAchievementSql", ReplyAction="http://tempuri.org/IDJ/ViewAchievementSqlResponse")]
+        DJClientWPF.KaraokeService.Response ViewAchievementSql(long DJKey, int achievementID);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1090,12 +1150,24 @@ namespace DJClientWPF.KaraokeService {
             return base.Channel.DJAddAchievement(achievement, DJKey);
         }
         
+        public DJClientWPF.KaraokeService.Response DJModifyAchievement(DJClientWPF.KaraokeService.Achievement achievement, long DJKey) {
+            return base.Channel.DJModifyAchievement(achievement, DJKey);
+        }
+        
         public DJClientWPF.KaraokeService.Response DJDeleteAchievement(int achievementID, long DJKey) {
             return base.Channel.DJDeleteAchievement(achievementID, DJKey);
         }
         
         public DJClientWPF.KaraokeService.Response DJViewAchievements(out DJClientWPF.KaraokeService.Achievement[] achievements, long DJKey) {
             return base.Channel.DJViewAchievements(out achievements, DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response DJEvaluateAchievements(long DJKey) {
+            return base.Channel.DJEvaluateAchievements(DJKey);
+        }
+        
+        public DJClientWPF.KaraokeService.Response ViewAchievementSql(long DJKey, int achievementID) {
+            return base.Channel.ViewAchievementSql(DJKey, achievementID);
         }
     }
 }
