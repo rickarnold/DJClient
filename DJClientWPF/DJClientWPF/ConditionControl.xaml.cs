@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DJClientWPF.KaraokeService;
+using System.Collections.ObjectModel;
 
 namespace DJClientWPF
 {
@@ -20,6 +21,12 @@ namespace DJClientWPF
     /// </summary>
     public partial class ConditionControl : UserControl
     {
+        public delegate void EventHandler(object source, EventArgs args);
+        public event EventHandler DeleteControl;
+
+        private ObservableCollection<SelectKeywordItem> selectKeywordList;
+        private ObservableCollection<ClauseKeywordItem> clauseKeywordList;
+
         public bool IsEditable
         {
             get
@@ -43,6 +50,9 @@ namespace DJClientWPF
         {
             InitializeComponent();
 
+            selectKeywordList = new ObservableCollection<SelectKeywordItem>();
+            clauseKeywordList = new ObservableCollection<ClauseKeywordItem>();
+
             FillTypeCombobox();
             FillQuanitifierCombobox();
         }
@@ -51,6 +61,9 @@ namespace DJClientWPF
         public ConditionControl(AchievementSelect select)
         {
             InitializeComponent();
+
+            selectKeywordList = new ObservableCollection<SelectKeywordItem>();
+            clauseKeywordList = new ObservableCollection<ClauseKeywordItem>();
 
             FillTypeCombobox();
             FillQuanitifierCombobox();
@@ -72,6 +85,17 @@ namespace DJClientWPF
         public bool IsInputValid()
         {
             bool isValid = true;
+
+            if (ComboBoxQuantifier.SelectedItem == null)
+                isValid = false;
+            if (ComboBoxType.SelectedItem == null)
+                isValid = false;
+            if (TextBoxTypeValue.Text.Trim().Equals(""))
+                isValid = false;
+            if ((bool)CheckBoxDateStart.IsChecked && DatePickerStart.SelectedDate == null)
+                isValid = false;
+            if ((bool)CheckBoxDateEnd.IsChecked && DatePickerEnd.SelectedDate == null)
+                isValid = false;
 
             if (isValid)
                 MarkAsValid();
@@ -115,28 +139,34 @@ namespace DJClientWPF
 
         private void MarkAsInvalid()
         {
-            GridMain.Background = new SolidColorBrush(Color.FromArgb(100, 255, 170, 170));
+            LinearGradientBrush gradientBrush = new LinearGradientBrush(Helper.GetColorFromStirng("#88FF9090"), Helper.GetColorFromStirng("#88FFE0E0"),
+                                                                        new Point(0.5, 0), new Point(0.5, 1));
+            BorderBackground.Background = gradientBrush;
         }
 
         private void MarkAsValid()
         {
-            GridMain.Background = new SolidColorBrush(Colors.White);
+            LinearGradientBrush gradientBrush = new LinearGradientBrush(Helper.GetColorFromStirng("#88909090"), Helper.GetColorFromStirng("#88E0E0E0"),
+                                                            new Point(0.5, 0), new Point(0.5, 1));
+            BorderBackground.Background = gradientBrush;
         }
 
         #region Combobox Methods
 
         private void FillQuanitifierCombobox()
         {
-            string[] selectKeywords = Enum.GetNames(typeof(SelectKeyword));
+            foreach (SelectKeyword keyword in Enum.GetValues(typeof(SelectKeyword)))
+                selectKeywordList.Add(new SelectKeywordItem(keyword));
 
-            ComboBoxQuantifier.ItemsSource = selectKeywords;
+            ComboBoxQuantifier.ItemsSource = selectKeywordList;
         }
 
         private void FillTypeCombobox()
         {
-            string[] clauseKeywords = Enum.GetNames(typeof(ClauseKeyword));
+            foreach (ClauseKeyword keyword in Enum.GetValues(typeof(ClauseKeyword)))
+                clauseKeywordList.Add(new ClauseKeywordItem(keyword));
 
-            ComboBoxType.ItemsSource = clauseKeywords;
+            ComboBoxType.ItemsSource = clauseKeywordList;
         }
 
         //User has changed the keyword type of the condition.  Need to update the auto complete box for the value
@@ -177,6 +207,8 @@ namespace DJClientWPF
 
         #endregion
 
+        #region GUID Methods
+
         private void CheckBoxDateStart_Checked(object sender, RoutedEventArgs e)
         {
             if ((bool)CheckBoxDateStart.IsChecked)
@@ -193,13 +225,25 @@ namespace DJClientWPF
                 DatePickerEnd.IsEnabled = false;
         }
 
+        //User has clicked the delete button
+        private void Label_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (DeleteControl != null)
+                DeleteControl(this, new EventArgs());
+        }
+
+        #endregion
+
         #region AutoCompleteBox Methods
 
         private void TextBoxTypeValue_Populating(object sender, PopulatingEventArgs e)
         {
-
+            
+            e.Handled = true;
         }
 
         #endregion
+
+        
     }
 }

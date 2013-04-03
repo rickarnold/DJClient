@@ -614,6 +614,9 @@ namespace DJClientWPF.KaraokeService {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool statementsAndField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool visibleField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -711,6 +714,19 @@ namespace DJClientWPF.KaraokeService {
                 if ((this.statementsAndField.Equals(value) != true)) {
                     this.statementsAndField = value;
                     this.RaisePropertyChanged("statementsAnd");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool visible {
+            get {
+                return this.visibleField;
+            }
+            set {
+                if ((this.visibleField.Equals(value) != true)) {
+                    this.visibleField = value;
+                    this.RaisePropertyChanged("visible");
                 }
             }
         }

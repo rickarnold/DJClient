@@ -98,6 +98,7 @@
     <Compile Include="ConditionControl.xaml.cs">
       <DependentUpon>ConditionControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MyHelperObjects.cs" />
     <Compile Include="SecondWindowForm.xaml.cs">
       <DependentUpon>SecondWindowForm.xaml</DependentUpon>
     </Compile>
