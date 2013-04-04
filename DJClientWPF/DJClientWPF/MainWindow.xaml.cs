@@ -51,6 +51,7 @@ namespace DJClientWPF
         private bool showProgressRemaining = false;
         private int fillerSelected = -1;
         private bool songRequestOpen = false;
+        private PlayState playState = PlayState.NoSession;
 
         public MainWindow()
         {
@@ -86,6 +87,7 @@ namespace DJClientWPF
 
         #region Event Handlers
 
+        //Set up all events with the needed handlers for this form.
         private void InitializeEventHandlers()
         {
             model.QueueUpdated += QueueUpdatedHandler;
@@ -107,6 +109,7 @@ namespace DJClientWPF
             AddSongRequestControlMain.NeedToCloseControl += CloseAddSongRequestHandler;
         }
 
+        //User manually added a song request.  Close the song request control.
         private void CloseAddSongRequestHandler(object source, EventArgs args)
         {
             songRequestOpen = false;
@@ -117,6 +120,7 @@ namespace DJClientWPF
             this.BeginAnimation(AnimatableGridHeightProperty, animator);
         }
 
+        //Login returned from the server.  Check if credentials were valid.  Close the login form if login was successful.
         private void LoginCompleteHandler(object source, DJModelArgs args)
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
@@ -133,6 +137,7 @@ namespace DJClientWPF
                     ShowLoginControls();
                 }));
             }
+            //Successfully logged in
             else
             {
                 Dispatcher.BeginInvoke(new InvokeDelegate(() =>
@@ -142,8 +147,10 @@ namespace DJClientWPF
             }
         }
 
+        //Call to create a karaoke session returned from the server.  Enable karaoke playback.
         private void CreateSessionCompleteHandler(object source, DJModelArgs args)
         {
+            playState = PlayState.NotStarted;
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
             {
                 EnableNowPlaying();
@@ -151,14 +158,19 @@ namespace DJClientWPF
             }));
         }
 
+        //Call to logout from the server returned.  Close the app.
         private void LogoutCompleteHandler(object source, DJModelArgs args)
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
             {
-
+                //Close all open windows
+                for (int intCounter = App.Current.Windows.Count - 1; intCounter >= 0; intCounter--)
+                    App.Current.Windows[intCounter].Close();
+                //this.Close();
             }));
         }
 
+        //Queue has been updated on the server.  Display the changes.
         private void QueueUpdatedHandler(object source, EventArgs args)
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
@@ -225,11 +237,12 @@ namespace DJClientWPF
                 ListBoxSongQueue.ItemsSource = queueControlList;
                 AddSongRequestControlMain.QueueControlList = queueControlList;
 
-                //Let's update the scrolling text
+                //Let's update the scrolling text too
                 karaokePlayer.SetScrollingText(model.QueueString);
             }));
         }
 
+        //QR code has been retrieved from the server.  Generate the QR form.
         private void QRCodeCompleteHandler(object source, DJModelArgs args)
         {
             if (!args.Error)
@@ -238,6 +251,7 @@ namespace DJClientWPF
             }
         }
 
+        //New QR code has been obtained from the server.  Generate the QR form.
         private void QRNewCodeCompleteHandler(object source, DJModelArgs args)
         {
             if (!args.Error)
@@ -246,6 +260,7 @@ namespace DJClientWPF
             }
         }
 
+        //The timer for showing current karaoke song progress has been updated.  Display the timer.
         private void KaraokeProgressUpdatedHandler(object source, DurationArgs args)
         {
             string progressString;
@@ -263,6 +278,7 @@ namespace DJClientWPF
             }));
         }
 
+        //The filler music queue has been updated.  Display the new filler music queue.
         private void FillerQueueUpdatedHandler(object source, EventArgs args)
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
@@ -286,12 +302,14 @@ namespace DJClientWPF
             }));
         }
 
+        //A filler music song has been removed.  Delete from the queue.
         private void FillerMusicControlRemovedHandler(object source, EventArgs args)
         {
             FillerMusicControl control = source as FillerMusicControl;
             fillerPlayer.RemoveFillerSong(fillerList.IndexOf(control));
         }
 
+        //The filler music player has toggled state from playing to stopped or stopped to playing.
         private void FillerPlayStateChangedHandler(object source, EventArgs args)
         {
             if (fillerPlayer.IsPlaying)
@@ -310,19 +328,21 @@ namespace DJClientWPF
             }
         }
 
+        //The current karaoke song has completely finished.  Move onto the next singer.
         private void SongFinishedHandler(object source, EventArgs args)
         {
             //When the song finishes it's like clicking next
             ButtonNext_Click(ButtonNext, new RoutedEventArgs());
         }
 
-        //User has changed the background image to display between singers.  Update the karaoke player
+        //User has changed the background image to display between singers.  Update the karaoke player.
         private void BackgroundImageUpdatedHandler(object source, EventArgs args)
         {
             if (karaokePlayer != null)
                 karaokePlayer.UpdateCDGWindow();
         }
 
+        //The list of all available songs has been downloaded and processed from the server.  Enable to the manual song request button.
         private void SongListLoadedHandler(object source, EventArgs args)
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
@@ -331,9 +351,9 @@ namespace DJClientWPF
             }));
         }
 
+        //The wait time for a full singer queue rotation has been updated.  Update the wait timer.
         private void WaitTimeCompleteHandler(object source, DJModelArgs args)
         {
-
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
             {
                 LabelWaitTime.Content = model.WaitTime;
@@ -355,17 +375,20 @@ namespace DJClientWPF
 
         #region Volume Control Sliders
 
+        //Karaoke backing track volume has been adjusted.
         private void SliderMainVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (karaokePlayer != null)
                 karaokePlayer.Volume = (int)SliderMainVolume.Value;
         }
 
+        //Microphone volume has been adjusted.
         private void SliderMicVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
 
         }
 
+        //Filler music volume has been adjusted.
         private void SliderFillerVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (fillerPlayer != null)
@@ -376,6 +399,7 @@ namespace DJClientWPF
 
         #region Media Playback Buttons
 
+        //User clicked play.  Begin playback of the cued up karaoke song or unpause a currently paused song.
         private void ButtonPlay_Click(object sender, RoutedEventArgs e)
         {
             if (!isPlaying)
@@ -392,6 +416,7 @@ namespace DJClientWPF
             }
         }
 
+        //User clicked pause.  Pause the playback of any currently playing karaoke song.
         private void ButtonPause_Click(object sender, RoutedEventArgs e)
         {
             if (isPlaying)
@@ -403,6 +428,7 @@ namespace DJClientWPF
                 karaokePlayer.Play();
         }
 
+        //User clicked next.  End the playback of any current karaoke song and move to the next singer.
         private void ButtonNext_Click(object sender, RoutedEventArgs e)
         {
             //Currently playing so stop and move onto next song
@@ -428,11 +454,13 @@ namespace DJClientWPF
             fillerPlayer.PlayCurrent();
         }
 
+        //User clicked restart.  If a karaoke song is currently playing or paused, restart the song from the beginning.
         private void ButtonRestart_Click(object sender, RoutedEventArgs e)
         {
             karaokePlayer.Restart();
         }
 
+        //A new singer is next and readying to sing.  Show the background image in the second window and update all information.
         private void UpdateNowPlaying(SongToPlay songToPlay)
         {
             LabelNowSinging.Content = "Now Singing:  " + songToPlay.User.userName;
@@ -449,6 +477,7 @@ namespace DJClientWPF
 
         #region Menu Item Click Handlers
 
+        //User clicked to start a new karaoke session and enable karaoke playback.
         private void StartSessionItem_Click(object sender, RoutedEventArgs e)
         {
             if (model.IsLoggedIn)
@@ -457,14 +486,19 @@ namespace DJClientWPF
             }
         }
 
+        //User clicked to log out of the current karaoke session.
         private void LogoutItem_Click(object sender, RoutedEventArgs e)
         {
-            if (model.IsLoggedIn)
+            if (model.IsSessionActive)
             {
-                model.Logout();
+                MessageBoxResult result = MessageBox.Show("Are you sure you wish to close this karaoke session? " +
+                                                              "\n\nAll singers currently in the queue will be removed.", "Confirm Close Session", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                    model.Logout();
             }
         }
 
+        //User clicked to add/update available karaoke songs.  Open add songs form.
         private void AddSongsItem_Click(object sender, RoutedEventArgs e)
         {
             if (model.IsLoggedIn)
@@ -484,23 +518,27 @@ namespace DJClientWPF
             }
         }
 
+        //User clicked to get the QR code for this venue.
         private void MenuItemGetQR_Click(object sender, RoutedEventArgs e)
         {
             if (model.IsLoggedIn)
                 model.GetQRCode();
         }
 
+        //User clicked to obtain a new QR code for this venue.
         private void MenuItemNewQR_Click(object sender, RoutedEventArgs e)
         {
             if (model.IsLoggedIn)
                 model.GetNewQRCode();
         }
 
+        //User clicked on test method to populate the queue with test users.
         private void MenuItemTestQueue_Click(object sender, RoutedEventArgs e)
         {
             model.GetTestQueue();
         }
 
+        //User clicked to toggle how current karaoke song progress is displayed.
         private void MenuItemTimerOption_Click(object sender, RoutedEventArgs e)
         {
             MenuItem item = (MenuItem)sender;
@@ -508,8 +546,10 @@ namespace DJClientWPF
             showProgressRemaining = item.IsChecked;
 
             model.Settings.TimerCountdown = showProgressRemaining;
+            model.Settings.SaveSettingsToDisk();
         }
 
+        //User clicked to edit the background image of the second window.  Open the background image editor form.
         private void MenuItemBackgroundImage_Click(object sender, RoutedEventArgs e)
         {
             SecondWindowForm background = new SecondWindowForm();
@@ -517,12 +557,14 @@ namespace DJClientWPF
             background.Show();
         }
 
+        //User clicked to manage users.  Open form to ban/unban users.
         private void MenuItemUserManagement_Click(object sender, RoutedEventArgs e)
         {
             BanUserForm form = new BanUserForm();
             form.Show();
         }
 
+        //User clicked to view and edit achievements.  Open achievements form.
         private void MenuItemAchievements_Click(object sender, RoutedEventArgs e)
         {
             AchievementForm form = new AchievementForm();
@@ -533,11 +575,13 @@ namespace DJClientWPF
 
         #region Filler Music Methods
 
+        //User clicked button to browse for songs to add to the filler song queue.
         private void ButtonFillerBrowse_Click(object sender, RoutedEventArgs e)
         {
             fillerPlayer.BrowseForFillerMusic();
         }
 
+        //User clicked to move the currently selected filler song to the top of the queue.
         private void ButtonFillerMoveToTop_Click(object sender, RoutedEventArgs e)
         {
             int selectedIndex = ListBoxFillerMusic.SelectedIndex;
@@ -546,6 +590,7 @@ namespace DJClientWPF
                 fillerPlayer.MoveFillerSongInQueue(selectedIndex, 0);
         }
 
+        //User clicked to move the currently selected filler song up one spot in the queue.
         private void ButtonFillerMoveUp_Click(object sender, RoutedEventArgs e)
         {
             int selectedIndex = ListBoxFillerMusic.SelectedIndex;
@@ -560,6 +605,7 @@ namespace DJClientWPF
             }
         }
 
+        //User clicked to move the curretnly selected filler song down one spot in the queue.
         private void ButtonFillerMoveDown_Click(object sender, RoutedEventArgs e)
         {
             int selectedIndex = ListBoxFillerMusic.SelectedIndex;
@@ -636,16 +682,23 @@ namespace DJClientWPF
 
         #region Window Methods
 
+        //User is attempting to close the form.  Ensure that they logout.
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
             //Check if the user really wants to close
-
-
-            if (karaokePlayer != null)
+            if (model.IsSessionActive)
             {
-                karaokePlayer.Stop();
-                karaokePlayer.CloseCDGWindow();
+                MessageBoxResult result = MessageBox.Show("Are you sure you wish to close this karaoke session? " +
+                                                           "\n\nAll singers currently in the queue will be removed.", "Confirm Close Session", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                {
+                    if (karaokePlayer != null)
+                    {
+                        karaokePlayer.Stop();
+                        karaokePlayer.CloseCDGWindow();
+                    }
+                    model.Logout();
+                }
             }
         }
 
@@ -680,7 +733,7 @@ namespace DJClientWPF
             LabelSongRemaining.BeginAnimation(Label.OpacityProperty, animator);
         }
 
-        //Update the image displayed in the second window box
+        //Update the image displayed in the second window box using a Bitmap
         public void UpdateCDG(System.Drawing.Bitmap image)
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
@@ -693,7 +746,7 @@ namespace DJClientWPF
             }));
         }
 
-        //Update the image displayed in the second window box
+        //Update the image displayed in the second window box using a BitmapSource
         public void UpdateCDGSource(BitmapSource imageSource)
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
@@ -771,6 +824,7 @@ namespace DJClientWPF
 
         #region Login Methods
 
+        //User clicked button to login.  Ensure that the form is filled out and login to the server.
         private void ButtonLoginForm_Click(object sender, RoutedEventArgs e)
         {
             string password = TextBoxLoginPassword.Password.Trim();
@@ -797,6 +851,7 @@ namespace DJClientWPF
             }
         }
 
+        //Start the animation to display while waiting on the server to validate the login.
         private void StartLoginAnimation()
         {
             DoubleAnimation loginAnimatorFadeIn = new DoubleAnimation();
@@ -811,12 +866,14 @@ namespace DJClientWPF
             LabelLoginMessage.Visibility = System.Windows.Visibility.Hidden;
         }
 
+        //End the login waiting animation after the server call has returned for validation.
         private void EndLoginAnimation()
         {
             LabelLoginMessageToAnimate.Visibility = System.Windows.Visibility.Hidden;
             LabelLoginMessage.Visibility = System.Windows.Visibility.Visible;
         }
 
+        //Disable the login controls while waiting for the server response.
         private void HideLoginControls()
         {
             LabelLoginPassword.IsEnabled = false;
@@ -826,6 +883,7 @@ namespace DJClientWPF
             ButtonLoginForm.IsEnabled = false;
         }
 
+        //Enable the login controls.
         private void ShowLoginControls()
         {
             LabelLoginPassword.IsEnabled = true;
@@ -835,6 +893,7 @@ namespace DJClientWPF
             ButtonLoginForm.IsEnabled = true;
         }
 
+        //Check for the enter key on the password box.  If enter is pressed submit the login request.
         private void TextBoxLoginPassword_KeyDown(object sender, KeyEventArgs e)
         {
             //If the user presses enter in the password box simulate a click of the login button
@@ -845,8 +904,5 @@ namespace DJClientWPF
         }
 
         #endregion
-
-
-
     }
 }

@@ -16,7 +16,7 @@ using DJClientWPF.KaraokeService;
 namespace DJClientWPF
 {
     /// <summary>
-    /// Interaction logic for Achivements.xaml
+    /// Form that allows the user to view and edit current achievements as well as create new achievements
     /// </summary>
     public partial class AchievementForm : Window
     {
@@ -241,8 +241,10 @@ namespace DJClientWPF
                 control.AllowDelete();
         }
 
+        //User clicked on the delete button of a condtion control.  Remove it from the list.
         private void CurrentConditionControlDeleted(object sender, EventArgs args)
         {
+            //Don't allow the last control to be deleted
             if (currentControlsList.Count > 1)
             {
                 ConditionControl control = (ConditionControl)sender;
@@ -484,8 +486,10 @@ namespace DJClientWPF
             }
         }
 
+        //User clicked to delete a condition control
         private void NewConditionControlDeleted(object sender, EventArgs args)
         {
+            //Make sure that the last control is not deleted
             if (newControlsList.Count > 1)
             {
                 ConditionControl control = (ConditionControl)sender;
@@ -497,6 +501,7 @@ namespace DJClientWPF
             }
         }
 
+        //Clear out any condition controls and add a new blank condition control
         private void ResetNewAchievementConditionControls()
         {
             ConditionControl control = new ConditionControl();
