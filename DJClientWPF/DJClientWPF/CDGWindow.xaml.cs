@@ -150,7 +150,7 @@ namespace DJClientWPF
             ViewBoxUpNext.Width = settings.TextUpNextWidth * xScale;
             ViewBoxUpNext.Height = settings.TextUpNextHeight * yScale;
 
-            LabelUpNext.Foreground = new SolidColorBrush(Helper.GetColorFromStirng(settings.TextUpNextColor));
+            LabelUpNext.Foreground = new SolidColorBrush(Helper.GetColorFromString(settings.TextUpNextColor));
             LabelUpNext.FontFamily = new System.Windows.Media.FontFamily(settings.TextUpNextFontFamily);
 
             if (settings.TextUpNextIsDisplayed)
@@ -165,7 +165,7 @@ namespace DJClientWPF
             ViewBoxSingerName.Width = settings.TextSingerNameWidth * xScale;
             ViewBoxSingerName.Height = settings.TextSingerNameHeight * yScale;
 
-            LabelSinger.Foreground = new SolidColorBrush(Helper.GetColorFromStirng(settings.TextSingerNameColor));
+            LabelSinger.Foreground = new SolidColorBrush(Helper.GetColorFromString(settings.TextSingerNameColor));
             LabelSinger.FontFamily = new System.Windows.Media.FontFamily(settings.TextSingerNameFontFamily);
 
             if (settings.TextSingerNameIsDisplayed)

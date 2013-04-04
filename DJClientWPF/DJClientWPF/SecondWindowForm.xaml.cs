@@ -466,8 +466,8 @@ namespace DJClientWPF
                 else
                     ThumbResizer1.Visibility = Visibility.Hidden;
 
-                LabelTextUpNext.Foreground = new SolidColorBrush(Helper.GetColorFromStirng(settings.TextUpNextColor));
-                ColorPickerUpNext.SelectedColor = Helper.GetColorFromStirng(settings.TextUpNextColor);
+                LabelTextUpNext.Foreground = new SolidColorBrush(Helper.GetColorFromString(settings.TextUpNextColor));
+                ColorPickerUpNext.SelectedColor = Helper.GetColorFromString(settings.TextUpNextColor);
 
                 //Set the font family from the list
                 if (ComboBoxFontUpNext.Items.Contains(settings.TextUpNextFontFamily))
@@ -502,8 +502,8 @@ namespace DJClientWPF
                 else
                     ThumbResizer2.Visibility = Visibility.Hidden;
 
-                LabelTextSinger.Foreground = new SolidColorBrush(Helper.GetColorFromStirng(settings.TextSingerNameColor));
-                ColorPickerSing.SelectedColor = Helper.GetColorFromStirng(settings.TextSingerNameColor);
+                LabelTextSinger.Foreground = new SolidColorBrush(Helper.GetColorFromString(settings.TextSingerNameColor));
+                ColorPickerSing.SelectedColor = Helper.GetColorFromString(settings.TextSingerNameColor);
 
                 //Set the font family from the list
                 if (ComboBoxFontSinger.Items.Contains(settings.TextSingerNameFontFamily))

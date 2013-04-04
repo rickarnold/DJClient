@@ -23,19 +23,19 @@
                 BorderBrush="Silver" Margin="2,2,2,2" x:Name="BorderBackground">
             <Border.Background>
                 <LinearGradientBrush StartPoint=".5, 0" EndPoint=".5, 1">
-                    <GradientStop Color="#88909090" Offset="0"/>
-                    <GradientStop Color="#88E0E0E0" Offset="1"/>
+                    <GradientStop x:Name="GradientStop1" Color="#88909090" Offset="0"/>
+                    <GradientStop x:Name="GradientStop2" Color="#88E0E0E0" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
         
         <Label Content="X" Foreground="Red" FontWeight="Bold" FontSize="14" MouseLeftButtonDown="Label_MouseLeftButtonDown" HorizontalAlignment="Right" VerticalAlignment="Top"
-               Grid.Column="2" Margin="10,5,10,10"/>
+               Grid.Column="2" Margin="10,5,10,10" x:Name="LabelDelete"/>
         
         <Label Content="Quantifier: " HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" Margin="0,5,0,0"/>
         <ComboBox x:Name="ComboBoxQuantifier" Height="30" Width="110" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Margin="0,5,0,0"/>
         <xctk:IntegerUpDown x:Name="NumberPickerQuanitifier" Height="30" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="125,5,15,0" 
-            Grid.Column="1" Value="1" Minimum="1" Maximum="100"/>
+            Grid.Column="1" Value="1" Minimum="0" Maximum="100"/>
         
         <Label Content="Type: " HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" FontWeight="Bold" />
         <ComboBox x:Name="ComboBoxType" Height="30" Width="110" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"

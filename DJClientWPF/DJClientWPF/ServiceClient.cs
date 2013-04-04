@@ -24,6 +24,7 @@ namespace DJClientWPF
         public delegate void SongListHandler(object source, SongListArgs args);
         public delegate void QueueHandler(object source, QueueArgs args);
         public delegate void BannedUserHandler(object source, BannedUserArgs args);
+        public delegate void AchievementHandler(object source, AchievementArgs args);
 
         //Events raised when the calls to the service have completed
         public event ResponseHandler SignUpServiceComplete;
@@ -44,6 +45,11 @@ namespace DJClientWPF
         public event QueueHandler GetQueueComplete;
         public event ResponseHandler PopQueueComplete;
         public event ResponseHandler WaitTimeComplete;
+
+        public event AchievementHandler GetAchievementsComplete;
+        public event ResponseHandler EditAchievementComplete;
+        public event ResponseHandler CreateAchievementComplete;
+        public event ResponseHandler DeleteAchievementComplete;
 
         public event BannedUserHandler GetBannedUsersComplete;
         public event ResponseHandler BanUserComplete;
@@ -495,6 +501,79 @@ namespace DJClientWPF
             {
                 UnbanUserCompelte(this, new ResponseArgs(response, userState));
             }
+        }
+
+        #endregion
+
+        #region Achievement Public Methods
+
+        public void GetAchievementsAsync(long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                GetAchievements(djKey, userState);
+            });
+        }
+
+        public void EditAchievementAsync(Achievement achievement, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                EditAchievement(achievement, djKey, userState);
+            });
+        }
+
+        public void CreateAchievementAsync(Achievement achievement, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                CreateAchievement(achievement, djKey, userState);
+            });
+        }
+
+        public void DeleteAchievementAsync(Achievement achievement, long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+                {
+                    DeleteAchievement(achievement, djKey, userState);
+                });
+        }
+
+        #endregion
+
+        #region Achievement Workers
+
+        private void GetAchievements(long djKey, object userState)
+        {
+            Achievement[] achievements = new Achievement[0];
+            Response response = _client.DJViewAchievements(out achievements, djKey);
+
+            if (GetAchievementsComplete != null)
+                GetAchievementsComplete(this, new AchievementArgs(response, achievements.ToList<Achievement>(), userState));
+        }
+
+        private void EditAchievement(Achievement achievement, long djKey, object userState)
+        {
+            Response response = _client.DJModifyAchievement(achievement, djKey);
+
+            if (EditAchievementComplete != null)
+                EditAchievementComplete(this, new ResponseArgs(response, userState));
+        }
+
+        private void CreateAchievement(Achievement achievement, long djKey, object userState)
+        {
+            Response response = _client.DJAddAchievement(achievement, djKey);
+
+            if (CreateAchievementComplete != null)
+                CreateAchievementComplete(this, new ResponseArgs(response, userState));
+        }
+
+        private void DeleteAchievement(Achievement achievement, long djKey, object userState)
+        {
+            Response response = _client.DJDeleteAchievement(achievement.ID, djKey);
+
+            if (DeleteAchievementComplete != null)
+                DeleteAchievementComplete(this, new ResponseArgs(response, userState));
         }
 
         #endregion

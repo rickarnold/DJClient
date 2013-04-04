@@ -137,6 +137,20 @@ namespace DJClientWPF
         }
     }
 
+    public class AchievementArgs : EventArgs
+    {
+        public Response Response { get; private set; }
+        public List<Achievement> AchievementList { get; private set; }
+        public Object UserState { get; private set; }
+
+        public AchievementArgs(Response response, List<Achievement> achievementList, Object userState)
+        {
+            this.Response = response;
+            this.AchievementList = achievementList;
+            this.UserState = userState;
+        }
+    }
+
     public class DJModelArgs : EventArgs
     {
         public bool Error { get; private set; }

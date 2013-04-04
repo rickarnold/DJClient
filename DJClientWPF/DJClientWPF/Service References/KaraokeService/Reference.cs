@@ -739,6 +739,12 @@ namespace DJClientWPF.KaraokeService {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
+
+        //Code added by me//////////////////////////////////////////////////
+        public override string ToString()
+        {
+            return this.name;
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]

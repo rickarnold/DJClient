@@ -18,6 +18,8 @@ namespace DJClientWPF
 
         private ServiceClient serviceClient;
 
+        #region Events
+
         //Delegates for use in the event handlers
         public delegate void DJModelEventHandler(object source, DJModelArgs args);
         public delegate void EventHandler(object source, EventArgs args);
@@ -47,11 +49,18 @@ namespace DJClientWPF
         public event DJModelEventHandler BanUserComplete;
         public event DJModelEventHandler UnbanUserComplete;
 
+        public event DJModelEventHandler GetAchievementsComplete;
+        public event DJModelEventHandler EditAchievementComplete;
+        public event DJModelEventHandler CreateAchievementComplete;
+        public event DJModelEventHandler DeleteAchievementComplete;
+
         public event DJModelEventHandler QRCodeComplete;
         public event DJModelEventHandler QRNewCodeComplete;
 
         //Event raised when the queue has been updated
         public event EventHandler QueueUpdated;
+
+        #endregion
 
         private DJModel()
         {
@@ -101,6 +110,12 @@ namespace DJClientWPF
             serviceClient.BanUserComplete += BanUserCompleteHandler;
             serviceClient.UnbanUserCompelte += UnbanUserCompelteHandler;
 
+            //Achievment Handlers
+            serviceClient.GetAchievementsComplete += GetAchievementsCompleteHandler;
+            serviceClient.EditAchievementComplete += EditAchievementCompleteHandler;
+            serviceClient.CreateAchievementComplete += CreateAchievementCompleteHandler;
+            serviceClient.DeleteAchievementComplete += DeleteAchievementCompleteHandler;
+
             //QR Management Handlers
             serviceClient.QRCodeComplete += QRCodeCompleteHandler;
             serviceClient.QRNewCodeComplete += QRNewCodeCompleteHandler;
@@ -127,10 +142,10 @@ namespace DJClientWPF
         public Dictionary<string, List<Song>> TitleDictionary { get; set; }
         public SongToPlay CurrentSong { get; set; }
         public List<User> BannedUserList { get; set; }
+        public List<Achievement> AchievementList { get; set; }
         public bool IsLoggedIn { get; private set; }
         public string QRCode { get; private set; }
         public string WaitTime { get; private set; }
-        //public bool HasQueueStringChanged { get; private set; }
         public string QueueString { get { return GetScrollingTextFromQueue(); } }
         public BitmapImage BackgroundImage
         {
@@ -279,6 +294,42 @@ namespace DJClientWPF
                     resultList.Add(new SongSearchResult(song, song.title, song.artist));
             }
 
+            return resultList;
+        }
+
+        //Given a search term find all songs that have either the artist or title that start with the given term
+        public List<SongSearchResult> GetMatchingSongsInSongbook(string term)
+        {
+            List<SongSearchResult> resultList = new List<SongSearchResult>();
+
+            string key = GetKeyForSong(term);
+
+            //If nothing is going to match return the empty list
+            if (!TitleDictionary.ContainsKey(key) && !ArtistDictionary.ContainsKey(key))
+                return resultList;
+
+            List<Song> titleList = new List<Song>();
+            if (TitleDictionary.ContainsKey(key))
+                titleList = TitleDictionary[key];
+            List<Song> artistList = new List<Song>();
+            if (ArtistDictionary.ContainsKey(key))
+                artistList = ArtistDictionary[key];
+
+            foreach (Song song in artistList)
+            {
+                if (song.artist.ToLower().StartsWith(term.ToLower()))
+                    resultList.Add(new SongSearchResult(song, song.artist, song.title));
+            }
+            foreach (Song song in titleList)
+            {
+                if (!artistList.Contains(song))
+                {
+                    if (song.title.ToLower().StartsWith(term.ToLower()))
+                        resultList.Add(new SongSearchResult(song, song.artist, song.title));
+                }
+            }
+
+            resultList.Sort();
             return resultList;
         }
 
@@ -453,6 +504,36 @@ namespace DJClientWPF
         public void UnbanUser(User user)
         {
             serviceClient.UnbanUserAsync(user, this.DJKey, user);
+        }
+
+        #endregion
+
+        #region Achievement Management
+
+        public void GetAllAchievements()
+        {
+            if (this.AchievementList.Count == 0)
+                serviceClient.GetAchievementsAsync(this.DJKey, null);
+            else
+            {
+                if (GetAchievementsComplete != null)
+                    GetAchievementsComplete(this, new DJModelArgs(false, "", null));
+            }
+        }
+
+        public void EditAchievement(Achievement achievement)
+        {
+            serviceClient.EditAchievementAsync(achievement, this.DJKey, achievement);
+        }
+
+        public void CreateAchievement(Achievement achievement)
+        {
+            serviceClient.DeleteAchievementAsync(achievement, this.DJKey, achievement);
+        }
+
+        public void DeleteAchievement(Achievement achievement)
+        {
+            serviceClient.DeleteAchievementAsync(achievement, this.DJKey, achievement);
         }
 
         #endregion
@@ -907,6 +988,97 @@ namespace DJClientWPF
 
         #endregion
 
+        #region Achievement Management Event Handlers
+
+        private void GetAchievementsCompleteHandler(object source, AchievementArgs args)
+        {
+            if (!args.Response.error)
+            {
+                this.AchievementList = args.AchievementList;
+            }
+            //Error occurred in the service call
+            else
+            {
+
+            }
+
+            if (GetAchievementsComplete != null)
+                GetAchievementsComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+        }
+
+        private void EditAchievementCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                Achievement edited = args.UserState as Achievement;
+
+                //Find this achievement in the list and update
+                foreach (Achievement achievement in this.AchievementList)
+                {
+                    if (edited.ID == achievement.ID)
+                    {
+                        achievement.description = edited.description;
+                        achievement.image = edited.image;
+                        achievement.isPermanant = edited.isPermanant;
+                        achievement.name = edited.name;
+                        achievement.selectList = edited.selectList;
+                        achievement.statementsAnd = edited.statementsAnd;
+                        achievement.visible = edited.visible;
+                        break;
+                    }
+                }
+            }
+            //Error occurred in the service call
+            else
+            {
+
+            }
+
+            if (EditAchievementComplete != null)
+                EditAchievementComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+        }
+
+        private void CreateAchievementCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                //Store the new achievement ID and add to the achievement list
+                Achievement achievement = (Achievement)args.UserState;
+                achievement.ID = args.Response.result;
+
+                this.AchievementList.Add(achievement);
+            }
+            //Error occurred in the service call
+            else
+            {
+
+            }
+
+            if (CreateAchievementComplete != null)
+                CreateAchievementComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+        }
+
+        private void DeleteAchievementCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                Achievement achievement = (Achievement)args.UserState;
+
+                if (this.AchievementList.Contains(achievement))
+                    this.AchievementList.Remove(achievement);
+            }
+            //Error occurred in the service call
+            else
+            {
+
+            }
+
+            if (DeleteAchievementComplete != null)
+                DeleteAchievementComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+        }
+
+        #endregion
+
         #region QR Methods
 
         public void GetQRCode()
@@ -965,7 +1137,7 @@ namespace DJClientWPF
         #endregion
     }
 
-    public class SongSearchResult
+    public class SongSearchResult : IComparable<SongSearchResult>
     {
         public Song Song { get; set; }
         public string MainResult { get; set; }
@@ -976,6 +1148,16 @@ namespace DJClientWPF
             this.Song = song;
             this.MainResult = mainResult;
             this.SecondaryResult = secondaryResult;
+        }
+
+        public int CompareTo(SongSearchResult other)
+        {
+            if (this.MainResult.Equals(other.MainResult))
+            {
+                return this.SecondaryResult.CompareTo(other.SecondaryResult);
+            }
+            else
+                return this.MainResult.CompareTo(other.MainResult);
         }
     }
 }

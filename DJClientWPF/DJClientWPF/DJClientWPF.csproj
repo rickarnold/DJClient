@@ -83,8 +83,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Achievements.xaml.cs">
-      <DependentUpon>Achievements.xaml</DependentUpon>
+    <Compile Include="AchievementForm.xaml.cs">
+      <DependentUpon>AchievementForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="AddSongRequestControl.xaml.cs">
       <DependentUpon>AddSongRequestControl.xaml</DependentUpon>
@@ -138,7 +138,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="SongToPlay.cs" />
     <Compile Include="Timer.cs" />
-    <Page Include="Achievements.xaml">
+    <Page Include="AchievementForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -283,6 +283,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\KaraokeService\DJ1.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Image0.png" />
+    <Resource Include="Images\Image1.png" />
+    <Resource Include="Images\Image2.png" />
+    <Resource Include="Images\Image3.png" />
+    <Resource Include="Images\Image4.png" />
+    <Resource Include="Images\Image5.png" />
+    <Resource Include="Images\Image6.png" />
+    <Resource Include="Images\Image7.png" />
+    <Resource Include="Images\Image8.png" />
+    <Resource Include="Images\Image9.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

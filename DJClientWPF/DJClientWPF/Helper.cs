@@ -58,7 +58,7 @@ namespace DJClientWPF
         }
 
         //Given a hex string for a color return a Color object with the same color.  Returns white if an invalid string is provided
-        public static System.Windows.Media.Color GetColorFromStirng(string colorString)
+        public static System.Windows.Media.Color GetColorFromString(string colorString)
         {
             System.Windows.Media.Color color = System.Windows.Media.Colors.White;
             try
@@ -67,7 +67,7 @@ namespace DJClientWPF
             }
             catch
             {
-                //Just return white
+                //Just return white if there is an error
             }
 
             return color;

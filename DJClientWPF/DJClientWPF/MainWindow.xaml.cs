@@ -525,7 +525,7 @@ namespace DJClientWPF
 
         private void MenuItemAchievements_Click(object sender, RoutedEventArgs e)
         {
-            Achivements form = new Achivements();
+            AchievementForm form = new AchievementForm();
             form.Show();
         }
 

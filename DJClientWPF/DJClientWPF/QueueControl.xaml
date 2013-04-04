@@ -24,12 +24,6 @@
                Foreground="#4F4F4F" MouseLeftButtonDown="LabelExpand_MouseLeftButtonDown"/>
 
         <Border  VerticalAlignment="Bottom" Height="2" Margin="10,0,10,0" BorderBrush="Silver"/>
-        
-        <!-- List View of songs>
-        <ListBox x:Name="ListBoxSongs" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1"
-                         ItemContainerStyle="{StaticResource ContainerStyle}" BorderThickness="0" Margin="15,0,0,0" ScrollViewer.CanContentScroll="False">
-
-        </ListBox-->
 
         <ItemsControl x:Name="ListBoxSongs" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" BorderThickness="0" Margin="15,0,0,0">
             

@@ -23,5 +23,9 @@
             </Style.Resources>
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>
+        
+        <Style TargetType="ItemsControl" x:Key="ItemsControlStyle">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
     </Application.Resources>
 </Application>
