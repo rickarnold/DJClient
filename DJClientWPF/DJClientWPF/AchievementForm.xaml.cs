@@ -22,6 +22,8 @@ namespace DJClientWPF
     {
         public const string IMAGE_PATH = @"..\..\Images\";  //Path where achievement images are stored
 
+        public delegate void InvokeDelegate();
+
         //Lists used for binding to list boxes
         ObservableCollection<Achievement> achievementList;
         ObservableCollection<ConditionControl> currentControlsList;
@@ -63,40 +65,54 @@ namespace DJClientWPF
         //Model has retrieved list of all achievements from the service
         private void GetAchievementsCompleteHandler(object source, DJModelArgs args)
         {
-            UpdateCurrentAchievementList();
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                UpdateCurrentAchievementList();
 
-            //Set the first achievement as selected
-            if (achievementList.Count > 0)
-                ListBoxCurrentAchievements.SelectedIndex = 0;
+                //Set the first achievement as selected
+                if (achievementList.Count > 0)
+                    ListBoxCurrentAchievements.SelectedIndex = 0;
+            }));
         }
 
         //Model has finished editing this achievement
         private void EditAchievementCompleteHandler(object source, DJModelArgs args)
         {
-            UpdateCurrentAchievementList();
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                UpdateCurrentAchievementList();
 
-            //Edit complete so exit edit mode
-            MakeAchievementUneditable();
-            EnableEditControls();
-            _isEditing = false;
+                //Edit complete so exit edit mode
+                MakeAchievementUneditable();
+                EnableEditControls();
+                _isEditing = false;
+            }));
         }
 
         //Model has finished deleting the given achievement, get the updated achievement list
         private void DeleteAchievementCompleteHandler(object source, DJModelArgs args)
         {
-            UpdateCurrentAchievementList();
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                UpdateCurrentAchievementList();
 
-            ButtonCurrentDelete.IsEnabled = true;
-            ButtonCurrentEdit.IsEnabled = true;
-            ListBoxCurrentAchievements.IsEnabled = true;
+                ButtonCurrentDelete.IsEnabled = true;
+                ButtonCurrentEdit.IsEnabled = true;
+                ListBoxCurrentAchievements.IsEnabled = true;
+            }));
+
         }
 
         //Model has finished creating the new achievement
         private void CreateAchievementCompleteHandler(object source, DJModelArgs args)
         {
-            UpdateCurrentAchievementList();
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
+                UpdateCurrentAchievementList();
+                ClearNewAchievementForm();
+                EnableNewAchievementForm();
+            }));
 
-            ClearNewAchievementForm();
         }
 
         #endregion
@@ -107,7 +123,8 @@ namespace DJClientWPF
         private void ListBoxCurrentAchievements_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Achievement achievement = ListBoxCurrentAchievements.SelectedItem as Achievement;
-            DisplayAchievement(achievement);
+            if (achievement != null)
+                DisplayAchievement(achievement);
         }
 
         //Given an achievement object, fill in the appropriate fields of the current achievement form
@@ -129,7 +146,7 @@ namespace DJClientWPF
             }
 
             ComboBoxCurrentImage.SelectedIndex = GetIndexFromAchievementImage(achievement.image);
-            
+
             CheckBoxCurrentPublic.IsChecked = achievement.visible;
 
             //Create condition controls as well
@@ -140,10 +157,12 @@ namespace DJClientWPF
                 control.IsEditable = _isEditing;
                 control.DeleteControl += CurrentConditionControlDeleted;
 
-                if (achievement.selectList.Length > 1)
+                if (achievement.selectList.Length > 1 && _isEditing)
                     control.AllowDelete();
                 else
                     control.UnallowDelete();
+
+                currentControlsList.Add(control);
             }
         }
 
@@ -334,7 +353,13 @@ namespace DJClientWPF
 
             //Set the conditon controls as editable as well
             foreach (ConditionControl control in currentControlsList)
+            {
                 control.IsEditable = true;
+                if (currentControlsList.Count > 1)
+                    control.AllowDelete();
+                else
+                    control.UnallowDelete();
+            }
         }
 
         //Make the currently selected achievement uneditable
@@ -409,6 +434,11 @@ namespace DJClientWPF
                     allValid = false;
             }
 
+            if (!allValid)
+                return;
+
+            DisableNewAchievementForm();
+
             Achievement achievement = new Achievement();
 
             //Get a list of conditional control AchievementSelect objects
@@ -430,8 +460,8 @@ namespace DJClientWPF
 
             achievement.visible = (bool)CheckBoxAddNewPublic.IsChecked;
 
-            if (!allValid)
-                return;
+            //Submit the new achievement
+            model.CreateAchievement(achievement);
         }
 
         //User clicked to add a new condition to the new achievement condition list
@@ -453,7 +483,7 @@ namespace DJClientWPF
 
             switch (index)
             {
-                case(0):
+                case (0):
                     ImageAddNew.Source = Helper.OpenBitmapImage(IMAGE_PATH + @"Image0.png");
                     break;
                 case (1):
@@ -524,7 +554,31 @@ namespace DJClientWPF
             ResetNewAchievementConditionControls();
         }
 
-        #endregion        
+        private void DisableNewAchievementForm()
+        {
+            foreach (ConditionControl control in newControlsList)
+                control.IsEditable = false;
+
+            TextBoxAddNewDescription.IsEnabled = false;
+            TextBoxAddNewName.IsEnabled = false;
+            ComboBoxAddNewAndOr.IsEnabled = false;
+            ComboBoxAddNewImage.IsEnabled = false;
+            CheckBoxAddNewPublic.IsEnabled = false;
+        }
+
+        private void EnableNewAchievementForm()
+        {
+            foreach (ConditionControl control in newControlsList)
+                control.IsEditable = true;
+
+            TextBoxAddNewDescription.IsEnabled = true;
+            TextBoxAddNewName.IsEnabled = true;
+            ComboBoxAddNewAndOr.IsEnabled = true;
+            ComboBoxAddNewImage.IsEnabled = true;
+            CheckBoxAddNewPublic.IsEnabled = true;
+        }
+
+        #endregion
 
         #region Private Helper Methods
 
@@ -563,6 +617,9 @@ namespace DJClientWPF
 
             foreach (Achievement toDelete in achievementsToDelete)
                 achievementList.Remove(toDelete);
+
+            if (ListBoxCurrentAchievements.SelectedItem == null && achievementList.Count > 0)
+                ListBoxCurrentAchievements.SelectedIndex = 0;
         }
 
         //Given an AchievementImage enum, get the index that it should reside at in the combobox

@@ -45,7 +45,7 @@
                 <Separator/>
                 <MenuItem x:Name="MenuItemUserManagement" Header="User Management" Click="MenuItemUserManagement_Click"/>
                 <Separator />
-                <MenuItem x:Name="MenuItemAchievements" Header="Achievements" Click="MenuItemAchievements_Click"/>
+                <MenuItem x:Name="MenuItemAchievements" Header="Achievements" Click="MenuItemAchievements_Click" IsEnabled="False"/>
             </MenuItem>
             <MenuItem Header="_Help" >
                 <MenuItem x:Name="MenuItemTestQueue" Header="Get Test Queue" Click="MenuItemTestQueue_Click"/>

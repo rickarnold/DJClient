@@ -71,7 +71,9 @@ namespace DJClientWPF
             this.SongRequestQueue = new List<queueSinger>();
             this.ArtistDictionary = new Dictionary<string, List<Song>>();
             this.TitleDictionary = new Dictionary<string, List<Song>>();
+            this.SongDictionary = new Dictionary<int, Song>();
             this.BannedUserList = new List<User>();
+            this.AchievementList = new List<Achievement>();
 
             this.Settings = Settings.GetSettingsFromDisk();
 
@@ -140,6 +142,7 @@ namespace DJClientWPF
         public List<queueSinger> SongRequestQueue { get; set; }
         public Dictionary<string, List<Song>> ArtistDictionary { get; set; }
         public Dictionary<string, List<Song>> TitleDictionary { get; set; }
+        public Dictionary<int, Song> SongDictionary { get; set; }
         public SongToPlay CurrentSong { get; set; }
         public List<User> BannedUserList { get; set; }
         public List<Achievement> AchievementList { get; set; }
@@ -528,7 +531,7 @@ namespace DJClientWPF
 
         public void CreateAchievement(Achievement achievement)
         {
-            serviceClient.DeleteAchievementAsync(achievement, this.DJKey, achievement);
+            serviceClient.CreateAchievementAsync(achievement, this.DJKey, achievement);
         }
 
         public void DeleteAchievement(Achievement achievement)
@@ -681,6 +684,10 @@ namespace DJClientWPF
                     List<Song> titleList = TitleDictionary[titleKey];
                     titleList.Add(song);
                     titleList.Sort(CompareSongByTitle);
+
+                    //Add the song to the song dictionary
+                    if (!SongDictionary.ContainsKey(song.ID))
+                        SongDictionary.Add(song.ID, song);
                 }
             }
             //Error occurred
@@ -1158,6 +1165,11 @@ namespace DJClientWPF
             }
             else
                 return this.MainResult.CompareTo(other.MainResult);
+        }
+
+        public override string ToString()
+        {
+            return MainResult + " - " + SecondaryResult;
         }
     }
 }

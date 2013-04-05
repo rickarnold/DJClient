@@ -23,8 +23,8 @@
                 BorderBrush="Silver" Margin="2,2,2,2" x:Name="BorderBackground">
             <Border.Background>
                 <LinearGradientBrush StartPoint=".5, 0" EndPoint=".5, 1">
-                    <GradientStop x:Name="GradientStop1" Color="#88909090" Offset="0"/>
-                    <GradientStop x:Name="GradientStop2" Color="#88E0E0E0" Offset="1"/>
+                    <GradientStop x:Name="GradientStop1" Color="#55909090" Offset="0"/>
+                    <GradientStop x:Name="GradientStop2" Color="#55E0E0E0" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
@@ -42,7 +42,7 @@
                   Grid.ColumnSpan="2" SelectionChanged="ComboBoxType_SelectionChanged"/>
         <controls:AutoCompleteBox x:Name="TextBoxTypeValue" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="125,0,15,0"
                   Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Populating="TextBoxTypeValue_Populating" IsTextCompletionEnabled="True" MinimumPrefixLength="3"
-                  />
+                  FilterMode="Contains"/>
         
         <Label Content="Date: " HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" FontWeight="Bold"/>
         <CheckBox Content="Start Date:" x:Name="CheckBoxDateStart" Checked="CheckBoxDateStart_Checked" VerticalAlignment="Center"

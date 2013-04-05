@@ -44,15 +44,22 @@
                         </GroupBox.Header>
                         <ListBox x:Name="ListBoxCurrentAchievements" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,10,10,10" BorderThickness="0"
                              ItemContainerStyle="{StaticResource ContainerStyle}" SelectionChanged="ListBoxCurrentAchievements_SelectionChanged" SelectionMode="Single">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1,1,1,1" BorderThickness="2" CornerRadius="8"
+                                                BorderBrush="Silver"/>
+                                        <Label Content="{Binding Path=name}" Margin="5,0,0,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
                         </ListBox>
                     </GroupBox>
-                    
-                    <!--Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="8" BorderThickness="2"
-                                    BorderBrush="Silver" Margin="5,5,5,5"/-->
                     
                     <GroupBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" BorderThickness="2" BorderBrush="Silver" 
                               FontWeight="Bold" Foreground="#2ED7E2">
                         <GroupBox.Header>
+
                             Achievement Details
                         </GroupBox.Header>
                         <Grid>
@@ -132,7 +139,7 @@
                         <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
                     
-                    <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" BorderThickness="2" BorderBrush="Silver" FontWeight="Bold"
+                    <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,0,5,5" BorderThickness="2" BorderBrush="Silver" FontWeight="Bold"
                               Foreground="#2ED7E2">
                         <GroupBox.Header>
                             New Achievement Details

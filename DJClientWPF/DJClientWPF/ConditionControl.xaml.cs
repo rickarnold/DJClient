@@ -44,7 +44,9 @@ namespace DJClientWPF
             }
         }
 
+        private AchievementSelect _select;
         private bool _isEditable = false;
+        private bool _allowDelete = false;
 
         //Constructor for a new AchievementSelect
         public ConditionControl()
@@ -70,6 +72,8 @@ namespace DJClientWPF
             FillQuanitifierCombobox();
 
             FillInAchievementSelect(select);
+
+            _select = select;
         }
 
         //Get the AchievementSelect object from the control based off the values entered by the user
@@ -78,15 +82,19 @@ namespace DJClientWPF
             AchievementSelect select = new AchievementSelect();
 
             select.clauseKeyword = ((ClauseKeywordItem)ComboBoxType.SelectedItem).ClauseKeyword;
-            select.clauseValue = TextBoxTypeValue.Text.Trim();
+            if (select.clauseKeyword == ClauseKeyword.SongID)
+                select.clauseValue = ((SongSearchResult)TextBoxTypeValue.SelectedItem).Song.ID.ToString();
+            else
+                select.clauseValue = TextBoxTypeValue.Text.Trim();
 
             select.selectKeyword = ((SelectKeywordItem)ComboBoxQuantifier.SelectedItem).SelectKeyword;
             select.selectValue = NumberPickerQuanitifier.Value.ToString();
 
+
             if ((bool)CheckBoxDateStart.IsChecked)
                 select.startDate = (DateTime)DatePickerStart.SelectedDate;
             else
-                select.startDate = DateTime.MinValue;
+                select.startDate = new DateTime(0);
 
             if ((bool)CheckBoxDateEnd.IsChecked)
                 select.endDate = (DateTime)DatePickerEnd.SelectedDate;
@@ -106,16 +114,20 @@ namespace DJClientWPF
             if (ComboBoxType.SelectedItem == null)
                 isValid = false;
             if (TextBoxTypeValue.Text.Trim().Equals(""))
+            {
                 isValid = false;
+                ShowItemAsError(TextBoxTypeValue);
+            }
             if ((bool)CheckBoxDateStart.IsChecked && DatePickerStart.SelectedDate == null)
+            {
                 isValid = false;
+                ShowItemAsError(DatePickerStart);
+            }
             if ((bool)CheckBoxDateEnd.IsChecked && DatePickerEnd.SelectedDate == null)
+            {
                 isValid = false;
-
-            if (isValid)
-                MarkAsValid();
-            else
-                MarkAsInvalid();
+                ShowItemAsError(DatePickerEnd);
+            }
 
             return isValid;
         }
@@ -124,84 +136,79 @@ namespace DJClientWPF
         public void UnallowDelete()
         {
             LabelDelete.Visibility = Visibility.Collapsed;
+            _allowDelete = false;
         }
 
         //Set the X delete button as visible
         public void AllowDelete()
         {
             LabelDelete.Visibility = Visibility.Visible;
+            _allowDelete = true;
         }
 
         //Fill in the appropriate AchievementSelect data to the controls
         private void FillInAchievementSelect(AchievementSelect select)
         {
-            ComboBoxQuantifier.SelectedValue = select.selectKeyword.ToString();
+            ComboBoxQuantifier.SelectedIndex = GetQuantifierIndex(select.selectKeyword);
             NumberPickerQuanitifier.Value = int.Parse(select.selectValue);
 
-            ComboBoxType.SelectedValue = select.clauseKeyword.ToString();
-            TextBoxTypeValue.Text = select.clauseValue;
+            ComboBoxType.SelectedIndex = GetClauseIndex(select.clauseKeyword);
+            if (select.clauseKeyword == ClauseKeyword.SongID)
+            {
+                int songID = int.Parse(select.clauseValue);
+                Song song = DJModel.Instance.SongDictionary[songID];
+                List<SongSearchResult> itemList = new List<SongSearchResult>();
+                SongSearchResult result = new SongSearchResult(song, song.artist, song.title);
+                itemList.Add(result);
+                TextBoxTypeValue.ItemsSource = itemList;
+                TextBoxTypeValue.SelectedItem = result;
+                //TextBoxTypeValue.Text = song.artist + " - " + song.title;
+            }
+            else
+                TextBoxTypeValue.Text = select.clauseValue;
 
-            if (select.startDate.Equals(DateTime.MinValue))
+            if (select.startDate.Equals(new DateTime(1900, 1, 1)))
             {
                 CheckBoxDateStart.IsChecked = false;
                 DatePickerStart.DisplayDate = DateTime.Today;
+                DatePickerStart.SelectedDate = null;
             }
             else
             {
                 CheckBoxDateStart.IsChecked = true;
-                DatePickerStart.DisplayDate = select.startDate;
+                DatePickerStart.SelectedDate = select.startDate;
             }
 
             if (select.endDate.Equals(DateTime.MaxValue))
             {
                 CheckBoxDateEnd.IsChecked = false;
                 DatePickerEnd.DisplayDate = DateTime.Today;
+                DatePickerEnd.SelectedDate = null;
             }
             else
             {
                 CheckBoxDateEnd.IsChecked = true;
-                DatePickerEnd.DisplayDate = select.endDate;
+                DatePickerEnd.SelectedDate = select.endDate;
             }
         }
 
-        private void MarkAsInvalid()
+        //Flash the background color of a control to red and back to white to show an error
+        private void ShowItemAsError(UIElement textBox)
         {
-            //BorderBackground.Background = new LinearGradientBrush(Helper.GetColorFromStirng("#88FF9090"), Helper.GetColorFromStirng("#88FFE0E0"),
-            //                                                            new Point(0.5, 0), new Point(0.5, 1));
-            //<GradientStop x:Name="GradientStop1" Color="#88909090" Offset="0"/>
-            //<GradientStop x:Name="GradientStop2" Color="#88E0E0E0" Offset="1"/>
-
-            //Animate the background to flash red
             ColorAnimation animation = new ColorAnimation();
-            animation.From = Helper.GetColorFromString("#88909090");
-            animation.To = Helper.GetColorFromString("#88FF9090");
+            animation.From = Colors.White;
+            animation.To = Color.FromArgb(255, 255, 125, 125);
             animation.Duration = new Duration(TimeSpan.FromMilliseconds(500));
             animation.AutoReverse = true;
-
-            ColorAnimation animation2 = new ColorAnimation();
-            animation2.From = Helper.GetColorFromString("#88E0E0E0");
-            animation2.To = Helper.GetColorFromString("#88FFE0E0");
-            animation2.Duration = new Duration(TimeSpan.FromMilliseconds(500));
-            animation2.AutoReverse = true;
 
             Storyboard s = new Storyboard();
             s.Duration = new Duration(new TimeSpan(0, 0, 1));
             s.Children.Add(animation);
-            s.Children.Add(animation2);
 
-            Storyboard.SetTarget(animation, GradientStop1);
-            Storyboard.SetTargetProperty(animation, new PropertyPath("GradientStop.Color"));//GradientStop.ColorProperty));
+            Storyboard.SetTarget(animation, textBox);
+            Storyboard.SetTargetProperty(animation, new PropertyPath("Background.Color"));
 
-            Storyboard.SetTarget(animation2, GradientStop2);
-            Storyboard.SetTargetProperty(animation2, new PropertyPath("GradientStop.Color"));//(GradientStop.ColorProperty));
-
-            s.Begin(this);
-        }
-
-        private void MarkAsValid()
-        {
-            BorderBackground.Background = new LinearGradientBrush(Helper.GetColorFromString("#88909090"), Helper.GetColorFromString("#88E0E0E0"),
-                                                                        new Point(0.5, 0), new Point(0.5, 1));
+            s.Begin();
         }
 
         #region Combobox Methods
@@ -233,6 +240,44 @@ namespace DJClientWPF
             TextBoxTypeValue.Text = "";
         }
 
+        private int GetQuantifierIndex(SelectKeyword keyword)
+        {
+            switch (keyword)
+            {
+                case (SelectKeyword.CountEqual):
+                    return 0;
+                case (SelectKeyword.CountGreaterThan):
+                    return 2;
+                case (SelectKeyword.CountLessThan):
+                    return 3;
+                case (SelectKeyword.CountNotEqual):
+                    return 1;
+                case (SelectKeyword.Max):
+                    return 4;
+                case (SelectKeyword.Min):
+                    return 5;
+                case (SelectKeyword.Newest):
+                    return 6;
+                case (SelectKeyword.Oldest):
+                    return 7;
+            }
+            return 0;
+        }
+
+        private int GetClauseIndex(ClauseKeyword keyword)
+        {
+            switch (keyword)
+            {
+                case (ClauseKeyword.Artist):
+                    return 0;
+                case (ClauseKeyword.Title):
+                    return 1;
+                case (ClauseKeyword.SongID):
+                    return 2;
+            }
+            return 0;
+        }
+
         #endregion
 
         #region Editable Methods
@@ -245,10 +290,16 @@ namespace DJClientWPF
             TextBoxTypeValue.IsEnabled = true;
             CheckBoxDateStart.IsEnabled = true;
             CheckBoxDateEnd.IsEnabled = true;
+
             if ((bool)CheckBoxDateStart.IsChecked)
                 DatePickerStart.IsEnabled = true;
             if ((bool)CheckBoxDateEnd.IsChecked)
                 DatePickerEnd.IsEnabled = true;
+
+            if (_allowDelete)
+                LabelDelete.Visibility = Visibility.Visible;
+            else
+                LabelDelete.Visibility = Visibility.Collapsed;
         }
 
         private void SetControlsAsNotEditable()
@@ -261,6 +312,8 @@ namespace DJClientWPF
             CheckBoxDateEnd.IsEnabled = false;
             DatePickerStart.IsEnabled = false;
             DatePickerEnd.IsEnabled = false;
+
+            LabelDelete.Visibility = Visibility.Collapsed;
         }
 
         #endregion
@@ -330,13 +383,8 @@ namespace DJClientWPF
                     break;
                 case (ClauseKeyword.SongID):
                     searchList = DJModel.Instance.GetMatchingSongsInSongbook(term);
-                    foreach (SongSearchResult result in searchList)
-                    {
-                        string r = result.MainResult + " - " + result.SecondaryResult;
-                        if (!resultList.Contains(r))
-                            resultList.Add(r);
-                    }
-                    break;
+                    TextBoxTypeValue.ItemsSource = searchList;
+                    return;
             }
 
             resultList.Sort();
@@ -345,6 +393,6 @@ namespace DJClientWPF
             e.Handled = true;
         }
 
-        #endregion      
+        #endregion
     }
 }

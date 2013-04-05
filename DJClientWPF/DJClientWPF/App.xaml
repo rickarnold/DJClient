@@ -24,6 +24,13 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>
         
+        <Style TargetType="ListBox">
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="White"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="White"/>
+            </Style.Resources>
+        </Style>
+        
         <Style TargetType="ItemsControl" x:Key="ItemsControlStyle">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>

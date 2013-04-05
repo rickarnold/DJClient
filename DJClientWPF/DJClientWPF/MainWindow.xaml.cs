@@ -348,6 +348,7 @@ namespace DJClientWPF
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
             {
                 ButtonQueueAdd.IsEnabled = true;
+                MenuItemAchievements.IsEnabled = true;
             }));
         }
 
