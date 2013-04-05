@@ -183,6 +183,19 @@ namespace DJClientWPF
             }
         }
 
+        //If the user has deleted the last achievement we need to clear out the form
+        private void ClearCurrentAchievements()
+        {
+            LabelCurrentAndOr.Content = "";
+            LabelCurrentDescription.Content = "";
+            LabelCurrentName.Content = "";
+
+            TextBoxCurrentDescription.Text = "";
+            TextBoxCurrentName.Text = "";
+
+            currentControlsList.Clear();
+        }
+
         #endregion
 
         #region Edit Achievement Methods
@@ -620,6 +633,10 @@ namespace DJClientWPF
 
             if (ListBoxCurrentAchievements.SelectedItem == null && achievementList.Count > 0)
                 ListBoxCurrentAchievements.SelectedIndex = 0;
+            else if (ListBoxCurrentAchievements.SelectedItem != null)
+                DisplayAchievement(ListBoxCurrentAchievements.SelectedItem as Achievement);
+            else if (achievementList.Count == 0)
+                ClearCurrentAchievements();
         }
 
         //Given an AchievementImage enum, get the index that it should reside at in the combobox

@@ -94,7 +94,7 @@ namespace DJClientWPF
             if ((bool)CheckBoxDateStart.IsChecked)
                 select.startDate = (DateTime)DatePickerStart.SelectedDate;
             else
-                select.startDate = new DateTime(0);
+                select.startDate = new DateTime(1980, 1, 1);
 
             if ((bool)CheckBoxDateEnd.IsChecked)
                 select.endDate = (DateTime)DatePickerEnd.SelectedDate;
@@ -162,12 +162,11 @@ namespace DJClientWPF
                 itemList.Add(result);
                 TextBoxTypeValue.ItemsSource = itemList;
                 TextBoxTypeValue.SelectedItem = result;
-                //TextBoxTypeValue.Text = song.artist + " - " + song.title;
             }
             else
                 TextBoxTypeValue.Text = select.clauseValue;
 
-            if (select.startDate.Equals(new DateTime(1900, 1, 1)))
+            if (select.startDate.Equals(new DateTime(1980, 1, 1)))
             {
                 CheckBoxDateStart.IsChecked = false;
                 DatePickerStart.DisplayDate = DateTime.Today;

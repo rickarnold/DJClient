@@ -47,7 +47,6 @@ namespace DJClientWPF
         private List<queueSinger> queueList;
         private ObservableCollection<QueueControl> queueControlList;
         private ObservableCollection<FillerMusicControl> fillerList;
-        private bool isPlaying = false;
         private bool showProgressRemaining = false;
         private int fillerSelected = -1;
         private bool songRequestOpen = false;
@@ -166,7 +165,6 @@ namespace DJClientWPF
                 //Close all open windows
                 for (int intCounter = App.Current.Windows.Count - 1; intCounter >= 0; intCounter--)
                     App.Current.Windows[intCounter].Close();
-                //this.Close();
             }));
         }
 
@@ -403,10 +401,10 @@ namespace DJClientWPF
         //User clicked play.  Begin playback of the cued up karaoke song or unpause a currently paused song.
         private void ButtonPlay_Click(object sender, RoutedEventArgs e)
         {
-            if (!isPlaying)
+            if (playState == PlayState.Paused || playState == PlayState.WaitingForSinger)
             {
                 karaokePlayer.Play();
-                isPlaying = true;
+                playState = PlayState.PlayingSong;
 
                 LabelNowPlaying.Foreground = new SolidColorBrush(Color.FromArgb(255, 46, 215, 226));
                 LabelNowSinging.Foreground = new SolidColorBrush(Color.FromArgb(255, 46, 215, 226));
@@ -420,26 +418,31 @@ namespace DJClientWPF
         //User clicked pause.  Pause the playback of any currently playing karaoke song.
         private void ButtonPause_Click(object sender, RoutedEventArgs e)
         {
-            if (isPlaying)
+            if (playState == PlayState.PlayingSong) 
             {
                 karaokePlayer.Pause();
-                isPlaying = false;
+                playState = PlayState.Paused;
             }
-            else
+            else if (playState == PlayState.Paused)
+            {
                 karaokePlayer.Play();
+                playState = PlayState.PlayingSong;
+            }
         }
 
         //User clicked next.  End the playback of any current karaoke song and move to the next singer.
         private void ButtonNext_Click(object sender, RoutedEventArgs e)
         {
+            if (playState == PlayState.NoSession)
+                return;
+
             //Currently playing so stop and move onto next song
-            if (isPlaying)
+            if (playState == PlayState.PlayingSong || playState == PlayState.Paused)
             {
-                isPlaying = false;
                 karaokePlayer.Stop();
             }
             //Could be skipping a singer, check with user
-            else if (model.CurrentSong != null)
+            else if (playState == PlayState.WaitingForSinger)
             {
                 MessageBoxResult result = MessageBox.Show("Are you sure you wish to skip this singer?\n\n" + model.CurrentSong.User.userName + "\n"
                     + model.CurrentSong.Song.artist + " - " + model.CurrentSong.Song.title, "Are You Sure?", MessageBoxButton.OKCancel);
@@ -447,6 +450,7 @@ namespace DJClientWPF
                     return;
             }
 
+            playState = PlayState.WaitingForSinger;
             SongToPlay songToPlay = model.GetNextSongRequest();
 
             if (songToPlay != null)
@@ -458,7 +462,11 @@ namespace DJClientWPF
         //User clicked restart.  If a karaoke song is currently playing or paused, restart the song from the beginning.
         private void ButtonRestart_Click(object sender, RoutedEventArgs e)
         {
-            karaokePlayer.Restart();
+            if (playState == PlayState.Paused || playState == PlayState.PlayingSong)
+            {
+                karaokePlayer.Restart();
+                playState = PlayState.PlayingSong;
+            }
         }
 
         //A new singer is next and readying to sing.  Show the background image in the second window and update all information.
@@ -700,6 +708,13 @@ namespace DJClientWPF
                     }
                     model.Logout();
                 }
+                e.Cancel = true;
+            }
+            else
+            {
+                //Close all open windows except for the main window
+                for (int intCounter = App.Current.Windows.Count - 1; intCounter >= 1; intCounter--)
+                    App.Current.Windows[intCounter].Close();
             }
         }
 

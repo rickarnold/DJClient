@@ -23,8 +23,8 @@
                 BorderBrush="Silver" Margin="2,2,2,2" x:Name="BorderBackground">
             <Border.Background>
                 <LinearGradientBrush StartPoint=".5, 0" EndPoint=".5, 1">
-                    <GradientStop x:Name="GradientStop1" Color="#55909090" Offset="0"/>
-                    <GradientStop x:Name="GradientStop2" Color="#55E0E0E0" Offset="1"/>
+                    <GradientStop x:Name="GradientStop1" Color="#30909090" Offset="0"/>
+                    <GradientStop x:Name="GradientStop2" Color="#30E0E0E0" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
