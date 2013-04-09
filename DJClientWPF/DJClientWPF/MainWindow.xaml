@@ -94,8 +94,8 @@
                FontSize="24" FontWeight="Bold" Opacity=".25"/>
 
         <!-- CDG Video-->
-        <GroupBox Grid.Row="3" Grid.ColumnSpan="5" Margin="10,5,10,5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="230" Width="310" FontSize="16"
-                  FontWeight="Bold" x:Name="GroupBoxCDG" Opacity="0.25" BorderThickness="3" Foreground="#2ED7E2">
+        <GroupBox Grid.Row="3" Grid.ColumnSpan="5" Margin="10,5,10,5" HorizontalAlignment="Center" VerticalAlignment="Top" Height="230" Width="310"
+                  x:Name="GroupBoxCDG" Opacity="0.25" >
             <GroupBox.Header>
                 Second Display
             </GroupBox.Header>
@@ -104,7 +104,7 @@
 
         <!-- Singer Queue-->
         <GroupBox Grid.Row="2" Grid.RowSpan="4" Grid.Column="5" Grid.ColumnSpan="5" Margin="10,5,10,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  FontSize="16" FontWeight="Bold" Opacity=".25" x:Name="GroupBoxQueue" BorderThickness="3" Foreground="#2ED7E2">
+                  Opacity=".25" x:Name="GroupBoxQueue">
             <GroupBox.Header>
                 Singer Queue
             </GroupBox.Header>
@@ -125,9 +125,7 @@
                 <Label x:Name="LabelWaitTime" Margin="4,0,5,0" FontWeight="Bold" FontSize="24" Content="0:00:00" HorizontalAlignment="Right" Grid.ColumnSpan="4"/>
                 
                 <ListBox x:Name="ListBoxSongQueue" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4" Grid.Row="1"
-                         ItemContainerStyle="{StaticResource ContainerStyle}" BorderThickness="0" SelectionMode="Single">
-                    
-                </ListBox>
+                         ItemContainerStyle="{StaticResource ContainerStyle}" SelectionMode="Single"/>
                 
                 <my:AddSongRequestControl x:Name="AddSongRequestControlMain" Grid.Row="2" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 
@@ -143,8 +141,7 @@
         </GroupBox>
         
         <!-- Filler Music-->
-        <GroupBox Grid.Row="4" Grid.RowSpan="2" Grid.ColumnSpan="5" Margin="10,5,10,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="16" 
-                  FontWeight="Bold" BorderThickness="3" Foreground="#2ED7E2">
+        <GroupBox Grid.Row="4" Grid.RowSpan="2" Grid.ColumnSpan="5" Margin="10,5,10,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
             <GroupBox.Header>
                 Filler Music
             </GroupBox.Header>
@@ -164,8 +161,7 @@
                 <Label x:Name="LabelFillerMusicNow" HorizontalAlignment="Stretch" Grid.ColumnSpan="4" Margin="5,5,5,0" FontWeight="Bold" FontSize="12"/>
                 
                 <ListBox x:Name="ListBoxFillerMusic" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="4" Grid.Row="1"
-                         ItemContainerStyle="{StaticResource ContainerStyle}" BorderThickness="0">
-                </ListBox>
+                         ItemContainerStyle="{StaticResource ContainerStyle}" />
                 
                 <Button x:Name="ButtonFillerBrowse" Content="Browse" Click="ButtonFillerBrowse_Click" Margin="10,10,10,10" FontWeight="Normal"
                         Grid.Row="2" Grid.Column="0"/>

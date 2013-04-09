@@ -243,22 +243,18 @@ namespace DJClientWPF
         {
             switch (keyword)
             {
-                case (SelectKeyword.CountEqual):
+                case (SelectKeyword.CountGTE):
                     return 0;
-                case (SelectKeyword.CountGreaterThan):
-                    return 2;
-                case (SelectKeyword.CountLessThan):
-                    return 3;
-                case (SelectKeyword.CountNotEqual):
+                case (SelectKeyword.CountLTE):
                     return 1;
                 case (SelectKeyword.Max):
-                    return 4;
+                    return 2;
                 case (SelectKeyword.Min):
-                    return 5;
+                    return 3;
                 case (SelectKeyword.Newest):
-                    return 6;
+                    return 4;
                 case (SelectKeyword.Oldest):
-                    return 7;
+                    return 5;
             }
             return 0;
         }

@@ -739,12 +739,6 @@ namespace DJClientWPF.KaraokeService {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
-
-        //Code added by me//////////////////////////////////////////////////
-        public override string ToString()
-        {
-            return this.name;
-        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
@@ -926,28 +920,22 @@ namespace DJClientWPF.KaraokeService {
     public enum SelectKeyword : int {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        CountEqual = 0,
+        CountGTE = 0,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        CountNotEqual = 1,
+        CountLTE = 1,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        CountGreaterThan = 2,
+        Max = 2,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        CountLessThan = 3,
+        Min = 3,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        Max = 4,
+        Newest = 4,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        Min = 5,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Newest = 6,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Oldest = 7,
+        Oldest = 5,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -984,6 +972,9 @@ namespace DJClientWPF.KaraokeService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJListSongs", ReplyAction="http://tempuri.org/IDJ/DJListSongsResponse")]
         DJClientWPF.KaraokeService.Response DJListSongs(out DJClientWPF.KaraokeService.Song[] songs, long DJKey);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGetMostPopularSongs", ReplyAction="http://tempuri.org/IDJ/DJGetMostPopularSongsResponse")]
+        DJClientWPF.KaraokeService.Response DJGetMostPopularSongs(out DJClientWPF.KaraokeService.Song[] songs, out int[] counts, long DJKey, bool limitToVenue, int start, int count);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJAddQueue", ReplyAction="http://tempuri.org/IDJ/DJAddQueueResponse")]
         DJClientWPF.KaraokeService.Response DJAddQueue(DJClientWPF.KaraokeService.SongRequest sr, int queueIndex, long DJKey);
         
@@ -1014,9 +1005,6 @@ namespace DJClientWPF.KaraokeService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJTestQueueFill", ReplyAction="http://tempuri.org/IDJ/DJTestQueueFillResponse")]
         DJClientWPF.KaraokeService.Response DJTestQueueFill(long DJKey);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJGetMostPopularSongs", ReplyAction="http://tempuri.org/IDJ/DJGetMostPopularSongsResponse")]
-        DJClientWPF.KaraokeService.Response DJGetMostPopularSongs(out DJClientWPF.KaraokeService.Song[] songs, out int[] counts, long DJKey, bool limitToVenue, int start, int count);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/DJBanUser", ReplyAction="http://tempuri.org/IDJ/DJBanUserResponse")]
         DJClientWPF.KaraokeService.Response DJBanUser(DJClientWPF.KaraokeService.User userToBan, long DJKey);
         
@@ -1043,6 +1031,9 @@ namespace DJClientWPF.KaraokeService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/ViewAchievementSql", ReplyAction="http://tempuri.org/IDJ/ViewAchievementSqlResponse")]
         DJClientWPF.KaraokeService.Response ViewAchievementSql(long DJKey, int achievementID);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDJ/InsertFauxSongHistory", ReplyAction="http://tempuri.org/IDJ/InsertFauxSongHistoryResponse")]
+        DJClientWPF.KaraokeService.Response InsertFauxSongHistory(long DJKey, string[] bands, int numberPerBand, int mobileID);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1112,6 +1103,10 @@ namespace DJClientWPF.KaraokeService {
             return base.Channel.DJListSongs(out songs, DJKey);
         }
         
+        public DJClientWPF.KaraokeService.Response DJGetMostPopularSongs(out DJClientWPF.KaraokeService.Song[] songs, out int[] counts, long DJKey, bool limitToVenue, int start, int count) {
+            return base.Channel.DJGetMostPopularSongs(out songs, out counts, DJKey, limitToVenue, start, count);
+        }
+        
         public DJClientWPF.KaraokeService.Response DJAddQueue(DJClientWPF.KaraokeService.SongRequest sr, int queueIndex, long DJKey) {
             return base.Channel.DJAddQueue(sr, queueIndex, DJKey);
         }
@@ -1152,10 +1147,6 @@ namespace DJClientWPF.KaraokeService {
             return base.Channel.DJTestQueueFill(DJKey);
         }
         
-        public DJClientWPF.KaraokeService.Response DJGetMostPopularSongs(out DJClientWPF.KaraokeService.Song[] songs, out int[] counts, long DJKey, bool limitToVenue, int start, int count) {
-            return base.Channel.DJGetMostPopularSongs(out songs, out counts, DJKey, limitToVenue, start, count);
-        }
-        
         public DJClientWPF.KaraokeService.Response DJBanUser(DJClientWPF.KaraokeService.User userToBan, long DJKey) {
             return base.Channel.DJBanUser(userToBan, DJKey);
         }
@@ -1190,6 +1181,10 @@ namespace DJClientWPF.KaraokeService {
         
         public DJClientWPF.KaraokeService.Response ViewAchievementSql(long DJKey, int achievementID) {
             return base.Channel.ViewAchievementSql(DJKey, achievementID);
+        }
+        
+        public DJClientWPF.KaraokeService.Response InsertFauxSongHistory(long DJKey, string[] bands, int numberPerBand, int mobileID) {
+            return base.Channel.InsertFauxSongHistory(DJKey, bands, numberPerBand, mobileID);
         }
     }
 }

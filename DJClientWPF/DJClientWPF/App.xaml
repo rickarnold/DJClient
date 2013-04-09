@@ -7,12 +7,19 @@
             <Setter Property="Background">
                 <Setter.Value>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                        <GradientStop Color="SlateGray" Offset="0"/>
-                        <GradientStop Color="#AAAAAA" Offset="1"/>
+                        <GradientStop Color="#202020" Offset="0"/>
+                        <GradientStop Color="SlateGray" Offset="1"/>
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="#2ED7E2"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="Silver"/>
         </Style>
         
         <!-- Ensure that items in list box stretch horizontally to fill container and control color when selected-->
@@ -29,10 +36,23 @@
                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="White"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="White"/>
             </Style.Resources>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        
+        <Style TargetType="ItemsControl">
+            <Setter Property="BorderThickness" Value="0"/>
         </Style>
         
         <Style TargetType="ItemsControl" x:Key="ItemsControlStyle">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+        
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="Silver"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Foreground" Value="#2ED7E2"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
         </Style>
     </Application.Resources>
 </Application>

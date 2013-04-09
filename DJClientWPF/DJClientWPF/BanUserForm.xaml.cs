@@ -24,8 +24,8 @@ namespace DJClientWPF
 
         DJModel model;
 
-        public ObservableCollection<User> userList { get; set; }
-        public ObservableCollection<User> bannedUserList { get; set; }
+        ObservableCollection<User> userList;
+        ObservableCollection<User> bannedUserList;
 
         public BanUserForm()
         {
@@ -45,7 +45,7 @@ namespace DJClientWPF
 
             AddCurrentUsers();
 
-            //ListBoxUnban.ItemsSource = bannedUserList;
+            ListBoxUnban.DataContext = bannedUserList;
         }
 
         //Adds all the users that are currently in the queue to list of users that can be banned
@@ -54,9 +54,7 @@ namespace DJClientWPF
             List<queueSinger> queueList = model.SongRequestQueue;
 
             foreach (queueSinger singer in queueList)
-            {
                 userList.Add(singer.user);
-            }
 
             ComboBoxUserName.ItemsSource = userList;
         }
@@ -67,15 +65,15 @@ namespace DJClientWPF
         private void GetBannedUserCompleteHandler(object sender, DJModelArgs args)
         {
             //Display the list of banned users in the list box
-            this.Dispatcher.BeginInvoke(new InvokeDelegate(() =>
-            {
+            //this.Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            //{
                 List<User> banned = model.BannedUserList;
                 foreach (User user in banned)
                 {
                     if (!bannedUserList.Contains(user))
                         bannedUserList.Add(user);
                 }
-            }));
+            //}));
         }
 
         //Model has finished banning a user.  Update the banned list
@@ -115,7 +113,10 @@ namespace DJClientWPF
 
                 //Update the combo box
                 if (userList.Contains(user))
+                {
                     userList.Remove(user);
+                    ComboBoxUserName.SelectedIndex = -1;
+                }
             }
         }
 
@@ -129,17 +130,14 @@ namespace DJClientWPF
 
         private void ButtonUnban_Click(object sender, RoutedEventArgs e)
         {
+            ////////////////////////////////////////////////////////////////
             string test = ListBoxUnban.SelectedValue.GetType().ToString();
             string test2 = ListBoxUnban.SelectedItem.GetType().ToString();
             string test3 = ListBoxUnban.SelectedValuePath.GetType().ToString();
+            ////////////////////////////////////////////////////////////////
 
             User user = (User)ListBoxUnban.SelectedItem;
             model.UnbanUser(user);
-        }
-
-        private void ButtonOK_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

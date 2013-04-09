@@ -6,6 +6,7 @@
 
     <Window.Resources>
         <ResourceDictionary>
+            <!-- Style the thumb so that it is a transparent canvas for dragging the text on screen-->
             <ControlTemplate x:Key="template1">
                 <Grid>
                     <Canvas Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
@@ -77,8 +78,7 @@
         </Canvas>
         <Border BorderThickness="2" BorderBrush="Silver" CornerRadius="5" Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="584"/>
 
-        <GroupBox Grid.Row="5" Margin="10,5,10,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="14"
-                  FontWeight="Bold" BorderThickness="3">
+        <GroupBox Grid.Row="5" Margin="10,5,10,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
             <GroupBox.Header>
                 Queue Scroll
             </GroupBox.Header>
