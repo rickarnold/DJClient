@@ -48,6 +48,9 @@ namespace DJClientWPF
         public string TextSingerNameFontFamily { get; set; }
         public bool TextSingerNameIsDisplayed { get; set; }
 
+        //Is the user displaying the screen in night mode
+        public bool IsNightMode { get; set; }
+
         //Default constructor with default settings
         public Settings()
         {
@@ -72,6 +75,8 @@ namespace DJClientWPF
             this.TextSingerNameColor = Colors.Black.ToString();
             this.TextSingerNameFontFamily = "Arial";
             this.TextSingerNameIsDisplayed = true;
+
+            this.IsNightMode = false;
         }
 
         //Reads the settings file from disk.  If the file does not exist the default setting values are returned.

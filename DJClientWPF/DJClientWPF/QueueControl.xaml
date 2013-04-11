@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="65" d:DesignWidth="400">
     
-    <Grid x:Name="GridMain" Height="60" Width="Auto" HorizontalAlignment="Stretch">
+    <Grid x:Name="GridMain" Height="60" Width="Auto" HorizontalAlignment="Stretch" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*" x:Name="RowSongs"/>

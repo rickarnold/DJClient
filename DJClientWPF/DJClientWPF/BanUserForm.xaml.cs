@@ -65,15 +65,15 @@ namespace DJClientWPF
         private void GetBannedUserCompleteHandler(object sender, DJModelArgs args)
         {
             //Display the list of banned users in the list box
-            //this.Dispatcher.BeginInvoke(new InvokeDelegate(() =>
-            //{
+            this.Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+            {
                 List<User> banned = model.BannedUserList;
                 foreach (User user in banned)
                 {
                     if (!bannedUserList.Contains(user))
                         bannedUserList.Add(user);
                 }
-            //}));
+            }));
         }
 
         //Model has finished banning a user.  Update the banned list
@@ -130,12 +130,6 @@ namespace DJClientWPF
 
         private void ButtonUnban_Click(object sender, RoutedEventArgs e)
         {
-            ////////////////////////////////////////////////////////////////
-            string test = ListBoxUnban.SelectedValue.GetType().ToString();
-            string test2 = ListBoxUnban.SelectedItem.GetType().ToString();
-            string test3 = ListBoxUnban.SelectedValuePath.GetType().ToString();
-            ////////////////////////////////////////////////////////////////
-
             User user = (User)ListBoxUnban.SelectedItem;
             model.UnbanUser(user);
         }

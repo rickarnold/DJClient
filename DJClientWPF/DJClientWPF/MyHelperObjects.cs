@@ -87,9 +87,9 @@ namespace DJClientWPF
             switch (this.SelectKeyword)
             {
                 case(SelectKeyword.CountGTE):
-                    return "Equal/Greater Than";
+                    return ">=";
                 case(SelectKeyword.CountLTE):
-                    return "Equal/Less Than";
+                    return "<=";
                 case(SelectKeyword.Max):
                     return "Most";
                 case(SelectKeyword.Min):

@@ -321,7 +321,7 @@ namespace DJClientWPF
             {
                 Dispatcher.BeginInvoke(new InvokeDelegate(() =>
                 {
-                    LabelFillerMusicNow.Foreground = new SolidColorBrush(Colors.Black);
+                    LabelFillerMusicNow.Foreground = (SolidColorBrush)Application.Current.Resources["LabelBrush"];
                 }));
             }
         }
@@ -473,9 +473,9 @@ namespace DJClientWPF
         private void UpdateNowPlaying(SongToPlay songToPlay)
         {
             LabelNowSinging.Content = "Now Singing:  " + songToPlay.User.userName;
-            LabelNowSinging.Foreground = new SolidColorBrush(Colors.Black);
+            LabelNowSinging.Foreground = (SolidColorBrush)Application.Current.Resources["LabelBrush"];
             LabelNowPlaying.Content = "Now Playing:  " + songToPlay.Song.artist + " - " + songToPlay.Song.title;
-            LabelNowPlaying.Foreground = new SolidColorBrush(Colors.Black);
+            LabelNowPlaying.Foreground = (SolidColorBrush)Application.Current.Resources["LabelBrush"];
             LabelSongRemaining.Content = "0:00";
 
             karaokePlayer.Stop();
@@ -578,6 +578,18 @@ namespace DJClientWPF
         {
             AchievementForm form = new AchievementForm();
             form.Show();
+        }
+
+        //User clicked to toggle the night mode effect
+        private void MenuItemNightMode_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+
+            NightModeToggle(item.IsChecked);
+
+            //Save the setting
+            model.Settings.IsNightMode = item.IsChecked;
+            model.Settings.SaveSettingsToDisk();
         }
 
         #endregion
@@ -834,6 +846,42 @@ namespace DJClientWPF
             base.OnPropertyChanged(e);
             if (ReferenceEquals(e.Property, AnimatableGridHeightProperty))
                 RowSingerQueueAddSongControl.Height = new GridLength((double)e.NewValue);
+        }
+
+        //Toggle the screen between night/regular mode
+        private void NightModeToggle(bool isNightMode)
+        {
+            //Change all the colors in the app to reflect the mode
+            if (isNightMode)
+            {
+                Application.Current.Resources["BackgroundBrush"] = new SolidColorBrush(Color.FromArgb(255, 20, 20, 20));
+                Application.Current.Resources["LabelBrush"] = new SolidColorBrush(Color.FromArgb(255, 245, 245, 245));
+                Application.Current.Resources["InputBrushBackground"] = new SolidColorBrush(Color.FromArgb(255, 80, 80, 80));
+                Application.Current.Resources["InputBrushForeground"] = new SolidColorBrush(Color.FromArgb(255, 245, 245, 245));
+                Application.Current.Resources["InputBrushBorder"] = new SolidColorBrush(Colors.Silver);
+                Application.Current.Resources["ComboboxBrushBackground"] = new SolidColorBrush(Color.FromArgb(255, 30, 30, 30));
+            }
+            else
+            {
+                Application.Current.Resources["BackgroundBrush"] = new SolidColorBrush(Colors.White);
+                Application.Current.Resources["LabelBrush"] = new SolidColorBrush(Colors.Black);
+                Application.Current.Resources["InputBrushBackground"] = new SolidColorBrush(Colors.White);
+                Application.Current.Resources["InputBrushForeground"] = new SolidColorBrush(Colors.Black);
+                Application.Current.Resources["InputBrushBorder"] = new SolidColorBrush(Colors.Silver);
+                Application.Current.Resources["ComboboxBrushBackground"] = new SolidColorBrush(Colors.White);
+            }
+        }
+
+        //When the window is loaded check if we should run in night mode
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Get the settings and check if we're in night mode
+            Settings settings = model.Settings;
+
+            if (settings.IsNightMode)
+                MenuItemNightMode.IsChecked = true;
+
+            NightModeToggle(settings.IsNightMode);
         }
 
         #endregion

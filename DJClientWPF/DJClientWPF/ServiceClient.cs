@@ -463,7 +463,7 @@ namespace DJClientWPF
         {
             ThreadPool.QueueUserWorkItem(lambda =>
                 {
-                    UnbanUserAsync(user, djKey, userState);
+                    UnbanUser(user, djKey, userState);
                 });
         }
 
@@ -486,6 +486,10 @@ namespace DJClientWPF
         private void BanUser(User user, long djKey, object userState)
         {
             Response response = _client.DJBanUser(user, djKey);
+
+            //User has been banned and removed from the queue, update it
+            if (!response.error)
+                GetSingerQueue(djKey, null);
 
             if (BanUserComplete != null)
             {
