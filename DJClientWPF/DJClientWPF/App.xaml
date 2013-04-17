@@ -26,6 +26,7 @@
             <Setter Property="Foreground" Value="#2ED7E2"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Focusable" Value="False"/>
         </Style>
 
         <!-- Ensure that items in list box stretch horizontally to fill container and control color when selected-->

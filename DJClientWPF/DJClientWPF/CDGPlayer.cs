@@ -710,7 +710,7 @@ namespace DJClientWPF
         private void BeginBitmapUpdate()
         {
             if (ImageData != null)
-                throw new InvalidOperationException();
+                return;
 
             bool locked = false;
             while (!locked)
@@ -728,7 +728,7 @@ namespace DJClientWPF
         private void EndBitmapUpdate()
         {
             if (ImageData == null)
-                throw new InvalidOperationException();
+                return;
 
             bool unlocked = false;
             while (!unlocked)

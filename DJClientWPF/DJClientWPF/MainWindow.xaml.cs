@@ -656,14 +656,7 @@ namespace DJClientWPF
             {
                 QueueControl control = ListBoxSongQueue.SelectedItem as QueueControl;
 
-                foreach (Song song in control.QueueSinger.songs)
-                {
-                    SongRequest requestToRemove = new SongRequest();
-                    requestToRemove.user = control.QueueSinger.user;
-                    requestToRemove.songID = song.ID;
-
-                    model.RemoveSongRequest(requestToRemove);
-                }
+                model.RemoveUser(control.QueueSinger.user);
 
                 queueControlList.Remove(control);
             }

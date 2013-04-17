@@ -20,25 +20,25 @@ namespace DJClientWPF
             switch (this.AchievementImage)
             {
                 case(AchievementImage.Image0):
-                    return "Image 0";
+                    return "Gold Star";
                 case(AchievementImage.Image1):
-                    return "Image 1";
+                    return "Silver Star";
                 case (AchievementImage.Image2):
-                    return "Image 2";
+                    return "Bronze Star";
                 case (AchievementImage.Image3):
-                    return "Image 3";
+                    return "Crown";
                 case (AchievementImage.Image4):
-                    return "Image 4";
+                    return "None";
                 case (AchievementImage.Image5):
-                    return "Image 5";
+                    return "Bad";
                 case (AchievementImage.Image6):
-                    return "Image 6";
+                    return "Music";
                 case (AchievementImage.Image7):
-                    return "Image 7";
+                    return "Guitar";
                 case (AchievementImage.Image8):
-                    return "Image 8";
+                    return "Bolt";
                 case (AchievementImage.Image9):
-                    return "Image 9";
+                    return "Mic";
             }
             return base.ToString();
         }

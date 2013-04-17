@@ -83,7 +83,12 @@ namespace DJClientWPF
 
             select.clauseKeyword = ((ClauseKeywordItem)ComboBoxType.SelectedItem).ClauseKeyword;
             if (select.clauseKeyword == ClauseKeyword.SongID)
-                select.clauseValue = ((SongSearchResult)TextBoxTypeValue.SelectedItem).Song.ID.ToString();
+            {
+                if (TextBoxTypeValue.SelectedItem != null)
+                    select.clauseValue = ((SongSearchResult)TextBoxTypeValue.SelectedItem).Song.ID.ToString();
+                else
+                    select.clauseValue = "%";
+            }
             else
                 select.clauseValue = TextBoxTypeValue.Text.Trim();
 
@@ -155,13 +160,23 @@ namespace DJClientWPF
             ComboBoxType.SelectedIndex = GetClauseIndex(select.clauseKeyword);
             if (select.clauseKeyword == ClauseKeyword.SongID)
             {
-                int songID = int.Parse(select.clauseValue);
-                Song song = DJModel.Instance.SongDictionary[songID];
-                List<SongSearchResult> itemList = new List<SongSearchResult>();
-                SongSearchResult result = new SongSearchResult(song, song.artist, song.title);
-                itemList.Add(result);
-                TextBoxTypeValue.ItemsSource = itemList;
-                TextBoxTypeValue.SelectedItem = result;
+
+                int songID = -1;
+
+                try
+                {
+                    songID = int.Parse(select.clauseValue);
+                    Song song = DJModel.Instance.SongDictionary[songID];
+                    List<SongSearchResult> itemList = new List<SongSearchResult>();
+                    SongSearchResult result = new SongSearchResult(song, song.artist, song.title);
+                    itemList.Add(result);
+                    TextBoxTypeValue.ItemsSource = itemList;
+                    TextBoxTypeValue.SelectedItem = result;
+                }
+                catch
+                {
+                    TextBoxTypeValue.Text = select.clauseValue;
+                }
             }
             else
                 TextBoxTypeValue.Text = select.clauseValue;

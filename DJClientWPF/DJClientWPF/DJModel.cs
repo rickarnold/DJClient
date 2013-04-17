@@ -386,6 +386,12 @@ namespace DJClientWPF
             serviceClient.RemoveSongRequestAsync(request, this.DJKey, null);
         }
 
+        //Remove a user from the singer queue
+        public void RemoveUser(User user)
+        {
+            serviceClient.RemoveUserAsync(user.userID, this.DJKey, null);
+        }
+
         //Change the order of a song request for a user
         public void MoveSongRequest(SongRequest request, int newIndex)
         {
