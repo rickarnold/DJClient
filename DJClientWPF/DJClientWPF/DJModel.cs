@@ -30,6 +30,7 @@ namespace DJClientWPF
         public event DJModelEventHandler LoginComplete;
         public event DJModelEventHandler LogoutComplete;
         public event DJModelEventHandler CreateSessionComplete;
+        public event DJModelEventHandler CloseSessionComplete;
 
         public event DJModelEventHandler AddSongToDatabaseComplete;
         public event DJModelEventHandler RemoveSongFromDatabaseComplete;
@@ -90,6 +91,7 @@ namespace DJClientWPF
             serviceClient.LoginServiceComplete += LoginCompleteHandler;
             serviceClient.LogoutServiceComplete += LogoutCompleteHandler;
             serviceClient.CreateSessionServiceComplete += CreateSessionCompleteHandler;
+            serviceClient.CloseSessionServiceComplete += CloseSessionServiceCompleteHandler;
 
             //Song Management Handlers
             serviceClient.AddSongsToDatabaseComplete += AddSongsToDatabaseCompleteHandler;
@@ -235,6 +237,15 @@ namespace DJClientWPF
             }
         }
 
+        //Close the current karaoke session
+        public void CloseSession()
+        {
+            if (this.IsSessionActive && this.IsLoggedIn)
+            {
+                serviceClient.CloseSessionAsync(this.DJKey, null);
+            }
+        }
+        
         #endregion Login Methods
 
         #region Song Management
@@ -623,6 +634,19 @@ namespace DJClientWPF
             if (CreateSessionComplete != null)
             {
                 CreateSessionComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
+            }
+        }
+
+        private void CloseSessionServiceCompleteHandler(object source, ResponseArgs args)
+        {
+            if (!args.Response.error)
+            {
+                this.IsSessionActive = false;
+            }
+
+            if (CloseSessionComplete != null)
+            {
+                CloseSessionComplete(this, new DJModelArgs(args.Response.error, args.Response.message, args.UserState));
             }
         }
 

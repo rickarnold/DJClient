@@ -48,6 +48,7 @@ namespace DJClientWPF
         private ObservableCollection<QueueControl> queueControlList;
         private ObservableCollection<FillerMusicControl> fillerList;
         private bool showProgressRemaining = false;
+        private bool addButtonEnabled = false;
         private int fillerSelected = -1;
         private bool songRequestOpen = false;
         private PlayState playState = PlayState.NoSession;
@@ -55,6 +56,8 @@ namespace DJClientWPF
         public MainWindow()
         {
             InitializeComponent();
+
+            this.WindowState = WindowState.Maximized;
 
             model = DJModel.Instance;
 
@@ -94,6 +97,7 @@ namespace DJClientWPF
             model.QRCodeComplete += QRCodeCompleteHandler;
             model.QRNewCodeComplete += QRNewCodeCompleteHandler;
             model.CreateSessionComplete += CreateSessionCompleteHandler;
+            model.CloseSessionComplete += CloseSessionCompleteHandler;
             model.LogoutComplete += LogoutCompleteHandler;
             model.ListSongsInDatabaseComplete += SongListLoadedHandler;
             model.WaitTimeComplete += WaitTimeCompleteHandler;
@@ -154,7 +158,26 @@ namespace DJClientWPF
             {
                 EnableNowPlaying();
                 EnableSingerQueueGroup();
+
+                MenuItemStartSession.Visibility = Visibility.Collapsed;
+                MenuItemCloseSession.Visibility = Visibility.Visible;
             }));
+        }
+
+        //Call to close the current karaoke session returned from the server.  Disable karaoke playback.
+        private void CloseSessionCompleteHandler(object source, DJModelArgs args)
+        {
+            playState = PlayState.NoSession;
+            karaokePlayer.Stop();
+            karaokePlayer.CloseCDGWindow();
+            Dispatcher.BeginInvoke(new InvokeDelegate(() =>
+                {
+                    DisableNowPlaying();
+                    DisableSingerQueueGroup();
+
+                    MenuItemStartSession.Visibility = Visibility.Visible;
+                    MenuItemCloseSession.Visibility = Visibility.Collapsed;
+                }));
         }
 
         //Call to logout from the server returned.  Close the app.
@@ -345,6 +368,7 @@ namespace DJClientWPF
         {
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
             {
+                addButtonEnabled = true;
                 ButtonQueueAdd.IsEnabled = true;
                 MenuItemAchievements.IsEnabled = true;
             }));
@@ -495,6 +519,17 @@ namespace DJClientWPF
             }
         }
 
+        //User clicked to close the current karaoke session
+        private void MenuItemCloseSession_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure you wish to close this karaoke session? " +
+                                                           "\n\nAll singers currently in the queue will be removed.", "Confirm Close Session", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+            {
+                model.CloseSession();
+            }
+        }
+
         //User clicked to log out of the current karaoke session.
         private void LogoutItem_Click(object sender, RoutedEventArgs e)
         {
@@ -513,6 +548,7 @@ namespace DJClientWPF
             if (model.IsLoggedIn)
             {
                 AddSongsForm form = new AddSongsForm();
+                form.WindowStartupLocation = WindowStartupLocation.CenterScreen;
                 form.ShowDialog();
                 List<Song> songList = form.SongList;
 
@@ -537,8 +573,14 @@ namespace DJClientWPF
         //User clicked to obtain a new QR code for this venue.
         private void MenuItemNewQR_Click(object sender, RoutedEventArgs e)
         {
-            if (model.IsLoggedIn)
-                model.GetNewQRCode();
+            //Double check with the user that they want to get a new QR code
+            MessageBoxResult result = MessageBox.Show("Are you sure you wish to generate a new QR code? " +
+                                                           "\n\nAll previous QR codes you have displayed will no longer work.", "Confirm New QR Code", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+            {
+                if (model.IsLoggedIn)
+                    model.GetNewQRCode();
+            }
         }
 
         //User clicked on test method to populate the queue with test users.
@@ -562,6 +604,7 @@ namespace DJClientWPF
         private void MenuItemBackgroundImage_Click(object sender, RoutedEventArgs e)
         {
             SecondWindowForm background = new SecondWindowForm();
+            background.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             background.SecondWindowUpdated += new SecondWindowForm.EventHandler(BackgroundImageUpdatedHandler);
             background.Show();
         }
@@ -570,6 +613,7 @@ namespace DJClientWPF
         private void MenuItemUserManagement_Click(object sender, RoutedEventArgs e)
         {
             BanUserForm form = new BanUserForm();
+            form.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             form.Show();
         }
 
@@ -577,6 +621,7 @@ namespace DJClientWPF
         private void MenuItemAchievements_Click(object sender, RoutedEventArgs e)
         {
             AchievementForm form = new AchievementForm();
+            form.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             form.Show();
         }
 
@@ -733,7 +778,8 @@ namespace DJClientWPF
             animator.Duration = new Duration(TimeSpan.FromSeconds(OPACITY_ANIMATION_TIME));
             GroupBoxQueue.BeginAnimation(GroupBox.OpacityProperty, animator);
 
-            //ButtonQueueAdd.IsEnabled = true;
+            if (addButtonEnabled)
+                ButtonQueueAdd.IsEnabled = true;
             ButtonQueueMoveDown.IsEnabled = true;
             ButtonQueueMoveUp.IsEnabled = true;
             ButtonQueueRemove.IsEnabled = true;
@@ -746,6 +792,37 @@ namespace DJClientWPF
             DoubleAnimation animator = new DoubleAnimation();
             animator.From = .25;
             animator.To = 1;
+            animator.Duration = new Duration(TimeSpan.FromSeconds(OPACITY_ANIMATION_TIME));
+
+            GroupBoxCDG.BeginAnimation(GroupBox.OpacityProperty, animator);
+            StackPanelSinging.BeginAnimation(StackPanel.OpacityProperty, animator);
+            StackPanelPlaying.BeginAnimation(StackPanel.OpacityProperty, animator);
+            LabelSongRemaining.BeginAnimation(Label.OpacityProperty, animator);
+        }
+
+        //Display and enable the singer queue and buttons
+        private void DisableSingerQueueGroup()
+        {
+            //Animate the opacity of the queue being set to 1
+            DoubleAnimation animator = new DoubleAnimation();
+            animator.From = 1;
+            animator.To = .25;
+            animator.Duration = new Duration(TimeSpan.FromSeconds(OPACITY_ANIMATION_TIME));
+            GroupBoxQueue.BeginAnimation(GroupBox.OpacityProperty, animator);
+
+            ButtonQueueAdd.IsEnabled = false;
+            ButtonQueueMoveDown.IsEnabled = false;
+            ButtonQueueMoveUp.IsEnabled = false;
+            ButtonQueueRemove.IsEnabled = false;
+        }
+
+        //Disable the controls that display now playing information
+        private void DisableNowPlaying()
+        {
+            //Animate the opacity of the cdg window being set to 1
+            DoubleAnimation animator = new DoubleAnimation();
+            animator.From = 1;
+            animator.To = .25;
             animator.Duration = new Duration(TimeSpan.FromSeconds(OPACITY_ANIMATION_TIME));
 
             GroupBoxCDG.BeginAnimation(GroupBox.OpacityProperty, animator);
@@ -961,5 +1038,6 @@ namespace DJClientWPF
         }
 
         #endregion
+
     }
 }

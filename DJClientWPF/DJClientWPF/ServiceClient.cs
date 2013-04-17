@@ -31,6 +31,7 @@ namespace DJClientWPF
         public event LoginResponseHandler LoginServiceComplete;
         public event ResponseHandler LogoutServiceComplete;
         public event ResponseHandler CreateSessionServiceComplete;
+        public event ResponseHandler CloseSessionServiceComplete;
 
         public event ResponseHandler AddSongsToDatabaseComplete;
         public event ResponseHandler RemoveSongsFromDatabaseComplete;
@@ -109,6 +110,14 @@ namespace DJClientWPF
             });
         }
 
+        public void CloseSessionAsync(long djKey, object userState)
+        {
+            ThreadPool.QueueUserWorkItem(lambda =>
+            {
+                CloseSession(djKey, userState);
+            });
+        }
+
         #endregion
 
         #region Log In/Out Workers
@@ -151,6 +160,14 @@ namespace DJClientWPF
             {
                 CreateSessionServiceComplete(this, new ResponseArgs(response, userState));
             }
+        }
+
+        private void CloseSession(long djKey, object userState)
+        {
+            Response response = _client.DJStopSession(djKey);
+
+            if (CloseSessionServiceComplete != null)
+                CloseSessionServiceComplete(this, new ResponseArgs(response, userState));
         }
 
         #endregion

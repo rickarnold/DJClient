@@ -219,6 +219,8 @@ namespace DJClientWPF
             for (int x = 0; x < currentControlsList.Count; x++)
                 achievement.selectList[x] = currentControlsList[x].GetAchievementSelect();
 
+            achievement.visible = (bool)CheckBoxCurrentPublic.IsChecked;
+
             return achievement;
         }
 

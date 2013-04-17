@@ -136,6 +136,11 @@ namespace DJClientWPF
             }
         }
 
+        public void SetScrollingText(string text)
+        {
+            cdgWindow.SetScrollingText(text);
+        }
+
         //Event handler triggered when the music begins to play
         private void Player_PlayStateChange(int NewState)
         {
@@ -166,7 +171,6 @@ namespace DJClientWPF
             if (!isPlaying)
                 UpdateToNextSingerImage(DJModel.Instance.CurrentSong);
 
-            
             cdgWindow.SetScrollingText(DJModel.Instance.QueueString);
             cdgWindow.UpdateTextFields();
             cdgWindow.IsPlaying = isPlaying;
@@ -194,15 +198,6 @@ namespace DJClientWPF
 
                 cdgWindow.IsPlaying = false;
             }
-        }
-
-        #endregion
-
-        #region
-
-        public void SetScrollingText(string text)
-        {
-            cdgWindow.SetScrollingText(text);
         }
 
         #endregion
