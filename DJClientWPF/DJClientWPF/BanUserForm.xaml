@@ -68,6 +68,10 @@
 
                     <Label HorizontalAlignment="Center" Margin="0,0,0,30" VerticalAlignment="Center" Grid.ColumnSpan="2" FontSize="16" FontWeight="Bold"
                            Content="Select a banned user to unban from this venue"/>
+
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Top" Grid.ColumnSpan="2" FontSize="14" FontStyle="Italic" Foreground="#2ED7E2"
+                           x:Name="LabelNoneBanned" Grid.Row="1"  Margin="0,10,0,0" Visibility="Collapsed"
+                           Content="You have not banned any users from this venue."/>
                     
                     <ListBox x:Name="ListBoxUnban" Width="300" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="0,10,0,10" SelectionMode="Single"
                              SelectionChanged="ListBoxUnban_SelectionChanged" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ContainerStyle}"

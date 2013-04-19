@@ -65,15 +65,18 @@
             </Border.Background>
         </Border>
 
-        <Label Content="Music Volume" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,10,0"
+        <Image Source="Images\MobiokeEmbossed.png" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Stretch="Uniform" Margin="30,0,10,0"
+               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <Label Content="Music Volume" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,10,0"
                FontWeight="Bold"/>
-        <Slider x:Name="SliderMainVolume" Minimum="0" Maximum="100" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" ValueChanged="SliderMainVolume_ValueChanged"
+        <Slider x:Name="SliderMainVolume" Minimum="0" Maximum="100" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" ValueChanged="SliderMainVolume_ValueChanged"
                 Margin="10,5,10,5" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Value="50" Foreground="#FF202020"/>
 
         <Label Content="Mic Volume" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,10,0"
-               FontWeight="Bold"/>
+               FontWeight="Bold" Visibility="Collapsed"/>
         <Slider x:Name="SliderMicVolume" Minimum="0" Maximum="100" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" ValueChanged="SliderMicVolume_ValueChanged"
-                Margin="10,5,10,5" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Value="50" Foreground="#FF202020"/>
+                Margin="10,5,10,5" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Value="50" Foreground="#FF202020" Visibility="Collapsed"/>
 
         <Label Content="Filler Volume" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,10,0"
                FontWeight="Bold"/>

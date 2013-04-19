@@ -68,10 +68,18 @@ namespace DJClientWPF
             this.Dispatcher.BeginInvoke(new InvokeDelegate(() =>
             {
                 List<User> banned = model.BannedUserList;
-                foreach (User user in banned)
+
+                if (banned.Count > 0)
                 {
-                    if (!bannedUserList.Contains(user))
-                        bannedUserList.Add(user);
+                    foreach (User user in banned)
+                    {
+                        if (!bannedUserList.Contains(user))
+                            bannedUserList.Add(user);
+                    }
+                }
+                else
+                {
+                    LabelNoneBanned.Visibility = Visibility.Visible;
                 }
             }));
         }
@@ -83,7 +91,10 @@ namespace DJClientWPF
             {
                 User bannedUser = (User)args.UserState;
                 if (!bannedUserList.Contains(bannedUser))
+                {
                     bannedUserList.Add(bannedUser);
+                    LabelNoneBanned.Visibility = Visibility.Collapsed;
+                }
                 if (userList.Contains(bannedUser))
                     userList.Remove(bannedUser);
             }));
@@ -98,7 +109,11 @@ namespace DJClientWPF
                 if (!userList.Contains(unbannedUser))
                     userList.Add(unbannedUser);
                 if (bannedUserList.Contains(unbannedUser))
+                {
                     bannedUserList.Remove(unbannedUser);
+                    if (bannedUserList.Count == 0)
+                        LabelNoneBanned.Visibility = Visibility.Visible;
+                }
             }));
         }
 
