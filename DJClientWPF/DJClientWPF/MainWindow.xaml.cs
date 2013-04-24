@@ -637,6 +637,12 @@ namespace DJClientWPF
             model.Settings.SaveSettingsToDisk();
         }
 
+        //User has clicked to show the help menu
+        private void MenuItemHelp_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.Help.ShowHelp(null, @"..\..\Help\Mobioke.chm");
+        }
+
         #endregion
 
         #region Filler Music Methods

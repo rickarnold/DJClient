@@ -51,6 +51,8 @@
                 <MenuItem x:Name="MenuItemNightMode" Header="Night Mode" Click="MenuItemNightMode_Click" IsCheckable="True"/>
             </MenuItem>
             <MenuItem Header="_Help" >
+                <MenuItem x:Name="MenuItemHelp" Header="Help" Click="MenuItemHelp_Click"/>
+                <Separator/>
                 <MenuItem x:Name="MenuItemTestQueue" Header="Get Test Queue" Click="MenuItemTestQueue_Click"/>
             </MenuItem>
         </Menu>

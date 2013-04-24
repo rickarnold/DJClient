@@ -112,7 +112,6 @@ namespace DJClientWPF
                 ClearNewAchievementForm();
                 EnableNewAchievementForm();
             }));
-
         }
 
         #endregion

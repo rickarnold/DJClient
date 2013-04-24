@@ -1083,7 +1083,7 @@ namespace DJClientWPF
                 Achievement achievement = (Achievement)args.UserState;
                 achievement.ID = args.Response.result;
 
-                this.AchievementList.Add(achievement);
+                this.AchievementList.Insert(0, achievement);
             }
             //Error occurred in the service call
             else

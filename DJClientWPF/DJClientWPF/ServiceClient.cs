@@ -204,7 +204,17 @@ namespace DJClientWPF
 
         private void AddSongsToSongbook(List<Song> songList, long djKey, object userState)
         {
-            Response response = _client.DJAddSongs(songList.ToArray(), djKey);
+            Response response;
+            try
+            {
+                response = _client.DJAddSongs(songList.ToArray(), djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (AddSongsToDatabaseComplete != null)
             {
@@ -214,7 +224,17 @@ namespace DJClientWPF
 
         private void RemoveSongsFromSongbook(List<Song> songList, long djKey, object userState)
         {
-            Response response = _client.DJRemoveSongs(songList.ToArray(), djKey);
+            Response response;
+            try
+            {
+                response = _client.DJRemoveSongs(songList.ToArray(), djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (RemoveSongsFromDatabaseComplete != null)
             {
@@ -226,7 +246,17 @@ namespace DJClientWPF
         {
             Song[] songList = new Song[0];
 
-            Response response = _client.DJListSongs(out songList, djKey);
+            Response response;
+            try
+            {
+                response = _client.DJListSongs(out songList, djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (ListSongsInDatabaseComplete != null)
             {
@@ -373,7 +403,17 @@ namespace DJClientWPF
 
         private void RemoveUser(int userID, long djKey, object userState)
         {
-            Response response = _client.DJRemoveUser(userID, djKey);
+            Response response;
+            try
+            {
+                response = _client.DJRemoveUser(userID, djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             GetSingerQueue(djKey, null);
 
@@ -397,7 +437,17 @@ namespace DJClientWPF
         {
             queueSinger[] singerQueue = new queueSinger[0];
 
-            Response response = _client.DJGetQueue(out singerQueue, djKey);
+            Response response;
+            try
+            {
+                response = _client.DJGetQueue(out singerQueue, djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             GetWaitTime(djKey, null);
 
@@ -443,14 +493,34 @@ namespace DJClientWPF
         private void GetTestQueue(long djKey)
         {
             //Fill up the queue for testing and then update the queue
-            Response response = _client.DJTestQueueFill(djKey);
+            Response response;
+            try
+            {
+                response = _client.DJTestQueueFill(djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             GetSingerQueue(djKey, null);
         }
 
         private void GetWaitTime(long djKey, object userState)
         {
-            Response response = _client.DJNewUserWaitTime(djKey);
+            Response response;
+            try
+            {
+                response = _client.DJNewUserWaitTime(djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (WaitTimeComplete != null)
                 WaitTimeComplete(this, new ResponseArgs(response, userState));
@@ -492,7 +562,17 @@ namespace DJClientWPF
         {
             User[] bannedUsers = new User[0];
 
-            Response response = _client.DJGetBannedUsers(out bannedUsers, djKey);
+            Response response;
+            try
+            {
+                response = _client.DJGetBannedUsers(out bannedUsers, djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (GetBannedUsersComplete != null)
             {
@@ -502,7 +582,17 @@ namespace DJClientWPF
 
         private void BanUser(User user, long djKey, object userState)
         {
-            Response response = _client.DJBanUser(user, djKey);
+            Response response;
+            try
+            {
+                response = _client.DJBanUser(user, djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             //User has been banned and removed from the queue, update it
             if (!response.error)
@@ -516,7 +606,17 @@ namespace DJClientWPF
 
         private void UnbanUser(User user, long djKey, object userState)
         {
-            Response response = _client.DJUnbanUser(user, djKey);
+            Response response;
+            try
+            {
+                response = _client.DJUnbanUser(user, djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (UnbanUserCompelte != null)
             {
@@ -567,7 +667,18 @@ namespace DJClientWPF
         private void GetAchievements(long djKey, object userState)
         {
             Achievement[] achievements = new Achievement[0];
-            Response response = _client.DJViewAchievements(out achievements, djKey);
+
+            Response response;
+            try
+            {
+                response = _client.DJViewAchievements(out achievements, djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (GetAchievementsComplete != null)
                 GetAchievementsComplete(this, new AchievementArgs(response, achievements.ToList<Achievement>(), userState));
@@ -575,7 +686,17 @@ namespace DJClientWPF
 
         private void EditAchievement(Achievement achievement, long djKey, object userState)
         {
-            Response response = _client.DJModifyAchievement(achievement, djKey);
+            Response response;
+            try
+            {
+                response =_client.DJModifyAchievement(achievement, djKey); 
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (EditAchievementComplete != null)
                 EditAchievementComplete(this, new ResponseArgs(response, userState));
@@ -583,7 +704,17 @@ namespace DJClientWPF
 
         private void CreateAchievement(Achievement achievement, long djKey, object userState)
         {
-            Response response = _client.DJAddAchievement(achievement, djKey);
+            Response response;
+            try
+            {
+                response = _client.DJAddAchievement(achievement, djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (CreateAchievementComplete != null)
                 CreateAchievementComplete(this, new ResponseArgs(response, userState));
@@ -591,7 +722,17 @@ namespace DJClientWPF
 
         private void DeleteAchievement(Achievement achievement, long djKey, object userState)
         {
-            Response response = _client.DJDeleteAchievement(achievement.ID, djKey);
+            Response response;
+            try
+            {
+                response = _client.DJDeleteAchievement(achievement.ID, djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (DeleteAchievementComplete != null)
                 DeleteAchievementComplete(this, new ResponseArgs(response, userState));
@@ -623,7 +764,17 @@ namespace DJClientWPF
 
         private void GetQRCode(long djKey, object userState)
         {
-            Response response = _client.DJGetQRNumber(djKey);
+            Response response;
+            try
+            {
+                response =  _client.DJGetQRNumber(djKey);
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (QRCodeComplete != null)
             {
@@ -633,7 +784,17 @@ namespace DJClientWPF
 
         private void GetNewQRCode(long djKey, object userState)
         {
-            Response response = _client.DJGenerateNewQRNumber(djKey);
+            Response response;
+            try
+            {
+                response =_client.DJGenerateNewQRNumber(djKey); 
+            }
+            catch
+            {
+                response = new Response();
+                response.error = true;
+                response.message = "Error in the service connection.";
+            }
 
             if (QRNewCodeComplete != null)
             {
