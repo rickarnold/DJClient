@@ -642,6 +642,9 @@ namespace DJClientWPF
             if (!args.Response.error)
             {
                 this.IsSessionActive = false;
+                this.SongRequestQueue = new List<queueSinger>();
+                if (QueueUpdated != null)
+                    QueueUpdated(this, new EventArgs());
             }
 
             if (CloseSessionComplete != null)

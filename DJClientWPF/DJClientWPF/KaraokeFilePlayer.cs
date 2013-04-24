@@ -131,7 +131,7 @@ namespace DJClientWPF
         {
             if (isCDGOpen)
             {
-                cdgWindow.Close();
+                cdgWindow.Hide();
                 isCDGOpen = false;
             }
         }

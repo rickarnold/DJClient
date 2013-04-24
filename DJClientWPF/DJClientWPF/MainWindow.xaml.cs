@@ -168,10 +168,14 @@ namespace DJClientWPF
         private void CloseSessionCompleteHandler(object source, DJModelArgs args)
         {
             playState = PlayState.NoSession;
-            karaokePlayer.Stop();
-            karaokePlayer.CloseCDGWindow();
+
             Dispatcher.BeginInvoke(new InvokeDelegate(() =>
                 {
+                    karaokePlayer.Stop();
+                    karaokePlayer.CloseCDGWindow();
+
+                    UpdateCDGSource(DJModel.Instance.BackgroundImage);
+
                     DisableNowPlaying();
                     DisableSingerQueueGroup();
 
